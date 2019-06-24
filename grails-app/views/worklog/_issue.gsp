@@ -1,0 +1,1 @@
+<a href="https://jira.devfactory.com/browse/${key}" target="_blank">${key}</a>
