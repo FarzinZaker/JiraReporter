@@ -11,8 +11,12 @@
 
     <asset:stylesheet src="application.css"/>
 
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <asset:javascript src="jquery-2.2.0.min.js"/>
+
+    <asset:stylesheet src="datatables.min.css"/>
+
+    %{--    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>--}%
+    %{--    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>--}%
 
     %{--<script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>--}%
     %{--<script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>--}%
@@ -27,6 +31,8 @@
 </head>
 
 <body>
+
+<asset:javascript src="datatables.min.js"/>
 
 <div class="navbar navbar-default navbar-static-top" role="navigation">
     <div class="container">
@@ -59,7 +65,8 @@
     <g:message code="spinner.alt" default="Loading&hellip;"/>
 </div>
 
-<asset:javascript src="application.js"/>
+%{--<asset:javascript src="application.js"/>--}%
+<asset:javascript src="bootstrap.js"/>
 
 </body>
 </html>

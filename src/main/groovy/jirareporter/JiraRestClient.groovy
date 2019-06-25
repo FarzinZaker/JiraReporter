@@ -18,14 +18,12 @@ import org.codehaus.jettison.json.JSONObject
 import javax.ws.rs.core.UriBuilder
 import java.util.concurrent.Callable
 
-class JiraWorklogRestClient {
+class JiraRestClient {
 
-    private final WorklogJsonParser worklogJsonParser
 
-    public JiraWorklogRestClient(final URI baseUri, final ApacheHttpClient client) {
+    public JiraRestClient(final URI baseUri, final ApacheHttpClient client) {
         this.baseUri = baseUri
         this.client = client
-        this.worklogJsonParser = new WorklogJsonParser()
     }
 
     static class CustomHttpClient extends ApacheHttpClient {

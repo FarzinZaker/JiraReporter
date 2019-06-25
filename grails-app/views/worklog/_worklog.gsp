@@ -24,7 +24,7 @@
     </div>
 
     <div class="issue">
-        <g:render template="issue" model="${[key: worklog.task.id]}"/>
+        <g:render template="issue" model="${[issue: worklog.task]}"/>
     </div>
 
     %{--<div>--}%
