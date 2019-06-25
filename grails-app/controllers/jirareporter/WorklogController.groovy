@@ -7,9 +7,12 @@ class WorklogController {
 
     def report() {
 
-        def reportDays = params.id?.toString()?.toInteger() ?: 14
+        if (!params.from)
+            return redirect(action: 'report', params: params + [from: (new Date() - 1).format('MM/dd/yyyy')])
+        if (!params.to)
+            return redirect(action: 'report', params: params + [to: new Date().format('MM/dd/yyyy')])
 
-        def worklogs = reportService.getWorklogs(reportDays)
+        def worklogs = reportService.getWorklogs(new Date(params.from), new Date(params.to))
         def summary = refinementService.getDeveloperSummary(worklogs)
         def clientSummary = refinementService.getClientSummary(worklogs)
         def componentSummary = refinementService.getComponentSummary(worklogs)

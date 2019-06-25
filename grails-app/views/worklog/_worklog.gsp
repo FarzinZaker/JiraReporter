@@ -1,6 +1,6 @@
 <%@ page import="grails.converters.JSON" %>
 
-<div class="worklog">
+<div class="worklog ${worklog.task.issueType.name.replace(' ', '_').replace('-', '')}">
     <div class="user">
         <g:render template="user" model="${[user: worklog.author]}"/>
         %{--<g:formatDate date="${worklog.created}"/>--}%

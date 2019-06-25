@@ -1,0 +1,400 @@
+.worklog {
+    border: 1px solid #673AB7;
+    border-radius: 5px;
+    background: white;
+    padding: 10px;
+    margin-bottom: 15px;
+    /*box-shadow: 2px 2px 5px gray;*/
+    margin-top: 45px;
+}
+
+.worklog.Task, .worklog.Subtask {
+    border-color: #2196F3;
+}
+
+.worklog.Task .user div, .worklog.Subtask .user div {
+    border-color: #2196F3;
+}
+
+.worklog.Task .issueLink, .worklog.Subtask .issueLink {
+    background: #BBDEFB;
+}
+
+.worklog.Task .issueDetails, .worklog.Subtask .issueDetails {
+    background: #2196F3;
+}
+
+.worklog.Documentation, .worklog.Documentation_SubTask {
+    border-color: #9C27B0;
+}
+
+.worklog.Documentation .user div, .worklog.Documentation_SubTask .user div {
+    border-color: #9C27B0;
+}
+
+.worklog.Documentation .issueLink, .worklog.Documentation_SubTask .issueLink {
+    background: #E1BEE7;
+}
+
+.worklog.Documentation .issueDetails, .worklog.Documentation_SubTask .issueDetails {
+    background: #9C27B0;
+}
+
+.worklog.Defect, .worklog.Defect_SubTask {
+    border-color: #F44336;
+}
+
+.worklog.Defect .user div, .worklog.Defect_SubTask .user div {
+    border-color: #F44336;
+}
+
+.worklog.Defect .issueLink, .worklog.Defect_SubTask .issueLink {
+    background: #FFCDD2;
+}
+
+.worklog.Defect .issueDetails, .worklog.Defect_SubTask .issueDetails {
+    background: #F44336;
+}
+
+.worklog.Bugfix, .worklog.Bugfix_SubTask {
+    border-color: #FF9800;
+}
+
+.worklog.Bugfix .user div, .worklog.Bugfix_SubTask .user div {
+    border-color: #FF9800;
+}
+
+.worklog.Bugfix .issueLink, .worklog.Bugfix_SubTask .issueLink {
+    background: #FFE0B2;
+}
+
+.worklog.Bugfix .issueDetails, .worklog.Bugfix_SubTask .issueDetails {
+    background: #FF9800;
+}
+
+.worklog.Pairing, .worklog.Pairing_SubTask {
+    border-color: #4CAF50;
+}
+
+.worklog.Pairing .user div, .worklog.Pairing_SubTask .user div {
+    border-color: #4CAF50;
+}
+
+.worklog.Pairing .issueLink, .worklog.Pairing_SubTask .issueLink {
+    background: #C8E6C9;
+}
+
+.worklog.Pairing .issueDetails, .worklog.Pairing_SubTask .issueDetails {
+    background: #4CAF50;
+}
+
+.worklog.Story, .worklog.Pairing_SubTask {
+    border-color: #009688;
+}
+
+.worklog.Story .user div, .worklog.Pairing_SubTask .user div {
+    border-color: #009688;
+}
+
+.worklog.Story .issueLink, .worklog.Pairing_SubTask .issueLink {
+    background: #B2DFDB;
+}
+
+.worklog.Story .issueDetails, .worklog.Pairing_SubTask .issueDetails {
+    background: #009688;
+}
+
+.worklog.Test, .worklog.Test_SubTask {
+    border-color: #8BC34A;
+}
+
+.worklog.Test .user div, .worklog.Test_SubTask .user div {
+    border-color: #8BC34A;
+}
+
+.worklog.Test .issueLink, .worklog.Test_SubTask .issueLink {
+    background: #DCEDC8;
+}
+
+.worklog.Test .issueDetails, .worklog.Test_SubTask .issueDetails {
+    background: #8BC34A;
+}
+
+.worklog.Development, .worklog.Development_SubTask {
+    border-color: #00BCD4;
+}
+
+.worklog.Development .user div, .worklog.Development_SubTask .user div {
+    border-color: #00BCD4;
+}
+
+.worklog.Development .issueLink, .worklog.Development_SubTask .issueLink {
+    background: #B2EBF2;
+}
+
+.worklog.Development .issueDetails, .worklog.Development_SubTask .issueDetails {
+    background: #00BCD4;
+}
+
+table {
+    border-width: 0;
+}
+
+table td {
+    border-bottom: 1px solid #eeeeee;
+}
+
+.worklog .user {
+    margin-top: -35px;
+    margin-bottom: 10px;
+}
+
+.worklog .user div {
+    background: white;
+    display: inline-block;
+    border-radius: 24px;
+    border: 1px solid #673AB7;
+}
+
+.user a {
+    display: inline-block;
+    margin-right: 24px;
+    margin-left: 10px;
+    text-decoration: none;
+}
+
+.user.center a {
+    display: block;
+    text-align: center;
+    margin: 0;
+}
+
+.user img {
+    width: 48px;
+    height: 48px;
+    border-radius: 24px;
+}
+
+table td.other {
+    line-height: 48px;
+}
+
+.user.center {
+    text-align: center;
+    padding-top: 20px;
+}
+
+.started {
+    font-size: 12px;
+    display: inline-block;
+}
+
+.worklog .timeSpent {
+    font-weight: bold;
+    display: inline-block;
+    background: #eeeeee;
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-right: 10px;
+}
+
+table .timeSpent {
+    font-weight: bold;
+    line-height: 48px;
+    text-align: right
+}
+
+table .timeSpent.center {
+    text-align: center;
+}
+
+.comment {
+    padding: 10px;
+}
+
+.issue {
+    background: #f4f4f4;
+    margin: -10px;
+    margin-top: 10px;
+    border-radius: 0 0 5px 5px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.issue a {
+    text-decoration: none;
+}
+
+.nav-tabs {
+    margin-top: 20px;
+}
+
+* {
+    text-shadow: none !important;
+}
+
+.tag {
+    font-weight: bold;
+    margin-right: 20px;
+}
+
+hr {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+tbody td, thead td {
+    white-space: nowrap;
+    /*padding: 0 !important;*/
+}
+
+.row {
+    padding: 0;
+}
+
+.DTFC_LeftBodyLiner {
+    overflow-x: hidden;
+}
+
+thead tr td, thead tr td *, thead tr td *:hover, .dataTables_scrollHead, .dataTables_scrollHead * {
+    color: white;
+    vertical-align: bottom;
+}
+
+.dataTables_wrapper {
+    text-align: right;
+}
+
+.dataTables_wrapper .dataTables_filter {
+    padding-top: 12px;
+    padding-bottom: 10px;
+    margin-right: 285px;
+}
+
+.dataTables_wrapper .btn-group {
+    padding-top: 10px;
+    margin-bottom: -70px;
+}
+
+.dataTables_wrapper .row + .row {
+    padding: 0;
+}
+
+.dataTables_wrapper .row + .row + .row {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-right: 15px;
+    margin-left: 15px;
+    margin-bottom: 30px;
+}
+
+.dataTables_wrapper .dataTables_info {
+    padding: 5px;
+    padding-right: 20px;
+}
+
+h2 {
+    margin-top: 60px;
+    margin-bottom: -55px;
+}
+
+.issueDetails {
+    background-color: #673AB7;
+    padding: 5px 10px;
+    color: white;
+    font-weight: normal;
+}
+
+.issueLink {
+    background: #D1C4E9;
+    padding: 5px 10px;
+
+}
+
+#DataTables_Table_0_wrapper thead tr td,
+#DataTables_Table_0_wrapper thead tr td *,
+#DataTables_Table_0_wrapper thead tr td *:hover,
+#DataTables_Table_0_wrapper .dataTables_scrollHead,
+#DataTables_Table_0_wrapper .dataTables_scrollHead * {
+    background-color: #673AB7;
+}
+
+#DataTables_Table_0_wrapper .dataTables_info {
+    background: #D1C4E9;
+}
+
+#DataTables_Table_1_wrapper thead tr td,
+#DataTables_Table_1_wrapper thead tr td *,
+#DataTables_Table_1_wrapper thead tr td *:hover,
+#DataTables_Table_1_wrapper .dataTables_scrollHead,
+#DataTables_Table_1_wrapper .dataTables_scrollHead * {
+    background-color: #009688;
+}
+
+#DataTables_Table_1_wrapper .dataTables_info {
+    background: #B2DFDB;
+}
+
+#DataTables_Table_2_wrapper thead tr td,
+#DataTables_Table_2_wrapper thead tr td *,
+#DataTables_Table_2_wrapper thead tr td *:hover,
+#DataTables_Table_2_wrapper .dataTables_scrollHead,
+#DataTables_Table_2_wrapper .dataTables_scrollHead * {
+    background-color: #3F51B5;
+}
+
+#DataTables_Table_2_wrapper .dataTables_info {
+    background: #C5CAE9;
+}
+
+#DataTables_Table_3_wrapper thead tr td,
+#DataTables_Table_3_wrapper thead tr td *,
+#DataTables_Table_3_wrapper thead tr td *:hover,
+#DataTables_Table_3_wrapper .dataTables_scrollHead,
+#DataTables_Table_3_wrapper .dataTables_scrollHead * {
+    background-color: #E91E63;
+}
+
+#DataTables_Table_3_wrapper .dataTables_info {
+    background: #F8BBD0;
+}
+
+.filterPanel {
+    background: #ECEFF1;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+th {
+    background: none;
+}
+
+.field {
+    display: inline-block;
+    margin-right: 20px;
+}
+
+.field label {
+    font-weight: normal;
+    font-size: smaller;
+    color: #607D8B;
+    display: block;
+    padding-left: 3px;
+    margin-bottom: -8px;
+}
+
+.field input[type=text] {
+    background: none;
+    border: none;
+    box-shadow: none;
+    border-bottom: 1px solid #607D8B;
+    border-radius: 0;
+}
+
+input[type=submit] {
+    background: #00BCD4;
+    border: none;
+    min-width: 80px;
+    color: white;
+    font-weight: bold;
+}

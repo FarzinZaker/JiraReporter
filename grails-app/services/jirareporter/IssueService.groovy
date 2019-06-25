@@ -18,75 +18,90 @@ class IssueService {
 
     Map parse(JSONObject obj) {
         [
-                key              : obj.key,
+                key              : safeRead(obj, "key"),
                 issueType        : [
-                        url    : obj.fields.issuetype.self,
-                        name   : obj.fields.issuetype.name,
-                        subtask: obj.fields.issuetype.subtask,
-                        icon   : obj.fields.issuetype.iconUrl
+                        url    : safeRead(obj, "fields.issuetype.self"),
+                        name   : safeRead(obj, "fields.issuetype.name"),
+                        subtask: safeRead(obj, "fields.issuetype.subtask"),
+                        icon   : safeRead(obj, "fields.issuetype.iconUrl")
                 ],
                 assignee         : [
-                        url         : obj.fields.assignee.self,
-                        name        : obj.fields.assignee.name,
-                        key         : obj.fields.assignee.key,
-                        emailAddress: obj.fields.assignee.emailAddress,
-                        displayName : obj.fields.assignee.displayName,
-                        active      : obj.fields.assignee.active,
-                        timeZone    : obj.fields.assignee.timeZone,
-                        avatars     : obj.fields.assignee.avatarUrls.myHashMap,
+                        url         : safeRead(obj, "fields.assignee.self"),
+                        name        : safeRead(obj, "fields.assignee.name"),
+                        key         : safeRead(obj, "fields.assignee.key"),
+                        emailAddress: safeRead(obj, "fields.assignee.emailAddress"),
+                        displayName : safeRead(obj, "fields.assignee.displayName"),
+                        active      : safeRead(obj, "fields.assignee.active"),
+                        timeZone    : safeRead(obj, "fields.assignee.timeZone"),
+                        avatars     : safeRead(obj, "fields.assignee.avatarUrls.myHashMap")
                 ],
                 timeTracking     : [
-                        remainingEstimate       : obj.fields.timetracking.remainingEstimate,
-                        timeSpent               : obj.fields.timetracking.timeSpent,
-                        remainingEstimateSeconds: obj.fields.timetracking.remainingEstimateSeconds,
-                        timeSpentSeconds        : obj.fields.timetracking.timeSpentSeconds,
+                        remainingEstimate       : safeRead(obj, "fields.timetracking.remainingEstimate"),
+                        timeSpent               : safeRead(obj, "fields.timetracking.timeSpent"),
+                        remainingEstimateSeconds: safeRead(obj, "fields.timetracking.remainingEstimateSeconds"),
+                        timeSpentSeconds        : safeRead(obj, "fields.timetracking.timeSpentSeconds")
                 ],
                 status           : [
-                        url : obj.fields.status.self,
-                        name: obj.fields.status.name,
-                        icon: obj.fields.status.iconUrl
+                        url : safeRead(obj, "fields.status.self"),
+                        name: safeRead(obj, "fields.status.name"),
+                        icon: safeRead(obj, "fields.status.iconUrl")
                 ],
                 reporter         : [
-                        url         : obj.fields.reporter.self,
-                        name        : obj.fields.reporter.name,
-                        key         : obj.fields.reporter.key,
-                        emailAddress: obj.fields.reporter.emailAddress,
-                        displayName : obj.fields.reporter.displayName,
-                        active      : obj.fields.reporter.active,
-                        timeZone    : obj.fields.reporter.timeZone,
-                        avatars     : obj.fields.reporter.avatarUrls.myHashMap,
+                        url         : safeRead(obj, "fields.reporter.self"),
+                        name        : safeRead(obj, "fields.reporter.name"),
+                        key         : safeRead(obj, "fields.reporter.key"),
+                        emailAddress: safeRead(obj, "fields.reporter.emailAddress"),
+                        displayName : safeRead(obj, "fields.reporter.displayName"),
+                        active      : safeRead(obj, "fields.reporter.active"),
+                        timeZone    : safeRead(obj, "fields.reporter.timeZone"),
+                        avatars     : safeRead(obj, "fields.reporter.avatarUrls.myHashMap")
                 ],
-                components       : obj.fields.components.myArrayList.collect {
+                components       : safeRead(obj, "fields.components.myArrayList")?.collect {
                     [
                             url : it.self,
                             name: it.name
                     ]
                 },
                 progress         : [
-                        value  : obj.fields.progress.progress,
-                        total  : obj.fields.progress.total,
-                        percent: obj.fields.progress.percent
+                        value  : safeRead(obj, "fields.progress.progress"),
+                        total  : safeRead(obj, "fields.progress.total"),
+                        percent: safeRead(obj, "fields.progress.percent"),
                 ],
                 project          : [
-                        url    : obj.fields.project.self,
-                        name   : obj.fields.project.name,
-                        key    : obj.fields.project.key,
-                        avatars: obj.fields.project.avatarUrls
+                        url    : safeRead(obj, "fields.project.self"),
+                        name   : safeRead(obj, "fields.project.name"),
+                        key    : safeRead(obj, "fields.project.key"),
+                        avatars: safeRead(obj, "fields.project.avatarUrls")
                 ],
-                clients          : obj.fields.customfield_26105?.myArrayList?.collect { it?.replace('"', '') } ?: [],
-                updated          : Date.parse("yyyy-MM-dd'T'hh:mm:ss.000+0000", obj.fields.updated),
-                summary          : obj.fields.summary,
+                clients          : safeRead(obj, "fields.customfield_26105.myArrayList")?.collect {
+                    it?.replace('"', '')
+                } ?: [],
+                updated          : Date.parse("yyyy-MM-dd'T'hh:mm:ss.000+0000", safeRead(obj, "fields.updated")),
+                summary          : safeRead(obj, "fields.summary"),
                 priority         : [
-                        url : obj.fields.priority.self,
-                        name: obj.fields.priority.name,
-                        icon: obj.fields.priority.iconUrl
+                        url : safeRead(obj, "fields.priority.self"),
+                        name: safeRead(obj, "fields.priority.name"),
+                        icon: safeRead(obj, "fields.priority.iconUrl")
                 ],
                 aggregateProgress: [
-                        value  : obj.fields.aggregateprogress.progress,
-                        total  : obj.fields.aggregateprogress.total,
-                        percent: obj.fields.aggregateprogress.percent
-                ],
-
+                        value  : safeRead(obj, "fields.aggregateprogress.progress"),
+                        total  : safeRead(obj, "fields.aggregateprogress.total"),
+                        percent: safeRead(obj, "fields.aggregateprogress.percent")
+                ]
         ]
+    }
+
+    private static def safeRead(obj, property) {
+        try {
+            def value = obj
+            def parts = property.split('\\.')
+            parts.each { part ->
+                value = value."${part}"
+            }
+            value
+        } catch (Exception ex) {
+            println ex.message
+            return '-'
+        }
     }
 }

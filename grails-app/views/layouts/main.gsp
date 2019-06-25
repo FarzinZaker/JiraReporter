@@ -4,16 +4,21 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <title>
-        <g:layoutTitle default="Grails"/>
+        <g:layoutTitle default="Worklog Report"/>
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <asset:link rel="icon" href="favicon.ico" type="image/x-ico"/>
 
     <asset:stylesheet src="application.css"/>
+    <asset:stylesheet src="custom.css"/>
 
     <asset:javascript src="jquery-2.2.0.min.js"/>
 
     <asset:stylesheet src="datatables.min.css"/>
+    <asset:javascript src="datatables.min.js"/>
+
+    <asset:stylesheet src="css/bootstrap-datepicker.min.css"/>
+    <asset:javascript src="js/bootstrap-datepicker.min.js"/>
 
     %{--    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>--}%
     %{--    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>--}%
@@ -31,8 +36,6 @@
 </head>
 
 <body>
-
-<asset:javascript src="datatables.min.js"/>
 
 <div class="navbar navbar-default navbar-static-top" role="navigation">
     <div class="container">

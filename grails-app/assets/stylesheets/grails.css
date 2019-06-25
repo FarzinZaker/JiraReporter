@@ -44,8 +44,9 @@ pre {
 
 }
 .navbar-default, .navbar-static-top {
-    background-color: #424649;
+    background-color: #37474F;
     border: 0px;
+    text-align: center;
 }
 a.navbar-brand {
     color: white !important;
