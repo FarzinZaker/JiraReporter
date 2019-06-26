@@ -7,6 +7,8 @@ import org.codehaus.jettison.json.JSONObject
 @Transactional
 class IssueService {
 
+    def userService
+
     List<Map> parseList(JSONArray list) {
         def issues = []
         for (def i = 0; i < list.length(); i++) {
@@ -25,16 +27,7 @@ class IssueService {
                         subtask: safeRead(obj, "fields.issuetype.subtask"),
                         icon   : safeRead(obj, "fields.issuetype.iconUrl")
                 ],
-                assignee         : [
-                        url         : safeRead(obj, "fields.assignee.self"),
-                        name        : safeRead(obj, "fields.assignee.name"),
-                        key         : safeRead(obj, "fields.assignee.key"),
-                        emailAddress: safeRead(obj, "fields.assignee.emailAddress"),
-                        displayName : safeRead(obj, "fields.assignee.displayName"),
-                        active      : safeRead(obj, "fields.assignee.active"),
-                        timeZone    : safeRead(obj, "fields.assignee.timeZone"),
-                        avatars     : safeRead(obj, "fields.assignee.avatarUrls.myHashMap")
-                ],
+                assignee         : userService.parse(obj.fields.assignee),
                 timeTracking     : [
                         remainingEstimate       : safeRead(obj, "fields.timetracking.remainingEstimate"),
                         timeSpent               : safeRead(obj, "fields.timetracking.timeSpent"),
@@ -46,16 +39,7 @@ class IssueService {
                         name: safeRead(obj, "fields.status.name"),
                         icon: safeRead(obj, "fields.status.iconUrl")
                 ],
-                reporter         : [
-                        url         : safeRead(obj, "fields.reporter.self"),
-                        name        : safeRead(obj, "fields.reporter.name"),
-                        key         : safeRead(obj, "fields.reporter.key"),
-                        emailAddress: safeRead(obj, "fields.reporter.emailAddress"),
-                        displayName : safeRead(obj, "fields.reporter.displayName"),
-                        active      : safeRead(obj, "fields.reporter.active"),
-                        timeZone    : safeRead(obj, "fields.reporter.timeZone"),
-                        avatars     : safeRead(obj, "fields.reporter.avatarUrls.myHashMap")
-                ],
+                reporter         : userService.parse(obj.fields.reporter),
                 components       : safeRead(obj, "fields.components.myArrayList")?.collect {
                     [
                             url : it.self,

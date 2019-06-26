@@ -372,6 +372,7 @@ th {
 .field {
     display: inline-block;
     margin-right: 20px;
+    margin-bottom:10px;
 }
 
 .field label {
@@ -397,4 +398,20 @@ input[type=submit] {
     min-width: 80px;
     color: white;
     font-weight: bold;
+}
+
+.selectize-input {
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-bottom: 1px solid #607D8B !important;
+    border-radius: 0 !important;
+    margin-top:5px;
+}
+
+.selectize-input .item {
+    background: #00BCD4 !important;
+    color: white !important;
+    padding-right: 7px !important;
+    padding-left: 7px !important;
 }

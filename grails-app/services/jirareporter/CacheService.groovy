@@ -9,7 +9,7 @@ class CacheService {
 
     private static final Map data = [:]
 
-    def store(String key, JSONObject value) {
+    def store(String key, Object value) {
         def expiry = new Date()
         use(TimeCategory) {
             expiry = expiry + 1.hour
@@ -21,7 +21,7 @@ class CacheService {
         data.containsKey(key) && data[key].expiry > new Date()
     }
 
-    JSONObject retrieve(String key) {
+    Object retrieve(String key) {
         if (!has(key))
             return null
 

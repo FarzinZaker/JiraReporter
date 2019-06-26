@@ -15,7 +15,7 @@ class ReportService {
 
     final String worklogQyery = 'project in (PLTAKE, PLBECK, PLSMS, Platinum-NorthPlains) AND (labels not in (Legacy) OR labels is EMPTY) AND issuetype in (Bugfix, Defect, Development, Documentation, Pairing, "R&D", Story, Task, Test, "Bugfix Sub-Task", "Development Sub-Task", "Documentation Sub-Task", "Pairing Sub-Task", "R&D Sub-Task", Sub-task, "Test Sub-Task")'
 
-    List<Map> getWorklogs(Date from, Date to) {
+    List<Map> getWorklogs(Date from, Date to, List<String> users) {
         def result = queryService.execute("${worklogQyery} AND worklogDate >= '${from.format('yyyy/MM/dd')}' AND worklogDate <= '${to.format('yyyy/MM/dd')}'")
         def tasks = [:]
         result.issues?.each { issue ->
@@ -35,9 +35,7 @@ class ReportService {
                 cacheService.store(task.value.url?.toString() + '/worklog', json)
             }
             def list = json.getJSONArray('worklogs')
-            worklogs.addAll(worklogService.parseList(list)?.findAll {
-                it.updated >= from && it.updated <= to
-            }?.collect {
+            worklogs.addAll(filter(worklogService.parseList(list), from, to, users)?.collect {
                 if (cacheService.has(task.value.url))
                     json = cacheService.retrieve(task.value.url)
                 else {
@@ -51,5 +49,24 @@ class ReportService {
         }
 
         worklogs
+    }
+
+    List<Map> filter(List<Map> list, Date from, Date to, List<String> users) {
+        def result = list
+        result = filterDates(result, from, to)
+        result = filterUsers(result, users)
+        result
+    }
+
+    List<Map> filterDates(List<Map> list, Date from, Date to) {
+        list?.findAll {
+            it.updated >= from && it.updated <= to
+        } ?: []
+    }
+
+    List<Map> filterUsers(List<Map> list, List<String> users) {
+        list?.findAll {
+            users.contains(it.author.name)
+        } ?: []
     }
 }

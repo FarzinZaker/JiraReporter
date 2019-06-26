@@ -85,11 +85,36 @@ class JiraRestClient {
         return getAndParse(roleUri)
     }
 
+    def getURLAsList(String issueUri) {
+        final URI roleUri = UriBuilder
+                .fromUri(new URI(issueUri))
+                .build()
+        return getAndParseList(roleUri)
+    }
+
     protected final ApacheHttpClient client;
     protected final URI baseUri;
 
 
     protected JSONObject invoke(Callable<JSONObject> callable) throws RestClientException {
+        try {
+            callable.call();
+        } catch (UniformInterfaceException e) {
+
+            try {
+                final String body = e.getResponse().getEntity(String.class);
+                final Collection<String> errorMessages = extractErrors(body);
+                throw new RestClientException(errorMessages, e);
+            } catch (JSONException e1) {
+                throw new RestClientException(e);
+            }
+        } catch (RestClientException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RestClientException(e);
+        }
+    }
+    protected JSONArray invokeArray(Callable<JSONArray> callable) throws RestClientException {
         try {
             callable.call();
         } catch (UniformInterfaceException e) {
@@ -116,7 +141,16 @@ class JiraRestClient {
                 webResource.get(JSONObject.class)
             }
         });
+    }
 
+    protected JSONArray getAndParseList(final URI uri) {
+        invokeArray(new Callable<JSONArray>() {
+            @Override
+            public JSONArray call() throws Exception {
+                final WebResource webResource = client.resource(uri)
+                webResource.get(JSONArray.class)
+            }
+        });
     }
 
 

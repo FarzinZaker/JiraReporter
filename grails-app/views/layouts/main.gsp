@@ -20,6 +20,10 @@
     <asset:stylesheet src="css/bootstrap-datepicker.min.css"/>
     <asset:javascript src="js/bootstrap-datepicker.min.js"/>
 
+    <asset:stylesheet src="css/selectize.css"/>
+    <asset:stylesheet src="css/selectize.bootstrap3.css"/>
+    <asset:javascript src="js/standalone/selectize.min.js"/>
+
     %{--    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>--}%
     %{--    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>--}%
 
