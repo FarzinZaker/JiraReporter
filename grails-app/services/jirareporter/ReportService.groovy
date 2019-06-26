@@ -7,15 +7,14 @@ import groovy.time.TimeCategory
 @Transactional
 class ReportService {
 
-    def configurationService
     def queryService
     def worklogService
     def issueService
     def cacheService
 
-    final String defaultProjectsList = 'PLTAKE, PLBECK, PLSMS, PLNP'
-    final String defaultIssueTypeList = 'Bugfix, Defect, Development, Documentation, Pairing, "R&D", Story, Task, Test, "Bugfix Sub-Task", "Development Sub-Task", "Documentation Sub-Task", "Pairing Sub-Task", "R&D Sub-Task", Sub-task, "Test Sub-Task"'
-
+    final String defaultProjectsList = Configuration.projects.collect { it.key }.join(',')
+    final String defaultIssueTypeList = Configuration.issueTypes.collect{"\"${it}\""}.join(',')
+    
     List<Map> getWorklogs(Date from, Date to, String projects, String issueTypes, List<String> users) {
 
         String worklogQyery = "project in (${projects ?: defaultProjectsList}) AND (labels not in (Legacy) OR labels is EMPTY) AND issuetype in (${issueTypes ?: defaultIssueTypeList})"
@@ -25,11 +24,11 @@ class ReportService {
         def tasks = [:]
         result.issues?.each { issue ->
             tasks.put(issue.key, [
-                    url: configurationService.serverURL + issue.self.path
+                    url: Configuration.serverURL + issue.self.path
             ])
         }
 
-        def jiraClient = new JiraRestClient(new URI(configurationService.serverURL), JiraRestClient.getClient(configurationService.username, configurationService.password))
+        def jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(Configuration.username, Configuration.password))
         def worklogs = []
         tasks.each { task ->
             def json = null

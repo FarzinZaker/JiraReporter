@@ -9,13 +9,12 @@ import org.codehaus.jettison.json.JSONObject
 @Transactional
 class UserService {
 
-    def configurationService
     def cacheService
 
     List<Map> search(String username) {
 
-        def jiraClient = new JiraRestClient(new URI(configurationService.serverURL), JiraRestClient.getClient(configurationService.username, configurationService.password))
-        def url = "${configurationService.serverURL}/rest/api/latest/user/search?startAt=0&maxResults=10&username=${username}"
+        def jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(Configuration.username, Configuration.password))
+        def url = "${Configuration.serverURL}/rest/api/latest/user/search?startAt=0&maxResults=10&username=${username}"
         def json = null
         if (cacheService.has(url))
             json = cacheService.retrieve(url)

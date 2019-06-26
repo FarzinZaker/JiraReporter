@@ -11,6 +11,7 @@
             searchField: ['text','value'],
             create: false,
             options: [
+                <g:each in=""
                 {text: 'Platinum-TAKE', value: 'PLTAKE'},
                 {text: 'Platinum-Beckon', value: 'PLBECK'},
                 {text: 'Platinum-NorthPlains', value: 'PLNP'},
