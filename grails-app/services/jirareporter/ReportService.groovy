@@ -13,9 +13,13 @@ class ReportService {
     def issueService
     def cacheService
 
-    final String worklogQyery = 'project in (PLTAKE, PLBECK, PLSMS, Platinum-NorthPlains) AND (labels not in (Legacy) OR labels is EMPTY) AND issuetype in (Bugfix, Defect, Development, Documentation, Pairing, "R&D", Story, Task, Test, "Bugfix Sub-Task", "Development Sub-Task", "Documentation Sub-Task", "Pairing Sub-Task", "R&D Sub-Task", Sub-task, "Test Sub-Task")'
+    final String defaultProjectsList = 'PLTAKE, PLBECK, PLSMS, PLNP'
 
-    List<Map> getWorklogs(Date from, Date to, List<String> users) {
+    List<Map> getWorklogs(Date from, Date to, String projects, List<String> users) {
+
+        String worklogQyery = "project in (${projects ?: defaultProjectsList}) AND (labels not in (Legacy) OR labels is EMPTY) AND issuetype in (Bugfix, Defect, Development, Documentation, Pairing, \"R&D\", Story, Task, Test, \"Bugfix Sub-Task\", \"Development Sub-Task\", \"Documentation Sub-Task\", \"Pairing Sub-Task\", \"R&D Sub-Task\", Sub-task, \"Test Sub-Task\")"
+
+
         def result = queryService.execute("${worklogQyery} AND worklogDate >= '${from.format('yyyy/MM/dd')}' AND worklogDate <= '${to.format('yyyy/MM/dd')}'")
         def tasks = [:]
         result.issues?.each { issue ->
