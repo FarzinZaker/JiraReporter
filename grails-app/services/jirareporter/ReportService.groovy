@@ -2,7 +2,6 @@ package jirareporter
 
 
 import grails.gorm.transactions.Transactional
-import groovy.time.TimeCategory
 
 @Transactional
 class ReportService {
@@ -13,9 +12,9 @@ class ReportService {
     def cacheService
 
     final String defaultProjectsList = Configuration.projects.collect { it.key }.join(',')
-    final String defaultIssueTypeList = Configuration.issueTypes.collect{"\"${it}\""}.join(',')
-    
-    List<Map> getWorklogs(Date from, Date to, String projects, String issueTypes, List<String> users) {
+    final String defaultIssueTypeList = Configuration.issueTypes.collect { "\"${it}\"" }.join(',')
+
+    List<Map> getWorklogs(Date from, Date to, String projects, String issueTypes, List components, List<String> users) {
 
         String worklogQyery = "project in (${projects ?: defaultProjectsList}) AND (labels not in (Legacy) OR labels is EMPTY) AND issuetype in (${issueTypes ?: defaultIssueTypeList})"
 
@@ -39,7 +38,7 @@ class ReportService {
                 cacheService.store(task.value.url?.toString() + '/worklog', json)
             }
             def list = json.getJSONArray('worklogs')
-            worklogs.addAll(filter(worklogService.parseList(list), from, to, users)?.collect {
+            worklogs.addAll(preFilter(worklogService.parseList(list), from, to, users)?.collect {
                 if (cacheService.has(task.value.url))
                     json = cacheService.retrieve(task.value.url)
                 else {
@@ -52,10 +51,12 @@ class ReportService {
             })
         }
 
+        worklogs = postFilter(worklogs, components)
+
         worklogs
     }
 
-    List<Map> filter(List<Map> list, Date from, Date to, List<String> users) {
+    List<Map> preFilter(List<Map> list, Date from, Date to, List<String> users) {
         def result = list
         result = filterDates(result, from, to)
         result = filterUsers(result, users)
@@ -71,6 +72,23 @@ class ReportService {
     List<Map> filterUsers(List<Map> list, List<String> users) {
         list?.findAll {
             users.contains(it.author.name)
+        } ?: []
+    }
+
+    List<Map> postFilter(List<Map> list, List<String> components) {
+        def result = list
+        result = filterComponents(result, components)
+        result
+    }
+
+    List<Map> filterComponents(List<Map> list, List<String> components) {
+        list?.findAll {
+            def result = false
+            it.task.components.each { component ->
+                if (components.contains(component.name))
+                    result = true
+            }
+            result
         } ?: []
     }
 }

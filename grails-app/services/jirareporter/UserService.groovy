@@ -1,7 +1,6 @@
 package jirareporter
 
-import com.atlassian.jira.rest.client.NullProgressMonitor
-import com.atlassian.jira.rest.client.internal.jersey.JerseyJiraRestClientFactory
+
 import grails.gorm.transactions.Transactional
 import org.codehaus.jettison.json.JSONArray
 import org.codehaus.jettison.json.JSONObject

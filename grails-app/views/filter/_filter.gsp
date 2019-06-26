@@ -12,6 +12,10 @@
     </div>
 
     <div>
+        <g:render template="/filter/component"/>
+    </div>
+
+    <div>
         <g:render template="/filter/user"/>
     </div>
     <g:submitButton name="submit" value="FILTER"/>
