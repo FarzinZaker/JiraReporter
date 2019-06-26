@@ -8,6 +8,10 @@
     </div>
 
     <div>
+        <g:render template="/filter/issueType"/>
+    </div>
+
+    <div>
         <g:render template="/filter/user"/>
     </div>
     <g:submitButton name="submit" value="FILTER"/>
