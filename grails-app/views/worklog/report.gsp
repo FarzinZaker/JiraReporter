@@ -47,7 +47,7 @@
             fixedHeader: true,
             dom: 'Bfrtip',
             buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
+                'copy', 'csv', 'excel'
             ],
             rowReorder: true
         });
@@ -62,7 +62,7 @@
             },
             dom: 'Bfrtip',
             buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
+                'copy', 'csv', 'excel'
             ],
             colReorder: true,
             rowReorder: true
