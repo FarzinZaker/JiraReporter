@@ -359,6 +359,18 @@ h2 {
     background: #F8BBD0;
 }
 
+#DataTables_Table_4_wrapper thead tr td,
+#DataTables_Table_4_wrapper thead tr td *,
+#DataTables_Table_4_wrapper thead tr td *:hover,
+#DataTables_Table_4_wrapper .dataTables_scrollHead,
+#DataTables_Table_4_wrapper .dataTables_scrollHead * {
+    background-color: #FF9800;
+}
+
+#DataTables_Table_4_wrapper .dataTables_info {
+    background: #FFE0B2;
+}
+
 .filterPanel {
     background: #ECEFF1;
     padding: 20px;
@@ -395,7 +407,7 @@ th {
 }
 
 input[type=submit] {
-    background: #00BCD4;
+    background: #673AB7;
     border: none;
     min-width: 80px;
     color: white;

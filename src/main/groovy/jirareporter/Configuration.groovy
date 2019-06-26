@@ -39,7 +39,7 @@ class Configuration {
                 'Documentation Sub-Task',
                 'Pairing Sub-Task',
                 'R&D Sub-Task',
-                'Sub - task',
+                'Sub-task',
                 'Test Sub-Task'
         ]
     }

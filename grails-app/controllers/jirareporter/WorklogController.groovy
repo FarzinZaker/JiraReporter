@@ -21,10 +21,11 @@ class WorklogController {
         def summary = refinementService.getDeveloperSummary(worklogs)
         def clientSummary = refinementService.getClientSummary(worklogs)
         def componentSummary = refinementService.getComponentSummary(worklogs)
+        def issueTypeSummary = refinementService.getIssueTypeSummary(worklogs)
         def projectSummary = refinementService.getProjectSummary(worklogs)
 
 
-        [components: components, worklogs: worklogs, summary: summary, clientSummary: clientSummary, componentSummary: componentSummary, projectSummary: projectSummary]
+        [components: components, worklogs: worklogs, summary: summary, clientSummary: clientSummary, componentSummary: componentSummary, issueTypeSummary: issueTypeSummary, projectSummary: projectSummary]
     }
 
     private List<String> formatUsersList() {

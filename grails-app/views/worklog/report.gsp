@@ -29,6 +29,7 @@
                 <g:render template="pivot" model="${[data: clientSummary, label: 'Client']}"/>
                 <g:render template="pivot" model="${[data: projectSummary, label: 'Project']}"/>
                 <g:render template="pivot" model="${[data: componentSummary, label: 'Component']}"/>
+                <g:render template="pivot" model="${[data: issueTypeSummary, label: 'Issue Type']}"/>
             </div>
 
             <div class="tab-pane fade" id="details" role="tabpanel" aria-labelledby="details-tab">
