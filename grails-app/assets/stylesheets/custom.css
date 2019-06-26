@@ -370,8 +370,8 @@ th {
 }
 
 .field {
-    display: inline-block;
-    margin-right: 20px;
+    display: block;
+    margin-right: 10px;
     margin-bottom:10px;
 }
 
@@ -390,6 +390,8 @@ th {
     box-shadow: none;
     border-bottom: 1px solid #607D8B;
     border-radius: 0;
+    display: block;
+    width: 100%;
 }
 
 input[type=submit] {

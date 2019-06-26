@@ -1,22 +1,9 @@
 <g:form controller="worklog" action="report" class="filterPanel">
-    <div>
-        <g:render template="/filter/time"/>
-    </div>
-
-    <div>
-        <g:render template="/filter/project"/>
-    </div>
-
-    <div>
-        <g:render template="/filter/issueType"/>
-    </div>
-
-    <div>
-        <g:render template="/filter/component"/>
-    </div>
-
-    <div>
-        <g:render template="/filter/user"/>
-    </div>
+    <g:render template="/filter/time"/>
+    <g:render template="/filter/project"/>
+    <g:render template="/filter/issueType"/>
+    <g:render template="/filter/component"/>
+    <g:render template="/filter/client"/>
+    <g:render template="/filter/user"/>
     <g:submitButton name="submit" value="FILTER"/>
 </g:form>

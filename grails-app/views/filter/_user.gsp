@@ -1,7 +1,7 @@
 
 <div class="field">
     <label for="user">User:</label>
-    <input id="user" name="user" style="width: 400px;" type="text" value="${params.user}">
+    <input id="user" name="user" type="text" value="${params.user}">
 </div>
 <script>
     $(function() {

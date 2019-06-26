@@ -1,7 +1,7 @@
 <%@ page import="jirareporter.Configuration" %>
 <div class="field">
     <label for="component">Componenet:</label>
-    <input id="component" name="component" style="width: 400px;" type="text" value="${params.component}">
+    <input id="component" name="component" type="text" value="${params.component}">
 </div>
 <script>
     $(function () {

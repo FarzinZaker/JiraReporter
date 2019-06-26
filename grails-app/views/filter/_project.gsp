@@ -1,7 +1,7 @@
 <%@ page import="jirareporter.Configuration" %>
 <div class="field">
     <label for="project">Project:</label>
-    <input id="project" name="project" style="width: 400px;" type="text" value="${params.project}">
+    <input id="project" name="project" type="text" value="${params.project}">
 </div>
 <script>
     $(function () {

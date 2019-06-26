@@ -1,7 +1,7 @@
 <%@ page import="jirareporter.Configuration" %>
 <div class="field">
     <label for="issueType">Issue Type:</label>
-    <input id="issueType" name="issueType" style="width: 400px;" type="text" value="${params.issueType}">
+    <input id="issueType" name="issueType" type="text" value="${params.issueType}">
 </div>
 <script>
     $(function () {

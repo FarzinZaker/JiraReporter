@@ -14,7 +14,7 @@ class ReportService {
     final String defaultProjectsList = Configuration.projects.collect { it.key }.join(',')
     final String defaultIssueTypeList = Configuration.issueTypes.collect { "\"${it}\"" }.join(',')
 
-    List<Map> getWorklogs(Date from, Date to, String projects, String issueTypes, List components, List<String> users) {
+    List<Map> getWorklogs(Date from, Date to, String projects, String issueTypes, List<String> components, List<String> clients, List<String> users) {
 
         String worklogQyery = "project in (${projects ?: defaultProjectsList}) AND (labels not in (Legacy) OR labels is EMPTY) AND issuetype in (${issueTypes ?: defaultIssueTypeList})"
 
@@ -51,7 +51,7 @@ class ReportService {
             })
         }
 
-        worklogs = postFilter(worklogs, components)
+        worklogs = postFilter(worklogs, components, clients)
 
         worklogs
     }
@@ -75,9 +75,10 @@ class ReportService {
         } ?: []
     }
 
-    List<Map> postFilter(List<Map> list, List<String> components) {
+    List<Map> postFilter(List<Map> list, List<String> components, List<String> clients) {
         def result = list
         result = filterComponents(result, components)
+        result = filterClients(result, clients)
         result
     }
 
@@ -86,6 +87,17 @@ class ReportService {
             def result = false
             it.task.components.each { component ->
                 if (components.contains(component.name))
+                    result = true
+            }
+            result
+        } ?: []
+    }
+
+    List<Map> filterClients(List<Map> list, List<String> clients) {
+        list?.findAll {
+            def result = false
+            it.task.clients.each { client ->
+                if (clients.contains(client?.toString()?.toLowerCase()?.trim()))
                     result = true
             }
             result
