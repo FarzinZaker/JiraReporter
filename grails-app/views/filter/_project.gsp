@@ -1,3 +1,4 @@
+<%@ page import="jirareporter.Configuration" %>
 <div class="field">
     <label for="project">Project:</label>
     <input id="project" name="project" style="width: 400px;" type="text" value="${params.project}">
@@ -8,14 +9,12 @@
             plugins: ['remove_button'],
             valueField: 'value',
             labelField: 'text',
-            searchField: ['text','value'],
+            searchField: ['text', 'value'],
             create: false,
             options: [
-                <g:each in=""
-                {text: 'Platinum-TAKE', value: 'PLTAKE'},
-                {text: 'Platinum-Beckon', value: 'PLBECK'},
-                {text: 'Platinum-NorthPlains', value: 'PLNP'},
-                {text: 'Platinum-SMS', value: 'PLSMS'}
+                <g:each in="${Configuration.projects}" var="${project}">
+                {text: '${project.name}', value: '${project.key}'},
+                </g:each>
             ]
         });
     });
