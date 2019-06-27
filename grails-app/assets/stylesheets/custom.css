@@ -311,51 +311,51 @@ h2 {
 
 }
 
-#DataTables_Table_0_wrapper thead tr td,
-#DataTables_Table_0_wrapper thead tr td *,
-#DataTables_Table_0_wrapper thead tr td *:hover,
-#DataTables_Table_0_wrapper .dataTables_scrollHead,
-#DataTables_Table_0_wrapper .dataTables_scrollHead * {
+#Client_wrapper thead tr td,
+#Client_wrapper thead tr td *,
+#Client_wrapper thead tr td *:hover,
+#Client_wrapper .dataTables_scrollHead,
+#Client_wrapper .dataTables_scrollHead * {
     background-color: #673AB7;
 }
 
-#DataTables_Table_0_wrapper .dataTables_info {
+#Client_wrapper .dataTables_info {
     background: #D1C4E9;
 }
 
-#DataTables_Table_1_wrapper thead tr td,
-#DataTables_Table_1_wrapper thead tr td *,
-#DataTables_Table_1_wrapper thead tr td *:hover,
-#DataTables_Table_1_wrapper .dataTables_scrollHead,
-#DataTables_Table_1_wrapper .dataTables_scrollHead * {
+#Project_wrapper thead tr td,
+#Project_wrapper thead tr td *,
+#Project_wrapper thead tr td *:hover,
+#Project_wrapper .dataTables_scrollHead,
+#Project_wrapper .dataTables_scrollHead * {
     background-color: #009688;
 }
 
-#DataTables_Table_1_wrapper .dataTables_info {
+#Project_wrapper .dataTables_info {
     background: #B2DFDB;
 }
 
-#DataTables_Table_2_wrapper thead tr td,
-#DataTables_Table_2_wrapper thead tr td *,
-#DataTables_Table_2_wrapper thead tr td *:hover,
-#DataTables_Table_2_wrapper .dataTables_scrollHead,
-#DataTables_Table_2_wrapper .dataTables_scrollHead * {
+#Component_wrapper thead tr td,
+#Component_wrapper thead tr td *,
+#Component_wrapper thead tr td *:hover,
+#Component_wrapper .dataTables_scrollHead,
+#Component_wrapper .dataTables_scrollHead * {
     background-color: #3F51B5;
 }
 
-#DataTables_Table_2_wrapper .dataTables_info {
+#Component_wrapper .dataTables_info {
     background: #C5CAE9;
 }
 
-#DataTables_Table_3_wrapper thead tr td,
-#DataTables_Table_3_wrapper thead tr td *,
-#DataTables_Table_3_wrapper thead tr td *:hover,
-#DataTables_Table_3_wrapper .dataTables_scrollHead,
-#DataTables_Table_3_wrapper .dataTables_scrollHead * {
+#Issue_Type_wrapper thead tr td,
+#Issue_Type_wrapper thead tr td *,
+#Issue_Type_wrapper thead tr td *:hover,
+#Issue_Type_wrapper .dataTables_scrollHead,
+#Issue_Type_wrapper .dataTables_scrollHead * {
     background-color: #E91E63;
 }
 
-#DataTables_Table_3_wrapper .dataTables_info {
+#Issue_Type_wrapper .dataTables_info {
     background: #F8BBD0;
 }
 

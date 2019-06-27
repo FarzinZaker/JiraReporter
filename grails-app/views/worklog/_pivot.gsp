@@ -6,7 +6,7 @@
     </g:each>
 </g:each>
 <h2>Time Spent per ${label}</h2>
-<table class="pivot">
+<table class="pivot" id="${label.replace(' ', '_')}">
     <thead>
     <tr>
         <td>
@@ -20,17 +20,67 @@
     </tr>
     </thead>
     <tbody>
-    <g:each in="${others}" var="other">
-        <tr>
-            <td class="other">
-                ${other}
-            </td>
-            <g:each in="${users}" var="user">
-                <td class="timeSpent center">
-                    ${data[user].others[other]?.timeSpent ?: '-'}
-                </td>
-            </g:each>
-        </tr>
-    </g:each>
+    %{--    <g:each in="${others}" var="other">--}%
+    %{--        <tr>--}%
+    %{--            <td class="other">--}%
+    %{--                ${other}--}%
+    %{--            </td>--}%
+    %{--            <g:each in="${users}" var="user">--}%
+    %{--                <td class="timeSpent center">--}%
+    %{--                    ${data[user].others[other]?.timeSpendSeconds ?: '-'}--}%
+    %{--                </td>--}%
+    %{--            </g:each>--}%
+    %{--        </tr>--}%
+    %{--    </g:each>--}%
     </tbody>
 </table>
+
+<script language="JavaScript" type="text/javascript">
+    $(document).ready(function () {
+        $('#${label.replace(' ', '_')}').DataTable({
+            scrollY: "400px",
+            scrollX: true,
+            scrollCollapse: true,
+            paging: false,
+            fixedHeader: true,
+            fixedColumns: {
+                leftColumns: 1
+            },
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel'
+            ],
+            colReorder: true,
+            rowReorder: true,
+            // dataSrc: '',
+            data: [
+                <g:each in="${others}" var="other">
+                [
+                    { text: '${other}', value: '${other}'},
+                    <g:each in="${users}" var="user" status="i">
+                    { text: '${data[user].others[other]?.timeSpent ?: '-'}', value: '${data[user].others[other]?.timeSpendSeconds ?: '0'}'},
+                    </g:each>
+                ],
+                </g:each>
+            ],
+            "columnDefs": [
+                {
+                    render: {
+                        _: 'text',
+                        sort: 'value'
+                    },
+                    targets: 'user',
+                    type: 'num'
+                },
+                {
+                    render: {
+                        _: 'text',
+                        sort: 'value'
+                    },
+                    targets: 0,
+                    type: 'string'
+                }
+            ]
+        });
+    });
+</script>

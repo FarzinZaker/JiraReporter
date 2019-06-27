@@ -48,36 +48,6 @@
         </div>
     </section>
 </div>
-<script language="JavaScript" type="text/javascript">
-    $(document).ready(function () {
-        $('.list').DataTable({
-            scrollY: "400px",
-            scrollCollapse: true,
-            paging: false,
-            fixedHeader: true,
-            dom: 'Bfrtip',
-            buttons: [
-                'copy', 'csv', 'excel'
-            ],
-            rowReorder: true
-        });
-        $('.pivot').DataTable({
-            scrollY: "400px",
-            scrollX: true,
-            scrollCollapse: true,
-            paging: false,
-            fixedHeader: true,
-            fixedColumns: {
-                leftColumns: 1
-            },
-            dom: 'Bfrtip',
-            buttons: [
-                'copy', 'csv', 'excel'
-            ],
-            colReorder: true,
-            rowReorder: true
-        });
-    });
-</script>
+
 </body>
 </html>

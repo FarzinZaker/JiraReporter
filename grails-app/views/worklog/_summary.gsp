@@ -18,3 +18,18 @@
     </g:each>
     </tbody>
 </table>
+<script language="JavaScript" type="text/javascript">
+    $(document).ready(function () {
+        $('.list').DataTable({
+            scrollY: "400px",
+            scrollCollapse: true,
+            paging: false,
+            fixedHeader: true,
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel'
+            ],
+            rowReorder: true
+        });
+    });
+</script>
