@@ -31,14 +31,18 @@
 
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade" id="summary" role="tabpanel" aria-labelledby="summary-tab">
-                    <g:render template="summary" model="${[items: summary]}"/>
+                    <g:render template="summary" model="${[items: userSummary, label: 'Engineer', color:'#673AB7']}"/>
+                    <g:render template="summary" model="${[items: clientSummary, label: 'Client', color:'#009688']}"/>
+                    <g:render template="summary" model="${[items: projectSummary, label: 'Project', color:'#3F51B5']}"/>
+                    <g:render template="summary" model="${[items: componentSummary, label: 'Component', color:'#E91E63']}"/>
+                    <g:render template="summary" model="${[items: issueTypeSummary, label: 'Issue Type', color:'#FF9800']}"/>
                 </div>
 
                 <div class="tab-pane fade active in" id="users" role="tabpanel" aria-labelledby="users-tab">
-                    <g:render template="pivot" model="${[data: clientSummary, label: 'Client']}"/>
-                    <g:render template="pivot" model="${[data: projectSummary, label: 'Project']}"/>
-                    <g:render template="pivot" model="${[data: componentSummary, label: 'Component']}"/>
-                    <g:render template="pivot" model="${[data: issueTypeSummary, label: 'Issue Type']}"/>
+                    <g:render template="pivot" model="${[data: clientDetails, label: 'Client']}"/>
+                    <g:render template="pivot" model="${[data: projectDetails, label: 'Project']}"/>
+                    <g:render template="pivot" model="${[data: componentDetails, label: 'Component']}"/>
+                    <g:render template="pivot" model="${[data: issueTypeDetails, label: 'Issue Type']}"/>
                 </div>
 
                 <div class="tab-pane fade" id="details" role="tabpanel" aria-labelledby="details-tab">

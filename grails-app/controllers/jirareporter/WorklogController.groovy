@@ -18,14 +18,33 @@ class WorklogController {
             return redirect(action: 'report', params: params + [to: new Date().format('MM/dd/yyyy')])
 
         def worklogs = reportService.getWorklogs(new Date(params.from), new Date(params.to), params.project, formatIssueTypes(), formatComponents(), formatClients(), formatUsersList())
-        def summary = refinementService.getDeveloperSummary(worklogs)
+
+        def clientDetails = refinementService.getClientDetails(worklogs)
+        def componentDetails = refinementService.getComponentDetails(worklogs)
+        def issueTypeDetails = refinementService.getIssueTypeDetails(worklogs)
+        def projectDetails = refinementService.getProjectDetails(worklogs)
+
+        def userSummary = refinementService.getDeveloperSummary(worklogs)
         def clientSummary = refinementService.getClientSummary(worklogs)
         def componentSummary = refinementService.getComponentSummary(worklogs)
         def issueTypeSummary = refinementService.getIssueTypeSummary(worklogs)
         def projectSummary = refinementService.getProjectSummary(worklogs)
 
+        [
+                components      : components,
+                worklogs        : worklogs,
 
-        [components: components, worklogs: worklogs, summary: summary, clientSummary: clientSummary, componentSummary: componentSummary, issueTypeSummary: issueTypeSummary, projectSummary: projectSummary]
+                userSummary     : userSummary,
+                clientSummary   : clientSummary,
+                componentSummary: componentSummary,
+                issueTypeSummary: issueTypeSummary,
+                projectSummary  : projectSummary,
+
+                clientDetails   : clientDetails,
+                componentDetails: componentDetails,
+                issueTypeDetails: issueTypeDetails,
+                projectDetails  : projectDetails
+        ]
     }
 
     private List<String> formatUsersList() {

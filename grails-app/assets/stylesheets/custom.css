@@ -294,6 +294,11 @@ thead tr td, thead tr td *, thead tr td *:hover, .dataTables_scrollHead, .dataTa
 }
 
 h2 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+h2.tableHeader {
     margin-top: 60px;
     margin-bottom: -55px;
 }

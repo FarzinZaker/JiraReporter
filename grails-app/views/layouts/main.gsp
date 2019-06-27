@@ -24,6 +24,9 @@
     <asset:stylesheet src="css/selectize.bootstrap3.css"/>
     <asset:javascript src="js/standalone/selectize.min.js"/>
 
+    <asset:stylesheet src="code/css/highcharts.css"/>
+    <asset:javascript src="code/highcharts.js"/>
+
     %{--    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>--}%
     %{--    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>--}%
 

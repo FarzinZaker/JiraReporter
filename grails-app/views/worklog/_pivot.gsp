@@ -5,7 +5,7 @@
         <g:set var="others" value="${others + other.key}"/>
     </g:each>
 </g:each>
-<h2>Time Spent per ${label}</h2>
+<h2 class="tableHeader">Time Spent per ${label}</h2>
 <table class="pivot" id="${label.replace(' ', '_')}">
     <thead>
     <tr>
