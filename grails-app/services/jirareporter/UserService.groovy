@@ -33,7 +33,9 @@ class UserService {
         issues
     }
 
-    Map parse(JSONObject obj) {
+    Map parse(def obj) {
+        if (obj == JSONObject.NULL)
+            return null
         [
                 url         : obj.self,
                 name        : obj.name,
