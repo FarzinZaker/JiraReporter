@@ -3,7 +3,7 @@ package jirareporter
 class Configuration {
 
     static String getServerURL() {
-        ''
+        'https://jira.devfactory.com'
     }
 
     static String getUsername() {
@@ -11,6 +11,14 @@ class Configuration {
     }
 
     static String getPassword() {
+        ''
+    }
+
+    static String getCrossOverUsername(){
+        ''
+    }
+
+    static String getCrossOverPassowrd(){
         ''
     }
 

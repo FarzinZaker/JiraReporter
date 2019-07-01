@@ -1,16 +1,15 @@
 package jirareporter
 
-import grails.converters.JSON
+import grails.gorm.transactions.Transactional
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.impl.client.HttpClientBuilder
 
-class TestController {
+@Transactional
+class CrossOverService {
+
+    def getWorkingHours() {
 
 
-    def index() {
-
-        def username = 'farzin.zaker@aclate.com'
-        def password = 'Retan1122'
 
         //login
         def get = new HttpGet('https://api.crossover.com/api/v2/timetracking/timesheets/assignment?date=2019-06-4&fullTeam=false&managerId=1721621&period=MONTH&teamId=3439')
