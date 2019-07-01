@@ -14,11 +14,11 @@ class Configuration {
         ''
     }
 
-    static String getCrossOverUsername(){
+    static String getCrossOverUsername() {
         ''
     }
 
-    static String getCrossOverPassowrd(){
+    static String getCrossOverPassowrd() {
         ''
     }
 
