@@ -11,15 +11,15 @@ import org.grails.web.json.JSONObject
 @Transactional
 class CrossOverService {
 
-    Map<String, Map<Date, Double>> getWorkingHours(String teamId, String managerId, Date from, Date to) {
+    Map<String, Map<Date, Double>> getWorkingHours(def teamId, def managerId, Date from, Date to) {
 
         def result = [:]
 
         def maxDate = from
 
-        def date = from
+        def date = from - 1
 
-        while (maxDate < to) {
+        while (maxDate < to + 1) {
             def dateStr = date.format('yyyy-MM-dd')
 
             def get = new HttpGet("https://api.crossover.com/api/v2/timetracking/timesheets/assignment?date=${dateStr}&fullTeam=true&managerId=${managerId}&period=WEEK&teamId=${teamId}")
@@ -39,8 +39,8 @@ class CrossOverService {
                 if (!result.containsKey(record.name))
                     result.put(record.name, [:])
                 record.stats.each { JSONObject stat ->
-                    def statDate = Date.parse('yyyy-MM-dd', stat.date.split('T').first())
-                    if (statDate >= from && statDate < to) {
+                    def statDate = Date.parse("yyyy-MM-dd'T'hh:mm:ss.000'Z'", stat.date)
+                    if (statDate >= from && statDate <= to) {
                         if (!result[record.name].containsKey(statDate))
                             result[record.name].put(statDate, stat.hours)
                     }

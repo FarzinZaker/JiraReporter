@@ -26,6 +26,8 @@
 
     <asset:stylesheet src="code/css/highcharts.css"/>
     <asset:javascript src="code/highcharts.js"/>
+    <asset:javascript src="code/highcharts-more.js"/>
+    <asset:javascript src="code/modules/heatmap.js"/>
 
     %{--    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>--}%
     %{--    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>--}%

@@ -65,7 +65,7 @@ class ReportService {
 
     List<Map> filterDates(List<Map> list, Date from, Date to) {
         list?.findAll {
-            it.updated >= from && it.updated <= to
+            it.started >= from && it.started <= to
         } ?: []
     }
 

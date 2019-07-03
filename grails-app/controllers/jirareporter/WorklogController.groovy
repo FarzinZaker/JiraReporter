@@ -5,6 +5,7 @@ class WorklogController {
     def reportService
     def refinementService
     def componentService
+    def integrityService
 
     def report() {
 
@@ -30,6 +31,8 @@ class WorklogController {
         def issueTypeSummary = refinementService.getIssueTypeSummary(worklogs)
         def projectSummary = refinementService.getProjectSummary(worklogs)
 
+        def integritySummary = integrityService.getDeveloperIntegritySummary(worklogs, new Date(params.from), new Date(params.to))
+
         [
                 components      : components,
                 worklogs        : worklogs,
@@ -43,7 +46,9 @@ class WorklogController {
                 clientDetails   : clientDetails,
                 componentDetails: componentDetails,
                 issueTypeDetails: issueTypeDetails,
-                projectDetails  : projectDetails
+                projectDetails  : projectDetails,
+
+                integritySummary: integritySummary
         ]
     }
 

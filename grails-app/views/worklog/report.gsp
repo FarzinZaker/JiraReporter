@@ -24,6 +24,10 @@
                        aria-controls="users" aria-selected="true" aria-expanded="true">Users</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" id="crossOver-tab" data-toggle="tab" href="#crossOver" role="tab"
+                       aria-controls="crossOver" aria-selected="false">CrossOver</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" id="details-tab" data-toggle="tab" href="#details" role="tab"
                        aria-controls="details" aria-selected="false">Details</a>
                 </li>
@@ -43,6 +47,10 @@
                     <g:render template="pivot" model="${[data: projectDetails, label: 'Project']}"/>
                     <g:render template="pivot" model="${[data: componentDetails, label: 'Component']}"/>
                     <g:render template="pivot" model="${[data: issueTypeDetails, label: 'Issue Type']}"/>
+                </div>
+
+                <div class="tab-pane fade" id="crossOver" role="tabpanel" aria-labelledby="crossOver-tab">
+                    <g:render template="crossOver" model="${[summary: integritySummary]}"/>
                 </div>
 
                 <div class="tab-pane fade" id="details" role="tabpanel" aria-labelledby="details-tab">
