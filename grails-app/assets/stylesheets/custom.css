@@ -438,3 +438,7 @@ input[type=submit] {
 .row{
     max-width: 100% !important;
 }
+
+.highcharts-credits{
+    display: none;
+}

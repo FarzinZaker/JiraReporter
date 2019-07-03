@@ -68,6 +68,15 @@
             column: {
                 pointPadding: 0.2,
                 borderWidth: 0
+            },
+            series: {
+                dataLabels: {
+                    enabled: true,
+                    formatter:function()
+                    {
+                        return timeFormat(this.y);
+                    }
+                }
             }
         },
         series: [{
