@@ -84,7 +84,7 @@ class IssueService {
             }
             value
         } catch (Exception ex) {
-            println ex.message
+//            println ex.message
             return '-'
         }
     }

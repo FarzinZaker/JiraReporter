@@ -1,13 +1,20 @@
 <%@ page import="java.text.SimpleDateFormat; grails.converters.JSON" %>
-<div id="crossOver"></div>
+<h2>${label} Summary</h2>
+
+<div id="dailySummary"></div>
 <script language="JavaScript" type="text/javascript">
-    Highcharts.chart('crossOver', {
+    <g:set var="chartHeight" value="${summary.dates?.size() * 60 + 50}"/>
+    <g:if test="${chartHeight < 350}">
+    <g:set var="chartHeight" value="${350}"/>
+    </g:if>
+    Highcharts.chart('dailySummary', {
 
         chart: {
             type: 'heatmap',
             marginTop: 40,
             marginBottom: 80,
-            plotBorderWidth: 1
+            plotBorderWidth: 1,
+            height: ${chartHeight}
         },
 
 
@@ -36,9 +43,9 @@
             min: -100,
             max: 100,
             stops: [
-                [0, '#DD2C00'],
+                [0, '#E91E63'],
                 [0.5, '#ffffff'],
-                [0.9, '#00C853']
+                [0.9, '#009688']
             ]
         },
 
@@ -48,7 +55,7 @@
             margin: 0,
             verticalAlign: 'top',
             y: 25,
-            symbolHeight: 280
+            // symbolHeight: 280
         },
 
         tooltip: {
@@ -70,10 +77,10 @@
                 {
                     x:${i},
                     y:${j},
-                    value:${summary.data[developer][date]['differencePercent']},
-                    difference: ${summary.data[developer][date]['difference']},
-                    jira: '${summary.data[developer][date]['jira']?:'-'}',
-                    crossOver: '${summary.data[developer][date]['crossOver']?:'-'}'
+                    value:${summary.data[developer][date]['differencePercent'] != null ? summary.data[developer][date]['differencePercent'] : 0},
+                    difference: ${summary.data[developer][date]['difference'] != null ? summary.data[developer][date]['difference'] : 0},
+                    jira: '${summary.data[developer][date]['jira'] ?: '-'}',
+                    crossOver: '${summary.data[developer][date]['crossOver'] ?: '-'}'
                 },
                 </g:each>
                 </g:each>

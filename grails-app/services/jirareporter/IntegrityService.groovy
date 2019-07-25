@@ -12,7 +12,8 @@ class IntegrityService {
 
     def getDeveloperIntegritySummary(List<Map> worklogs, Date from, Date to) {
 
-        def summary = [:]
+        def dailySummary = [:]
+        def totalSummary = [:]
 
         def dates = new HashSet()
 
@@ -21,7 +22,16 @@ class IntegrityService {
 
         def crossOverData = [:]
         Configuration.crossOverTeams.each { crossOverTeam ->
-            crossOverData.putAll(crossOverService.getWorkingHours(crossOverTeam.team, crossOverTeam.manager, minDate, maxDate))
+            def newData = crossOverService.getWorkingHours(crossOverTeam.team, crossOverTeam.manager, minDate, maxDate)
+            newData.keySet().each { developer ->
+                if (!crossOverData.containsKey(developer))
+                    crossOverData.put(developer, [:])
+                newData[developer].keySet().each { date ->
+                    if (!crossOverData[developer].containsKey(date))
+                        crossOverData[developer].put(date, 0)
+                    crossOverData[developer][date] += newData[developer][date] ?: 0
+                }
+            }
         }
 
         worklogs.each { worklog ->
@@ -30,13 +40,20 @@ class IntegrityService {
                 def date = worklog.started.clearTime()
                 dates << date
 
-                if (!summary.containsKey(developer))
-                    summary.put(developer, [:])
-                if (!summary[developer].containsKey(date))
-                    summary[developer].put(date, [:])
-                if (!summary[developer][date].containsKey('jiraTime'))
-                    summary[developer][date].put('jiraTime', 0)
-                summary[developer][date]['jiraTime'] += worklog.timeSpentSeconds
+                if (!totalSummary.containsKey(developer))
+                    totalSummary.put(developer, [:])
+                if (!totalSummary[developer].containsKey('jiraTime'))
+                    totalSummary[developer].put('jiraTime', 0)
+
+                if (!dailySummary.containsKey(developer))
+                    dailySummary.put(developer, [:])
+                if (!dailySummary[developer].containsKey(date))
+                    dailySummary[developer].put(date, [:])
+                if (!dailySummary[developer][date].containsKey('jiraTime'))
+                    dailySummary[developer][date].put('jiraTime', 0)
+
+                totalSummary[developer]['jiraTime'] += worklog.timeSpentSeconds
+                dailySummary[developer][date]['jiraTime'] += worklog.timeSpentSeconds
 
                 if (worklog.started < minDate)
                     minDate = worklog.started
@@ -49,42 +66,60 @@ class IntegrityService {
             crossOverData[developer].keySet().each { realDate ->
                 def date = realDate.clearTime()
                 dates << date
-                if (summary.containsKey(developer)) {
-                    if (!summary[developer].containsKey(date))
-                        summary[developer].put(date, [:])
-                    if (!summary[developer][date].containsKey('crossOverTime'))
-                        summary[developer][date].put('crossOverTime', 0)
-                    summary[developer][date]['crossOverTime'] += crossOverData[developer][realDate] * 3600
+                if (dailySummary.containsKey(developer)) {
+
+                    if (!totalSummary[developer].containsKey('crossOverTime'))
+                        totalSummary[developer].put('crossOverTime', 0)
+
+                    if (!dailySummary[developer].containsKey(date))
+                        dailySummary[developer].put(date, [:])
+                    if (!dailySummary[developer][date].containsKey('crossOverTime'))
+                        dailySummary[developer][date].put('crossOverTime', 0)
+
+                    totalSummary[developer]['crossOverTime'] += crossOverData[developer][realDate] * 3600
+                    dailySummary[developer][date]['crossOverTime'] += crossOverData[developer][realDate] * 3600
                 }
             }
         }
 
-        summary.keySet().each { developer ->
-            summary[developer].keySet().each { date ->
-                if (!summary[developer][date]['jiraTime'])
-                    summary[developer][date].put('jiraTime', 0)
+        dailySummary.keySet().each { developer ->
+            dailySummary[developer].keySet().each { date ->
+
+                if (!totalSummary[developer]['jiraTime'])
+                    totalSummary[developer].put('jiraTime', 0)
+                if (!totalSummary[developer]['crossOverTime'])
+                    totalSummary[developer].put('crossOverTime', 0)
+
+                if (!dailySummary[developer][date]['jiraTime'])
+                    dailySummary[developer][date].put('jiraTime', 0)
+                if (!dailySummary[developer][date]['crossOverTime'])
+                    dailySummary[developer][date].put('crossOverTime', 0)
+
                 try {
-                    summary[developer][date].put('difference', summary[developer][date]['jiraTime'] - summary[developer][date]['crossOverTime'])
-                    summary[developer][date].put('differencePercent', Math.round(summary[developer][date]['difference'] * 100 / summary[developer][date]['crossOverTime']))
+                    dailySummary[developer][date].put('difference', dailySummary[developer][date]['jiraTime'] - dailySummary[developer][date]['crossOverTime'])
+                    dailySummary[developer][date].put('differencePercent', Math.round(dailySummary[developer][date]['difference'] * 100 / (dailySummary[developer][date]['crossOverTime'] ?: 1)))
                 } catch (Exception ignored) {
                     println([date, developer] as JSON)
-                    println(summary[developer][date] as JSON)
+                    println(dailySummary[developer][date] as JSON)
                 }
             }
         }
 
 
-        summary.keySet().each { developer ->
-            summary[developer].keySet().each { date ->
-                summary[developer][date]['jira'] = TimeFormatter.formatTime(summary[developer][date]['jiraTime'])
-                summary[developer][date]['crossOver'] = TimeFormatter.formatTime(summary[developer][date]['crossOverTime'])
+        dailySummary.keySet().each { developer ->
+            dailySummary[developer].keySet().each { date ->
+                dailySummary[developer][date]['jira'] = TimeFormatter.formatTime(dailySummary[developer][date]['jiraTime'])
+                dailySummary[developer][date]['crossOver'] = TimeFormatter.formatTime(dailySummary[developer][date]['crossOverTime'])
             }
         }
 
         [
-                data      : summary,
-                developers: summary.keySet(),
-                dates     : dates
+                daily: [
+                        data      : dailySummary,
+                        developers: dailySummary.keySet(),
+                        dates     : dates
+                ],
+                total: totalSummary
         ]
     }
 }

@@ -5,5 +5,6 @@
     <g:render template="/filter/component"/>
     <g:render template="/filter/client"/>
     <g:render template="/filter/user"/>
+    <g:render template="/filter/billable"/>
     <g:submitButton name="submit" value="FILTER"/>
 </g:form>

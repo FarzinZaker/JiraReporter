@@ -18,7 +18,7 @@ class WorklogController {
         if (!params.to)
             return redirect(action: 'report', params: params + [to: new Date().format('MM/dd/yyyy')])
 
-        def worklogs = reportService.getWorklogs(new Date(params.from), new Date(params.to), params.project, formatIssueTypes(), formatComponents(), formatClients(), formatUsersList())
+        def worklogs = reportService.getWorklogs(new Date(params.from), new Date(params.to), params.project, formatIssueTypes(), formatComponents(), formatClients(), formatUsersList(), formatWorklogTypes())
 
         def clientDetails = refinementService.getClientDetails(worklogs)
         def componentDetails = refinementService.getComponentDetails(worklogs)
@@ -54,6 +54,10 @@ class WorklogController {
 
     private List<String> formatUsersList() {
         params.user?.split(',')?.collect { it.split('\\(')?.last()?.replace(')', '')?.trim() }
+    }
+
+    private List<String> formatWorklogTypes() {
+        params.worklogTypes?.split(',')?.collect { it.split('\\(')?.last()?.replace(')', '')?.trim() }
     }
 
     private String formatIssueTypes() {

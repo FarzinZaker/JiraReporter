@@ -46,27 +46,18 @@
 
 <body>
 
-<div class="navbar navbar-default navbar-static-top" role="navigation">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="/#">
-                WORKLOG Report
-                %{--<asset:image src="grails.svg" alt="Grails Logo"/>--}%
-            </a>
-        </div>
-
-        <div class="navbar-collapse collapse" aria-expanded="false" style="height: 0.8px;">
-            <ul class="nav navbar-nav navbar-right">
-                <g:pageProperty name="page.nav"/>
-            </ul>
-        </div>
+<div class="row">
+    <div class="header">
+        <span class="logo">
+            <asset:image src="aclate.png"/>
+            <span>
+                WORKLOGS
+            </span>
+        </span>
     </div>
+</div>
+
+<div class="navbar navbar-default navbar-static-top" role="navigation">
 </div>
 
 <g:layoutBody/>

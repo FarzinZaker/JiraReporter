@@ -389,7 +389,7 @@ th {
 .field {
     display: block;
     margin-right: 10px;
-    margin-bottom:10px;
+    margin-bottom: 10px;
 }
 
 .field label {
@@ -425,7 +425,7 @@ input[type=submit] {
     box-shadow: none !important;
     border-bottom: 1px solid #607D8B !important;
     border-radius: 0 !important;
-    margin-top:5px;
+    margin-top: 5px;
 }
 
 .selectize-input .item {
@@ -435,10 +435,38 @@ input[type=submit] {
     padding-left: 7px !important;
 }
 
-.row{
+.row {
     max-width: 100% !important;
 }
 
-.highcharts-credits{
+.highcharts-credits {
     display: none;
+}
+
+.header {
+    background-color: #ffffff;
+}
+
+.header .logo {
+    display: inline-block;
+    margin: 10px 10px 10px 20px;
+}
+
+.header .logo img {
+    height: 48px;
+    float: left;
+}
+
+.header .logo span {
+    line-height: 48px;
+    display: inline-block;
+    margin-left: 10px;
+    color: #9C27B0;
+    font-weight: bold;
+    border-left: 1px solid #3F51B5;
+    padding-left: 17px;
+}
+
+.navbar{
+    min-height: 10px;
 }

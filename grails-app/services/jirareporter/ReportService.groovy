@@ -14,7 +14,7 @@ class ReportService {
     final String defaultProjectsList = Configuration.projects.collect { it.key }.join(',')
     final String defaultIssueTypeList = Configuration.issueTypes.collect { "\"${it}\"" }.join(',')
 
-    List<Map> getWorklogs(Date from, Date to, String projects, String issueTypes, List<String> components, List<String> clients, List<String> users) {
+    List<Map> getWorklogs(Date from, Date to, String projects, String issueTypes, List<String> components, List<String> clients, List<String> users, List<String> worklogTypes) {
 
         String worklogQyery = "project in (${projects && projects.trim() != '' ? projects : defaultProjectsList}) AND (labels not in (Legacy) OR labels is EMPTY) AND issuetype in (${issueTypes && issueTypes?.replace('"', '')?.trim() != '' ? issueTypes : defaultIssueTypeList})"
 
@@ -38,7 +38,7 @@ class ReportService {
                 cacheService.store(task.value.url?.toString() + '/worklog', json)
             }
             def list = json.getJSONArray('worklogs')
-            worklogs.addAll(preFilter(worklogService.parseList(list), from, to, users)?.collect {
+            worklogs.addAll(preFilter(worklogService.parseList(list), from, to, users, worklogTypes)?.collect {
                 if (cacheService.has(task.value.url))
                     json = cacheService.retrieve(task.value.url)
                 else {
@@ -56,9 +56,10 @@ class ReportService {
         worklogs
     }
 
-    List<Map> preFilter(List<Map> list, Date from, Date to, List<String> users) {
+    List<Map> preFilter(List<Map> list, Date from, Date to, List<String> users, List<String> worklogTypes) {
         def result = list
         result = filterDates(result, from, to)
+        result = filterWorklogTypes(result, worklogTypes)
         result = filterUsers(result, users?.findAll { it })
         result
     }
@@ -108,5 +109,20 @@ class ReportService {
             }
             result
         } ?: []
+    }
+
+    List<Map> filterWorklogTypes(List<Map> list, List<String> worklogTypes) {
+        if (!worklogTypes || worklogTypes?.size() == 0)
+            return list
+        def result = []
+        if (worklogTypes.contains('billable'))
+            result.addAll(list?.findAll {
+                it.comment.contains('[BILLABLE]') || it.comment.contains('[billable]') || it.comment.contains('[Billable]')
+            } ?: [])
+        if (worklogTypes.contains('non-billable'))
+            result.addAll(list?.findAll {
+                !(it.comment.contains('[BILLABLE]') || it.comment.contains('[billable]') || it.comment.contains('[Billable]'))
+            } ?: [])
+        result
     }
 }

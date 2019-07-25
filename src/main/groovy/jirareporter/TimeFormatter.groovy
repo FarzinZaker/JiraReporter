@@ -3,7 +3,7 @@ package jirareporter;
 class TimeFormatter {
 
     static String formatTime(seconds) {
-        def secs = seconds
+        def secs = seconds ?: 0
         def mins = 0
         def hours = 0
         def days = 0
