@@ -2,6 +2,7 @@
     <g:render template="/filter/time"/>
     <g:render template="/filter/project"/>
     <g:render template="/filter/issueType"/>
+    <g:render template="/filter/status"/>
     <g:render template="/filter/component"/>
     <g:render template="/filter/client"/>
     <g:render template="/filter/user"/>

@@ -1,6 +1,5 @@
-<%@ page import="jirareporter.Configuration" %>
 <div class="field">
-    <label for="worklogTypes">Worklog Types:</label>
+    <label for="worklogTypes">Worklog Type:</label>
     <input id="worklogTypes" name="worklogTypes" type="text" value="${params.worklogTypes}">
 </div>
 <script>

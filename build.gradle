@@ -67,6 +67,7 @@ dependencies {
 //    compile 'net.errbuddy.plugins:babel-asset-pipeline:2.0.6'
 //    compile "org.grails.plugins:react-asset-pipeline:2.0.0"
 
+    compile 'org.grails.plugins:grails-markdown:3.0.0'
 }
 
 bootRun {

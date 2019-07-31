@@ -1,11 +1,14 @@
 package jirareporter
 
+import groovy.time.TimeCategory
+
 class WorklogController {
 
     def reportService
     def refinementService
     def componentService
     def integrityService
+    def accomplishmentsService
 
     def report() {
 
@@ -18,7 +21,13 @@ class WorklogController {
         if (!params.to)
             return redirect(action: 'report', params: params + [to: new Date().format('MM/dd/yyyy')])
 
-        def worklogs = reportService.getWorklogs(new Date(params.from), new Date(params.to), params.project, formatIssueTypes(), formatComponents(), formatClients(), formatUsersList(), formatWorklogTypes())
+        Date from = new Date(params.from).clearTime()
+        Date to = (new Date(params.to) + 1).clearTime()
+        use(TimeCategory) {
+            to = to - 1.second
+        }
+
+        def worklogs = reportService.getWorklogs(from, to, params.project, formatIssueTypes(), formatComponents(), formatClients(), formatUsersList(), formatWorklogTypes(), formatStatus())
 
         def clientDetails = refinementService.getClientDetails(worklogs)
         def componentDetails = refinementService.getComponentDetails(worklogs)
@@ -31,7 +40,8 @@ class WorklogController {
         def issueTypeSummary = refinementService.getIssueTypeSummary(worklogs)
         def projectSummary = refinementService.getProjectSummary(worklogs)
 
-        def integritySummary = integrityService.getDeveloperIntegritySummary(worklogs, new Date(params.from), new Date(params.to))
+        def integritySummary = integrityService.getDeveloperIntegritySummary(worklogs, from, to)
+        def accomplishments = accomplishmentsService.getTasks(worklogs)
 
         [
                 components      : components,
@@ -48,16 +58,18 @@ class WorklogController {
                 issueTypeDetails: issueTypeDetails,
                 projectDetails  : projectDetails,
 
-                integritySummary: integritySummary
+                integritySummary: integritySummary,
+
+                accomplishments : accomplishments
         ]
     }
 
     private List<String> formatUsersList() {
-        params.user?.split(',')?.collect { it.split('\\(')?.last()?.replace(')', '')?.trim() }
+        params.user?.split(',')?.collect { it.split('\\(')?.last()?.replace(')', '')?.trim() }?.findAll { it }
     }
 
     private List<String> formatWorklogTypes() {
-        params.worklogTypes?.split(',')?.collect { it.split('\\(')?.last()?.replace(')', '')?.trim() }
+        params.worklogTypes?.split(',')?.collect { it.split('\\(')?.last()?.replace(')', '')?.trim() }?.findAll { it }
     }
 
     private String formatIssueTypes() {
@@ -65,10 +77,14 @@ class WorklogController {
     }
 
     private List<String> formatComponents() {
-        params.component?.split(',')
+        params.component?.split(',')?.findAll { it }
     }
 
     private List<String> formatClients() {
-        params.client?.split(',')?.collect { it.toString()?.toLowerCase()?.trim() }
+        params.client?.split(',')?.collect { it.toString()?.toLowerCase()?.trim() }?.findAll { it }
+    }
+
+    private List<String> formatStatus() {
+        params.status?.split(',')?.collect { it.toString()?.toUpperCase()?.trim() }?.findAll { it }
     }
 }

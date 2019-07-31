@@ -5,16 +5,26 @@
         <g:set var="others" value="${others + other.key}"/>
     </g:each>
 </g:each>
-<h2 class="tableHeader">Time Spent per ${label}</h2>
+<h2 class="tableHeader">${label}s</h2>
 <table class="pivot" id="${label.replace(' ', '_')}">
     <thead>
     <tr>
-        <td>
+        <td rowspan="2">
             ${label}
         </td>
         <g:each in="${users}" var="user">
-            <td class="user center">
+            <td class="user center" colspan="2">
                 <g:render template="user" model="${[user: data[user].data]}"/>
+            </td>
+        </g:each>
+    </tr>
+    <tr>
+        <g:each in="${users}" var="user">
+            <td class="user center">
+                Time Spent
+            </td>
+            <td class="user center">
+                Tasks
             </td>
         </g:each>
     </tr>
@@ -56,9 +66,16 @@
             data: [
                 <g:each in="${others}" var="other">
                 [
-                    { text: '${other}', value: '${other}'},
+                    {text: '${other}', value: '${other}'},
                     <g:each in="${users}" var="user" status="i">
-                    { text: '${data[user].others[other]?.timeSpent ?: '-'}', value: '${data[user].others[other]?.timeSpendSeconds ?: '0'}'},
+                    {
+                        text: '${data[user].others[other]?.timeSpent ?: '-'}',
+                        value: '${data[user].others[other]?.timeSpendSeconds ?: '0'}'
+                    },
+                    {
+                        text: '${data[user].others[other]?.tasksCount ?: '-'}',
+                        value: '${data[user].others[other]?.tasksCount ?: '0'}'
+                    },
                     </g:each>
                 ],
                 </g:each>

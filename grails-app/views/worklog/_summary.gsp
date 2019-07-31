@@ -1,4 +1,4 @@
-<h2>Time Spent per ${label}</h2>
+<h2>${label}s</h2>
 
 <div id="summary_${label?.replace(' ', '_')}"></div>
 
@@ -51,16 +51,28 @@
             ],
             crosshair: true
         },
-        yAxis: {
+        yAxis: [{
             min: 0,
             title: {
                 text: 'Time Spent (hours)'
             }
-        },
+        }, {
+            min: 0,
+            title: {
+                text: 'Tasks'
+            },
+            opposite: true
+        }],
         legend: false,
         tooltip: {
             formatter: function (tooltip) {
-                return '<div style="font-size:10px">' + this.point.category + '</div><b>' + timeFormat(this.point.y) + '</b>';
+                var result = '<div style="font-size:10px">' + this.point.category + '</div><b>';
+                if (this.series.name === 'Time Spent')
+                    result += timeFormat(this.point.y);
+                else
+                    result += this.point.y + ' Tasks';
+                result += '</b>';
+                return result
             },
             useHTML: true
         },
@@ -72,9 +84,10 @@
             series: {
                 dataLabels: {
                     enabled: true,
-                    formatter:function()
-                    {
-                        return timeFormat(this.y);
+                    formatter: function () {
+                        if (this.series.name === 'Time Spent')
+                            return timeFormat(this.y);
+                        else return this.y;
                     }
                 }
             }
@@ -83,10 +96,19 @@
             name: 'Time Spent',
             data: [
                 <g:each in="${items}" var="item">
-                ${item.value / 3600},
+                ${item.value.timeSpent / 3600},
                 </g:each>
             ],
-            color: '${color}'
+            color: '${timeColor}'
+        }, {
+            name: 'Tasks',
+            data: [
+                <g:each in="${items}" var="item">
+                ${item.value.tasksCount},
+                </g:each>
+            ],
+            color: '${tasksColor}',
+            yAxis: 1
         }]
     });
 </script>

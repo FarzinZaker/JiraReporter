@@ -11,8 +11,13 @@ class RefinementService {
 
         worklogs.each { worklog ->
             if (!summary.containsKey(worklog.author.displayName))
-                summary.put(worklog.author.displayName, 0)
-            summary[worklog.author.displayName] += worklog.timeSpentSeconds
+                summary.put(worklog.author.displayName, [timeSpent: 0, tasks: new HashSet<String>()])
+            summary[worklog.author.displayName].timeSpent += worklog.timeSpentSeconds
+            summary[worklog.author.displayName].tasks.add(worklog.issueId)
+        }
+
+        summary.each { item ->
+            item.value.tasksCount = item.value.tasks.size()
         }
 
         summary
@@ -25,9 +30,14 @@ class RefinementService {
         worklogs.each { worklog ->
             worklog.task.clients?.each { client ->
                 if (!summary.containsKey(client))
-                    summary.put(client, 0)
-                summary[client] += worklog.timeSpentSeconds
+                    summary.put(client, [timeSpent: 0, tasks: new HashSet<String>()])
+                summary[client].timeSpent += worklog.timeSpentSeconds
+                summary[client].tasks.add(worklog.issueId)
             }
+        }
+
+        summary.each { item ->
+            item.value.tasksCount = item.value.tasks.size()
         }
 
         summary
@@ -39,8 +49,13 @@ class RefinementService {
 
         worklogs.each { worklog ->
             if (!summary.containsKey(worklog.task.project.name))
-                summary.put(worklog.task.project.name, 0)
-            summary[worklog.task.project.name] += worklog.timeSpentSeconds
+                summary.put(worklog.task.project.name, [timeSpent: 0, tasks: new HashSet<String>()])
+            summary[worklog.task.project.name].timeSpent += worklog.timeSpentSeconds
+            summary[worklog.task.project.name].tasks.add(worklog.issueId)
+        }
+
+        summary.each { item ->
+            item.value.tasksCount = item.value.tasks.size()
         }
 
         summary
@@ -53,9 +68,14 @@ class RefinementService {
         worklogs.each { worklog ->
             worklog.task.components?.each { component ->
                 if (!summary.containsKey(component.name))
-                    summary.put(component.name, 0)
-                summary[component.name] += worklog.timeSpentSeconds
+                    summary.put(component.name, [timeSpent: 0, tasks: new HashSet<String>()])
+                summary[component.name].timeSpent += worklog.timeSpentSeconds
+                summary[component.name].tasks.add(worklog.issueId)
             }
+        }
+
+        summary.each { item ->
+            item.value.tasksCount = item.value.tasks.size()
         }
 
         summary
@@ -67,8 +87,13 @@ class RefinementService {
 
         worklogs.each { worklog ->
             if (!summary.containsKey(worklog.task.issueType.name))
-                summary.put(worklog.task.issueType.name, 0)
-            summary[worklog.task.issueType.name] += worklog.timeSpentSeconds
+                summary.put(worklog.task.issueType.name, [timeSpent: 0, tasks: new HashSet<String>()])
+            summary[worklog.task.issueType.name].timeSpent += worklog.timeSpentSeconds
+            summary[worklog.task.issueType.name].tasks.add(worklog.issueId)
+        }
+
+        summary.each { item ->
+            item.value.tasksCount = item.value.tasks.size()
         }
 
         summary
@@ -83,14 +108,16 @@ class RefinementService {
                 summary.put(worklog.author.displayName, [data: worklog.author, others: [:]])
             worklog.task.clients.each { client ->
                 if (!summary[worklog.author.displayName].others.containsKey(client))
-                    summary[worklog.author.displayName].others.put(client, [timeSpendSeconds: 0])
+                    summary[worklog.author.displayName].others.put(client, [timeSpendSeconds: 0, tasks: new HashSet<String>()])
                 summary[worklog.author.displayName].others[client].timeSpendSeconds += worklog.timeSpentSeconds
+                summary[worklog.author.displayName].others[client].tasks.add(worklog.issueId)
             }
         }
 
         summary.each { parent ->
             summary[parent.key].others.each { item ->
                 item.value.timeSpent = TimeFormatter.formatTime(item.value.timeSpendSeconds)
+                item.value.tasksCount = item.value.tasks.size()
             }
         }
 
@@ -106,14 +133,16 @@ class RefinementService {
                 summary.put(worklog.author.displayName, [data: worklog.author, others: [:]])
             worklog.task.components.each { component ->
                 if (!summary[worklog.author.displayName].others.containsKey(component.name))
-                    summary[worklog.author.displayName].others.put(component.name, [timeSpendSeconds: 0])
+                    summary[worklog.author.displayName].others.put(component.name, [timeSpendSeconds: 0, tasks: new HashSet<String>()])
                 summary[worklog.author.displayName].others[component.name].timeSpendSeconds += worklog.timeSpentSeconds
+                summary[worklog.author.displayName].others[component.name].tasks.add(worklog.issueId)
             }
         }
 
         summary.each { parent ->
             summary[parent.key].others.each { item ->
                 item.value.timeSpent = TimeFormatter.formatTime(item.value.timeSpendSeconds)
+                item.value.tasksCount = item.value.tasks.size()
             }
         }
 
@@ -128,13 +157,15 @@ class RefinementService {
             if (!summary.containsKey(worklog.author.displayName))
                 summary.put(worklog.author.displayName, [data: worklog.author, others: [:]])
             if (!summary[worklog.author.displayName].others.containsKey(worklog.project.name))
-                summary[worklog.author.displayName].others.put(worklog.project.name, [timeSpendSeconds: 0])
+                summary[worklog.author.displayName].others.put(worklog.project.name, [timeSpendSeconds: 0, tasks: new HashSet<String>()])
             summary[worklog.author.displayName].others[worklog.project.name].timeSpendSeconds += worklog.timeSpentSeconds
+            summary[worklog.author.displayName].others[worklog.project.name].tasks.add(worklog.issueId)
         }
 
         summary.each { parent ->
             summary[parent.key].others.each { item ->
                 item.value.timeSpent = TimeFormatter.formatTime(item.value.timeSpendSeconds)
+                item.value.tasksCount = item.value.tasks.size()
             }
         }
 
@@ -149,16 +180,20 @@ class RefinementService {
             if (!summary.containsKey(worklog.author.displayName))
                 summary.put(worklog.author.displayName, [data: worklog.author, others: [:]])
             if (!summary[worklog.author.displayName].others.containsKey(worklog.task.issueType.name))
-                summary[worklog.author.displayName].others.put(worklog.task.issueType.name, [timeSpendSeconds: 0])
+                summary[worklog.author.displayName].others.put(worklog.task.issueType.name, [timeSpendSeconds: 0, tasks: new HashSet<String>()])
             summary[worklog.author.displayName].others[worklog.task.issueType.name].timeSpendSeconds += worklog.timeSpentSeconds
+            summary[worklog.author.displayName].others[worklog.task.issueType.name].tasks.add(worklog.issueId)
         }
 
         summary.each { parent ->
             summary[parent.key].others.each { item ->
                 item.value.timeSpent = TimeFormatter.formatTime(item.value.timeSpendSeconds)
+                item.value.tasksCount = item.value.tasks.size()
             }
         }
 
         summary
     }
+
+
 }

@@ -28,21 +28,25 @@
                        aria-controls="crossOver" aria-selected="false">CrossOver</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" id="accomplishments-tab" data-toggle="tab" href="#accomplishments" role="tab"
+                       aria-controls="accomplishments" aria-selected="false">Tasks</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" id="details-tab" data-toggle="tab" href="#details" role="tab"
-                       aria-controls="details" aria-selected="false">Details</a>
+                       aria-controls="details" aria-selected="false">Worklogs</a>
                 </li>
             </ul>
 
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade" id="summary" role="tabpanel" aria-labelledby="summary-tab">
-                    <g:render template="summary" model="${[items: userSummary, label: 'Engineer', color: '#673AB7']}"/>
-                    <g:render template="summary" model="${[items: clientSummary, label: 'Client', color: '#009688']}"/>
+                    <g:render template="summary" model="${[items: userSummary, label: 'Engineer', timeColor: '#673AB7', tasksColor: '#B39DDB']}"/>
+                    <g:render template="summary" model="${[items: clientSummary, label: 'Client', timeColor: '#009688', tasksColor: '#80CBC4']}"/>
                     <g:render template="summary"
-                              model="${[items: projectSummary, label: 'Project', color: '#3F51B5']}"/>
+                              model="${[items: projectSummary, label: 'Project', timeColor: '#3F51B5', tasksColor: '#9FA8DA']}"/>
                     <g:render template="summary"
-                              model="${[items: componentSummary, label: 'Component', color: '#E91E63']}"/>
+                              model="${[items: componentSummary, label: 'Component', timeColor: '#E91E63', tasksColor: '#F48FB1']}"/>
                     <g:render template="summary"
-                              model="${[items: issueTypeSummary, label: 'Issue Type', color: '#FF9800']}"/>
+                              model="${[items: issueTypeSummary, label: 'Issue Type', timeColor: '#FF9800', tasksColor: '#FFCC80']}"/>
                 </div>
 
                 <div class="tab-pane fade active in" id="users" role="tabpanel" aria-labelledby="users-tab">
@@ -55,6 +59,10 @@
                 <div class="tab-pane fade" id="crossOver" role="tabpanel" aria-labelledby="crossOver-tab">
                     <g:render template="crossOver/total" model="${[summary: integritySummary.total, label: 'Total']}"/>
                     <g:render template="crossOver/daily" model="${[summary: integritySummary.daily, label: 'Daily']}"/>
+                </div>
+
+                <div class="tab-pane fade" id="accomplishments" role="tabpanel" aria-labelledby="accomplishments-tab">
+                    <g:render template="accomplishments" model="${[accomplishments: accomplishments]}"/>
                 </div>
 
                 <div class="tab-pane fade" id="details" role="tabpanel" aria-labelledby="details-tab">

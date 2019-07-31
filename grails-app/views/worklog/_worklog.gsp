@@ -3,13 +3,7 @@
 <div class="worklog ${worklog.task.issueType.name.replace(' ', '_').replace('-', '')}">
     <div class="user">
         <g:render template="user" model="${[user: worklog.author]}"/>
-        %{--<g:formatDate date="${worklog.created}"/>--}%
     </div>
-    %{--<g:if test="${worklog.created != worklog.updated}">--}%
-    %{--<div>--}%
-    %{--<g:render template="user" model="${[user: worklog.updateAuthor]}"/> <label>Updated: </label> <g:formatDate date="${worklog.updated}"/>--}%
-    %{--</div>--}%
-    %{--</g:if>--}%
 
     <div class="timeSpent">
         ${worklog.timeSpent}
@@ -20,20 +14,10 @@
     </div>
 
     <div class="comment">
-        ${worklog.comment}
+        <markdown:renderHtml>${worklog.comment ?: 'No Description'}</markdown:renderHtml>
     </div>
 
     <div class="issue">
         <g:render template="issue" model="${[issue: worklog.task]}"/>
     </div>
-
-    %{--<div>--}%
-    %{--<g:formatDate date="${worklog.started}"/>--}%
-    %{--</div>--}%
-
-
-
-    %{--<div>--}%
-    %{--${worklog.timeSpentSeconds}--}%
-    %{--</div>--}%
 </div>

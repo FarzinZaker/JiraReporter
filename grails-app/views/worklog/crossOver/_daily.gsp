@@ -1,5 +1,5 @@
 <%@ page import="java.text.SimpleDateFormat; grails.converters.JSON" %>
-<h2>${label} Summary</h2>
+<h2>${label} Report</h2>
 
 <div id="dailySummary"></div>
 <script language="JavaScript" type="text/javascript">

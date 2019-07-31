@@ -14,7 +14,7 @@ class ReportService {
     final String defaultProjectsList = Configuration.projects.collect { it.key }.join(',')
     final String defaultIssueTypeList = Configuration.issueTypes.collect { "\"${it}\"" }.join(',')
 
-    List<Map> getWorklogs(Date from, Date to, String projects, String issueTypes, List<String> components, List<String> clients, List<String> users, List<String> worklogTypes) {
+    List<Map> getWorklogs(Date from, Date to, String projects, String issueTypes, List<String> components, List<String> clients, List<String> users, List<String> worklogTypes, List<String> statusList) {
 
         String worklogQyery = "project in (${projects && projects.trim() != '' ? projects : defaultProjectsList}) AND (labels not in (Legacy) OR labels is EMPTY) AND issuetype in (${issueTypes && issueTypes?.replace('"', '')?.trim() != '' ? issueTypes : defaultIssueTypeList})"
 
@@ -51,7 +51,7 @@ class ReportService {
             })
         }
 
-        worklogs = postFilter(worklogs, components, clients)
+        worklogs = postFilter(worklogs, components, clients, statusList)
 
         worklogs
     }
@@ -59,7 +59,7 @@ class ReportService {
     List<Map> preFilter(List<Map> list, Date from, Date to, List<String> users, List<String> worklogTypes) {
         def result = list
         result = filterDates(result, from, to)
-        result = filterWorklogTypes(result, worklogTypes)
+        result = filterWorklogTypes(result, worklogTypes?.findAll { it })
         result = filterUsers(result, users?.findAll { it })
         result
     }
@@ -78,10 +78,11 @@ class ReportService {
         } ?: []
     }
 
-    List<Map> postFilter(List<Map> list, List<String> components, List<String> clients) {
+    List<Map> postFilter(List<Map> list, List<String> components, List<String> clients, List<String> statusList) {
         def result = list
         result = filterComponents(result, components?.findAll { it })
         result = filterClients(result, clients?.findAll { it })
+        result = filterStatus(result, statusList?.findAll { it })
         result
     }
 
@@ -108,6 +109,18 @@ class ReportService {
                     result = true
             }
             result
+        } ?: []
+    }
+
+    List<Map> filterStatus(List<Map> list, List<String> statusList) {
+        if (!statusList || statusList?.size() == 0)
+            return list
+        list?.findAll { worklog ->
+            statusList.any { status ->
+                Configuration.statusList.find { it.name.toUpperCase() == status }?.details?.any {
+                    it == worklog.task.status.name?.toUpperCase()
+                }
+            }
         } ?: []
     }
 
