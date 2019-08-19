@@ -10,7 +10,7 @@ class UserService {
 
     def cacheService
 
-    List<Map> search(String username) {
+    List<JiraUser> search(String username) {
 
         def jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(Configuration.username, Configuration.password))
         def url = "${Configuration.serverURL}/rest/api/latest/user/search?startAt=0&maxResults=10&username=${username}"
@@ -24,7 +24,7 @@ class UserService {
         parseList(json as JSONArray)
     }
 
-    List<Map> parseList(JSONArray list) {
+    List<JiraUser> parseList(JSONArray list) {
         def issues = []
         for (def i = 0; i < list.length(); i++) {
             def obj = list.getJSONObject(i)
@@ -33,18 +33,28 @@ class UserService {
         issues
     }
 
-    Map parse(def obj) {
+    JiraUser parse(def obj) {
         if (obj == JSONObject.NULL)
             return null
-        [
-                url         : obj.self,
-                name        : obj.name,
-                key         : obj.key,
-                emailAddress: obj.emailAddress,
-                displayName : obj.displayName,
-                active      : obj.active,
-                timeZone    : obj.timeZone,
-                avatars     : obj.avatarUrls.myHashMap,
-        ]
+
+        def name = obj.name
+        def user = JiraUser.findByName(name)
+        if (!user) {
+            user = new JiraUser(
+                    url: obj.self,
+                    name: name,
+                    key: obj.key,
+                    emailAddress: obj.emailAddress,
+                    displayName: obj.displayName,
+                    active: obj.active,
+                    timeZone: obj.timeZone,
+                    avatar: obj.avatarUrls.myHashMap['48x48'],
+            )
+            user = user.save(flush: true)
+
+            if (!user)
+                throw new Exception("Error saving user")
+        }
+        user
     }
 }

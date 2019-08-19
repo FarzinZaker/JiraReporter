@@ -8,8 +8,14 @@ import org.codehaus.jettison.json.JSONObject
 class IssueService {
 
     def userService
+    def issueTypeService
+    def statusService
+    def componentService
+    def projectService
+    def clientService
+    def priorityService
 
-    List<Map> parseList(JSONArray list) {
+    List<Issue> parseList(JSONArray list) {
         def issues = []
         for (def i = 0; i < list.length(); i++) {
             def obj = list.getJSONObject(i)
@@ -18,74 +24,90 @@ class IssueService {
         issues
     }
 
-    Map parse(JSONObject obj) {
-        [
-                key              : safeRead(obj, "key"),
-                issueType        : [
-                        url    : safeRead(obj, "fields.issuetype.self"),
-                        name   : safeRead(obj, "fields.issuetype.name"),
-                        subtask: safeRead(obj, "fields.issuetype.subtask"),
-                        icon   : safeRead(obj, "fields.issuetype.iconUrl")
-                ],
-                assignee         : userService.parse(obj.fields.assignee),
-                timeTracking     : [
-                        remainingEstimate       : safeRead(obj, "fields.timetracking.remainingEstimate"),
-                        timeSpent               : safeRead(obj, "fields.timetracking.timeSpent"),
-                        remainingEstimateSeconds: safeRead(obj, "fields.timetracking.remainingEstimateSeconds"),
-                        timeSpentSeconds        : safeRead(obj, "fields.timetracking.timeSpentSeconds")
-                ],
-                status           : [
-                        url : safeRead(obj, "fields.status.self"),
-                        name: safeRead(obj, "fields.status.name"),
-                        icon: safeRead(obj, "fields.status.iconUrl")
-                ],
-                reporter         : userService.parse(obj.fields.reporter),
-                components       : safeRead(obj, "fields.components.myArrayList")?.collect {
-                    [
-                            url : it.self,
-                            name: it.name
-                    ]
-                },
-                progress         : [
-                        value  : safeRead(obj, "fields.progress.progress"),
-                        total  : safeRead(obj, "fields.progress.total"),
-                        percent: safeRead(obj, "fields.progress.percent"),
-                ],
-                project          : [
-                        url    : safeRead(obj, "fields.project.self"),
-                        name   : safeRead(obj, "fields.project.name"),
-                        key    : safeRead(obj, "fields.project.key"),
-                        avatars: safeRead(obj, "fields.project.avatarUrls")
-                ],
-                clients          : safeRead(obj, "fields.customfield_26105.myArrayList")?.collect {
-                    it?.replace('"', '')
-                } ?: [],
-                updated          : Date.parse("yyyy-MM-dd'T'hh:mm:ss.000+0000", safeRead(obj, "fields.updated")),
-                summary          : safeRead(obj, "fields.summary"),
-                priority         : [
-                        url : safeRead(obj, "fields.priority.self"),
-                        name: safeRead(obj, "fields.priority.name"),
-                        icon: safeRead(obj, "fields.priority.iconUrl")
-                ],
-                aggregateProgress: [
-                        value  : safeRead(obj, "fields.aggregateprogress.progress"),
-                        total  : safeRead(obj, "fields.aggregateprogress.total"),
-                        percent: safeRead(obj, "fields.aggregateprogress.percent")
-                ]
-        ]
-    }
+    Issue parse(JSONObject obj) {
+        if (obj == JSONObject.NULL)
+            return null
 
-    private static def safeRead(obj, property) {
-        try {
-            def value = obj
-            def parts = property.split('\\.')
-            parts.each { part ->
-                value = value."${part}"
+        def key = JSONUtil.safeRead(obj, "key")
+
+        def issue = Issue.findByKey(key)
+
+        if (!issue) {
+            issue = new Issue(
+                    key: key,
+                    issueType: issueTypeService.parse(JSONUtil.safeRead(obj, 'fields.issuetype')),
+                    assignee: userService.parse(JSONUtil.safeRead(obj, 'fields.assignee')),
+                    remainingEstimate: JSONUtil.safeRead(obj, "fields.timetracking.remainingEstimate"),
+                    timeSpent: JSONUtil.safeRead(obj, "fields.timetracking.timeSpent"),
+                    remainingEstimateSeconds: JSONUtil.safeRead(obj, "fields.timetracking.remainingEstimateSeconds")?.toLong(),
+                    timeSpentSeconds: JSONUtil.safeRead(obj, "fields.timetracking.timeSpentSeconds")?.toLong(),
+                    status: statusService.parse(JSONUtil.safeRead(obj, 'fields.status')),
+                    reporter: userService.parse(JSONUtil.safeRead(obj, 'fields.reporter')),
+                    progressValue: JSONUtil.safeRead(obj, "fields.progress.progress"),
+                    progressTotal: JSONUtil.safeRead(obj, "fields.progress.total"),
+                    progressPercent: JSONUtil.safeRead(obj, "fields.progress.percent"),
+                    project: projectService.parse(JSONUtil.safeRead(obj, 'fields.project')),
+                    updated: Date.parse("yyyy-MM-dd'T'hh:mm:ss.000+0000", JSONUtil.safeRead(obj, "fields.updated")),
+                    summary: JSONUtil.safeRead(obj, "fields.summary"),
+                    priority: priorityService.parse(JSONUtil.safeRead(obj, 'fields.priority')),
+                    aggregateProgressValue: JSONUtil.safeRead(obj, "fields.aggregateprogress.progress"),
+                    aggregateProgressTotal: JSONUtil.safeRead(obj, "fields.aggregateprogress.total"),
+                    aggregateProgressPercent: JSONUtil.safeRead(obj, "fields.aggregateprogress.percent")
+            )
+            if (!issue.save(flush: true))
+                throw new Exception("Error saving issue")
+
+            issue.clients?.clear()
+            JSONUtil.safeRead(obj, "fields.customfield_26105.myArrayList")?.each {
+                def client = clientService.parse(it)
+                issue.addToClients(client)
             }
-            value
-        } catch (Exception ex) {
-//            println ex.message
-            return '-'
+            issue.components?.clear()
+            JSONUtil.safeRead(obj, "fields.components.myArrayList")?.each {
+                def component = componentService.parse(it, issue.project)
+                issue.addToComponents(component)
+            }
+
+            if (!issue?.save(flush: true))
+                throw new Exception("Error saving issue")
+            issue
         }
+
+        issue.issueType = issueTypeService.parse(JSONUtil.safeRead(obj, 'fields.issuetype'))
+        issue.assignee = userService.parse(JSONUtil.safeRead(obj, 'fields.assignee'))
+        issue.remainingEstimate = JSONUtil.safeRead(obj, "fields.timetracking.remainingEstimate")
+        issue.timeSpent = JSONUtil.safeRead(obj, "fields.timetracking.timeSpent")
+        issue.remainingEstimateSeconds = JSONUtil.safeRead(obj, "fields.timetracking.remainingEstimateSeconds")?.toLong()
+        issue.timeSpentSeconds = JSONUtil.safeRead(obj, "fields.timetracking.timeSpentSeconds")?.toLong()
+        issue.status = statusService.parse(JSONUtil.safeRead(obj, 'fields.status'))
+        issue.reporter = userService.parse(JSONUtil.safeRead(obj, 'fields.reporter'))
+        issue.components?.clear()
+        issue.progressValue = JSONUtil.safeRead(obj, "fields.progress.progress")
+        issue.progressTotal = JSONUtil.safeRead(obj, "fields.progress.total")
+        issue.progressPercent = JSONUtil.safeRead(obj, "fields.progress.percent")
+        issue.updated = Date.parse("yyyy-MM-dd'T'hh:mm:ss.000+0000", JSONUtil.safeRead(obj, "fields.updated"))
+        issue.summary = JSONUtil.safeRead(obj, "fields.summary")
+        issue.priority = priorityService.parse(JSONUtil.safeRead(obj, 'fields.priority'))
+        issue.aggregateProgressValue = JSONUtil.safeRead(obj, "fields.aggregateprogress.progress")
+        issue.aggregateProgressTotal = JSONUtil.safeRead(obj, "fields.aggregateprogress.total")
+        issue.aggregateProgressPercent = JSONUtil.safeRead(obj, "fields.aggregateprogress.percent")
+
+        if (!issue.save(flush: true))
+            throw new Exception("Error saving issue")
+
+        issue.components?.clear()
+        JSONUtil.safeRead(obj, "fields.components.myArrayList")?.each {
+            def component = componentService.parse(it, issue.project)
+            issue.addToComponents(component)
+        }
+        issue.clients?.clear()
+        JSONUtil.safeRead(obj, "fields.customfield_26105.myArrayList")?.each {
+            def client = clientService.parse(it)
+            issue.addToClients(client)
+
+        }
+        if (!issue.save(flush: true))
+            throw new Exception("Error saving issue")
+        issue
     }
 }

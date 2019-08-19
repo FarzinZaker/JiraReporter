@@ -3,14 +3,10 @@ package jirareporter
 import grails.converters.JSON
 import grails.gorm.transactions.Transactional
 
-import java.text.SimpleDateFormat
-
 @Transactional
 class IntegrityService {
 
-    def crossOverService
-
-    def getDeveloperIntegritySummary(List<Map> worklogs, Date from, Date to) {
+    def getDeveloperIntegritySummary(List<Worklog> worklogs, Date from, Date to, Map crossOverData) {
 
         def dailySummary = [:]
         def totalSummary = [:]
@@ -20,24 +16,10 @@ class IntegrityService {
         def minDate = from
         def maxDate = to
 
-        def crossOverData = [:]
-        Configuration.crossOverTeams.each { crossOverTeam ->
-            def newData = crossOverService.getWorkingHours(crossOverTeam.team, crossOverTeam.manager, minDate, maxDate)
-            newData.keySet().each { developer ->
-                if (!crossOverData.containsKey(developer))
-                    crossOverData.put(developer, [:])
-                newData[developer].keySet().each { date ->
-                    if (!crossOverData[developer].containsKey(date))
-                        crossOverData[developer].put(date, 0)
-                    crossOverData[developer][date] += newData[developer][date] ?: 0
-                }
-            }
-        }
-
         worklogs.each { worklog ->
             def developer = worklog.author.displayName
             if (crossOverData.containsKey(developer)) {
-                def date = worklog.started.clearTime()
+                def date = new Date(worklog.started.clearTime().getTime())
                 dates << date
 
                 if (!totalSummary.containsKey(developer))

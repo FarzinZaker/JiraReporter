@@ -14,79 +14,56 @@ class ReportService {
     final String defaultProjectsList = Configuration.projects.collect { it.key }.join(',')
     final String defaultIssueTypeList = Configuration.issueTypes.collect { "\"${it}\"" }.join(',')
 
-    List<Map> getWorklogs(Date from, Date to, String projects, String issueTypes, List<String> components, List<String> clients, List<String> users, List<String> worklogTypes, List<String> statusList) {
+    List<Worklog> getWorklogs(Date from, Date to, List<Project> projects = [], List<IssueType> issueTypes = [], List<Component> componentList = [], List<Client> clientList = [], List<JiraUser> users = [], List<JiraUser> teamMembers = [], Boolean filterTeamMembers, List<String> worklogTypes = [], List<Status> statusList = []) {
 
-        String worklogQyery = "project in (${projects && projects.trim() != '' ? projects : defaultProjectsList}) AND (labels not in (Legacy) OR labels is EMPTY) AND issuetype in (${issueTypes && issueTypes?.replace('"', '')?.trim() != '' ? issueTypes : defaultIssueTypeList})"
+        println 'Started Query'
+        Worklog.createCriteria().list {
+            gte('started', from)
+            lte('started', to)
 
-
-        def result = queryService.execute("${worklogQyery} AND worklogDate >= '${from.format('yyyy/MM/dd')}' AND worklogDate <= '${to.format('yyyy/MM/dd')}'")
-        def tasks = [:]
-        result.issues?.each { issue ->
-            tasks.put(issue.key, [
-                    url: Configuration.serverURL + issue.self.path
-            ])
-        }
-
-        def jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(Configuration.username, Configuration.password))
-        def worklogs = []
-        tasks.each { task ->
-            def json = null
-            if (cacheService.has(task.value.url?.toString() + '/worklog'))
-                json = cacheService.retrieve(task.value.url?.toString() + '/worklog')
-            else {
-                json = jiraClient.getURL(task.value.url?.toString() + '/worklog')
-                cacheService.store(task.value.url?.toString() + '/worklog', json)
+            if (projects.size()) {
+                'in'('project', projects)
             }
-            def list = json.getJSONArray('worklogs')
-            worklogs.addAll(preFilter(worklogService.parseList(list), from, to, users, worklogTypes)?.collect {
-                if (cacheService.has(task.value.url))
-                    json = cacheService.retrieve(task.value.url)
-                else {
-                    json = jiraClient.getURL(task.value.url)
-                    cacheService.store(task.value.url, json)
+
+            if (users.size()) {
+                'in'('author', users)
+            }
+
+            if (filterTeamMembers) {
+                'in'('author', teamMembers + [null])
+            }
+
+            if (worklogTypes.contains('billable') && !worklogTypes.contains('non-billable')) {
+                ilike('comment', '%[billable]%')
+            }
+
+            if (componentList.size() || clientList.size() || issueTypes.size() || statusList.size()) {
+                task {
+
+                    if (issueTypes.size()) {
+                        'in'('issueType', issueTypes)
+                    }
+
+                    if (statusList.size()) {
+                        'in'('status', statusList)
+                    }
+
+                    if (componentList.size()) {
+                        components {
+                            'in'('id', componentList.collect { it.id })
+                        }
+                    }
+                    if (clientList.size()) {
+                        clients {
+                            'in'('id', clientList.collect { it.id })
+                        }
+                    }
                 }
-                it.task = issueService.parse(json)
-                it.project = it.task.project
-                it
-            })
-        }
-
-        worklogs = postFilter(worklogs, components, clients, statusList)
-
-        worklogs
+            }
+        } as List<Worklog>
     }
 
-    List<Map> preFilter(List<Map> list, Date from, Date to, List<String> users, List<String> worklogTypes) {
-        def result = list
-        result = filterDates(result, from, to)
-        result = filterWorklogTypes(result, worklogTypes?.findAll { it })
-        result = filterUsers(result, users?.findAll { it })
-        result
-    }
-
-    List<Map> filterDates(List<Map> list, Date from, Date to) {
-        list?.findAll {
-            it.started >= from && it.started <= to
-        } ?: []
-    }
-
-    List<Map> filterUsers(List<Map> list, List<String> users) {
-        if (!users || users?.size() == 0)
-            return list
-        list?.findAll {
-            users.contains(it.author.name)
-        } ?: []
-    }
-
-    List<Map> postFilter(List<Map> list, List<String> components, List<String> clients, List<String> statusList) {
-        def result = list
-        result = filterComponents(result, components?.findAll { it })
-        result = filterClients(result, clients?.findAll { it })
-        result = filterStatus(result, statusList?.findAll { it })
-        result
-    }
-
-    List<Map> filterComponents(List<Map> list, List<String> components) {
+    List<Worklog> filterComponents(List<Worklog> list, List<String> components) {
         if (!components || components?.size() == 0)
             return list
         list?.findAll {
@@ -99,7 +76,7 @@ class ReportService {
         } ?: []
     }
 
-    List<Map> filterClients(List<Map> list, List<String> clients) {
+    List<Worklog> filterClients(List<Worklog> list, List<String> clients) {
         if (!clients || clients?.size() == 0)
             return list
         list?.findAll {
@@ -112,7 +89,7 @@ class ReportService {
         } ?: []
     }
 
-    List<Map> filterStatus(List<Map> list, List<String> statusList) {
+    List<Worklog> filterStatus(List<Worklog> list, List<String> statusList) {
         if (!statusList || statusList?.size() == 0)
             return list
         list?.findAll { worklog ->
@@ -124,7 +101,7 @@ class ReportService {
         } ?: []
     }
 
-    List<Map> filterWorklogTypes(List<Map> list, List<String> worklogTypes) {
+    List<Worklog> filterWorklogTypes(List<Worklog> list, List<String> worklogTypes) {
         if (!worklogTypes || worklogTypes?.size() == 0)
             return list
         def result = []

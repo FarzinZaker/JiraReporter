@@ -5,7 +5,7 @@ import grails.gorm.transactions.Transactional
 @Transactional
 class RefinementService {
 
-    Map getDeveloperSummary(List<Map> worklogs) {
+    Map getDeveloperSummary(List<Worklog> worklogs) {
 
         def summary = [:]
 
@@ -23,7 +23,7 @@ class RefinementService {
         summary
     }
 
-    Map getClientSummary(List<Map> worklogs) {
+    Map getClientSummary(List<Worklog> worklogs) {
 
         def summary = [:]
 
@@ -43,7 +43,7 @@ class RefinementService {
         summary
     }
 
-    Map getProjectSummary(List<Map> worklogs) {
+    Map getProjectSummary(List<Worklog> worklogs) {
 
         def summary = [:]
 
@@ -61,7 +61,7 @@ class RefinementService {
         summary
     }
 
-    Map getComponentSummary(List<Map> worklogs) {
+    Map getComponentSummary(List<Worklog> worklogs) {
 
         def summary = [:]
 
@@ -81,7 +81,7 @@ class RefinementService {
         summary
     }
 
-    Map getIssueTypeSummary(List<Map> worklogs) {
+    Map getIssueTypeSummary(List<Worklog> worklogs) {
 
         def summary = [:]
 
@@ -99,7 +99,7 @@ class RefinementService {
         summary
     }
 
-    Map getClientDetails(List<Map> worklogs) {
+    Map getClientDetails(List<Worklog> worklogs) {
 
         def summary = [:]
 
@@ -124,7 +124,7 @@ class RefinementService {
         summary
     }
 
-    Map getComponentDetails(List<Map> worklogs) {
+    Map getComponentDetails(List<Worklog> worklogs) {
 
         def summary = [:]
 
@@ -149,7 +149,7 @@ class RefinementService {
         summary
     }
 
-    Map getProjectDetails(List<Map> worklogs) {
+    Map getProjectDetails(List<Worklog> worklogs) {
 
         def summary = [:]
 
@@ -172,7 +172,7 @@ class RefinementService {
         summary
     }
 
-    Map getIssueTypeDetails(List<Map> worklogs) {
+    Map getIssueTypeDetails(List<Worklog> worklogs) {
 
         def summary = [:]
 

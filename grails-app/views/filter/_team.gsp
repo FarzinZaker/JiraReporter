@@ -1,19 +1,19 @@
 <%@ page import="jirareporter.Configuration" %>
 <div class="field">
-    <label for="component">Component:</label>
-    <input id="component" name="component" type="text" value="${params.component}">
+    <label for="team">Team:</label>
+    <input id="team" name="team" type="text" value="${params.team}">
 </div>
 <script>
     $(function () {
-        $('#component').selectize({
+        $('#team').selectize({
             plugins: ['remove_button'],
             valueField: 'value',
             labelField: 'value',
             searchField: 'value',
             create: false,
             options: [
-                <g:each in="${components?.findAll{it}}" var="component">
-                {value: '${component.name}'},
+                <g:each in="${Configuration.crossOverTeams}" var="team">
+                {value: '${team.name}'},
                 </g:each>
             ]
         });

@@ -9,6 +9,7 @@ class WorklogController {
     def componentService
     def integrityService
     def accomplishmentsService
+    def crossOverService
 
     def report() {
 
@@ -27,7 +28,10 @@ class WorklogController {
             to = to - 1.second
         }
 
-        def worklogs = reportService.getWorklogs(from, to, params.project, formatIssueTypes(), formatComponents(), formatClients(), formatUsersList(), formatWorklogTypes(), formatStatus())
+        def teams = formatTeams()
+        def crossOverLogs = crossOverService.getWorkingHours(from, to, teams)
+
+        def worklogs = reportService.getWorklogs(from, to, formatProjects(), formatIssueTypes(), formatComponents(), formatClients(), formatUsersList(), formatTeamMembers(crossOverLogs.keySet() as Set<String>), teams.size > 0, formatWorklogTypes(), formatStatus())
 
         def clientDetails = refinementService.getClientDetails(worklogs)
         def componentDetails = refinementService.getComponentDetails(worklogs)
@@ -40,7 +44,7 @@ class WorklogController {
         def issueTypeSummary = refinementService.getIssueTypeSummary(worklogs)
         def projectSummary = refinementService.getProjectSummary(worklogs)
 
-        def integritySummary = integrityService.getDeveloperIntegritySummary(worklogs, from, to)
+        def integritySummary = integrityService.getDeveloperIntegritySummary(worklogs, from, to, crossOverLogs)
         def accomplishments = accomplishmentsService.getTasks(worklogs)
 
         [
@@ -64,27 +68,51 @@ class WorklogController {
         ]
     }
 
-    private List<String> formatUsersList() {
-        params.user?.split(',')?.collect { it.split('\\(')?.last()?.replace(')', '')?.trim() }?.findAll { it }
+    private List<JiraUser> formatUsersList() {
+        JiraUser.findAllByDisplayNameInList(params.user?.split(',')?.collect {
+            it.split('\\(')?.first()?.replace(')', '')?.trim()
+        }?.findAll { it } + ['-'])
+    }
+
+    private List<JiraUser> formatTeamMembers(Set<String> users) {
+        JiraUser.findAllByDisplayNameInList(users.toList() + ['-'])
     }
 
     private List<String> formatWorklogTypes() {
         params.worklogTypes?.split(',')?.collect { it.split('\\(')?.last()?.replace(')', '')?.trim() }?.findAll { it }
     }
 
-    private String formatIssueTypes() {
-        params.issueType?.split(',')?.collect { "\"${it}\"" }?.join(',')
+    private List<Project> formatProjects() {
+        Project.findAllByKeyInList(params.project?.split(',')?.collect { it.toString()?.trim() }?.findAll {
+            it
+        } + ['-'])
     }
 
-    private List<String> formatComponents() {
-        params.component?.split(',')?.findAll { it }
+    private List<IssueType> formatIssueTypes() {
+        IssueType.findAllByNameInList(params.issueType?.split(',')?.collect { it.toString()?.trim() }?.findAll {
+            it
+        } + ['-'])
     }
 
-    private List<String> formatClients() {
-        params.client?.split(',')?.collect { it.toString()?.toLowerCase()?.trim() }?.findAll { it }
+    private List<Component> formatComponents() {
+        Component.findAllByNameInList(params.component?.split(',')?.collect { it.toString()?.trim() }?.findAll {
+            it
+        } + ['-'])
     }
 
-    private List<String> formatStatus() {
-        params.status?.split(',')?.collect { it.toString()?.toUpperCase()?.trim() }?.findAll { it }
+    private List<Client> formatClients() {
+        Client.findAllByNameInList(params.client?.split(',')?.collect { it.toString()?.trim() }?.findAll { it } + ['-'])
+    }
+
+    private List<Status> formatStatus() {
+        def list = []
+        params.status?.split(',')?.collect { it.toString()?.trim() }?.findAll { it }?.each { st ->
+            list.addAll(Configuration.statusList.find { it.name == st }.details)
+        }
+        Status.findAllByNameInList(list + ['-'])
+    }
+
+    private List<String> formatTeams() {
+        params.team?.split(',')?.collect { it.toString()?.trim() }?.findAll { it }
     }
 }

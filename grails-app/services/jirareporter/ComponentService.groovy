@@ -9,7 +9,7 @@ class ComponentService {
 
     def cacheService
 
-    List<Map> getAll(List<String> projects) {
+    List<Component> getAll(List<String> projects) {
 
         def jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(Configuration.username, Configuration.password))
         def result = []
@@ -27,7 +27,7 @@ class ComponentService {
         result
     }
 
-    List<Map> parseList(JSONArray list) {
+    List<Component> parseList(JSONArray list) {
         def issues = []
         for (def i = 0; i < list.length(); i++) {
             def obj = list.getJSONObject(i)
@@ -36,12 +36,23 @@ class ComponentService {
         issues
     }
 
-    Map parse(JSONObject obj) {
-        [
-                url    : obj.self,
-                id     : obj.id,
-                name   : obj.name,
-                project: obj.project
-        ]
+    Component parse(JSONObject obj, Project defaultProject = null) {
+        if (obj == JSONObject.NULL)
+            return null
+
+        def url = obj?.self
+        def project = obj.has('project') ? Project.findByKey(obj.project) : defaultProject
+        def component = Component.findByUrl(url)
+        if (!component) {
+            component = new Component(
+                    url: url,
+                    name: obj.name,
+                    project: project ?: defaultProject)
+            component = component.save(flush: true)
+            if (!component)
+                throw new Exception("Error Saving Component")
+        }
+        component
+
     }
 }

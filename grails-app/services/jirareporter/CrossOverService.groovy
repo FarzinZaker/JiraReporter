@@ -11,15 +11,35 @@ import org.grails.web.json.JSONObject
 @Transactional
 class CrossOverService {
 
+    Map getWorkingHours(Date from, Date to, List<String> teams) {
+        def crossOverData = [:]
+        def xoTeams = Configuration.crossOverTeams
+        if (teams?.size())
+            xoTeams = xoTeams.findAll { teams.contains(it.name) }
+        xoTeams.each { crossOverTeam ->
+            def newData = getWorkingHours(crossOverTeam.team, crossOverTeam.manager, from, to)
+            newData.keySet().each { developer ->
+                if (!crossOverData.containsKey(developer))
+                    crossOverData.put(developer, [:])
+                newData[developer].keySet().each { date ->
+                    if (!crossOverData[developer].containsKey(date))
+                        crossOverData[developer].put(date, 0)
+                    crossOverData[developer][date] += newData[developer][date] ?: 0
+                }
+            }
+        }
+        crossOverData
+    }
+
     Map<String, Map<Date, Double>> getWorkingHours(def teamId, def managerId, Date from, Date to) {
 
         def result = [:]
 
-        def maxDate = from
+//        def maxDate = from
 
         def date = from - 1
 
-        while (maxDate < to + 1) {
+        while (date < to + 1) {
             def dateStr = date.format('yyyy-MM-dd')
 
             def get = new HttpGet("https://api.crossover.com/api/v2/timetracking/timesheets/assignment?date=${dateStr}&fullTeam=true&managerId=${managerId}&period=WEEK&teamId=${teamId}")
@@ -44,12 +64,12 @@ class CrossOverService {
                         if (!result[record.name].containsKey(statDate))
                             result[record.name].put(statDate, stat.hours)
                     }
-                    if (statDate > maxDate)
-                        maxDate = statDate
+//                    if (statDate > maxDate)
+//                        maxDate = statDate
                 }
             }
             use(TimeCategory) {
-                date = maxDate + 1.day
+                date = date + 1.day
             }
         }
         result
