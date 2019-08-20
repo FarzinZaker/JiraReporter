@@ -6,25 +6,10 @@ import org.codehaus.jettison.json.JSONObject
 
 @Transactional
 class ComponentService {
-
-    def cacheService
-
+    
     List<Component> getAll(List<String> projects) {
 
-        def jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(Configuration.username, Configuration.password))
-        def result = []
-        projects.each { project ->
-            def url = "${Configuration.serverURL}/rest/api/latest/project/${project}/components"
-            def json = null
-            if (cacheService.has(url))
-                json = cacheService.retrieve(url)
-            else {
-                json = jiraClient.getURLAsList(url)
-                cacheService.store(url, json)
-            }
-            result.addAll(parseList(json as JSONArray))
-        }
-        result
+        Component.findAllByProjectInList(Project.findAllByKeyInList(projects))
     }
 
     List<Component> parseList(JSONArray list) {

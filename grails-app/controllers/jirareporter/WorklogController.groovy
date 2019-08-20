@@ -15,7 +15,7 @@ class WorklogController {
 
         println params
 
-        def components = componentService.getAll(Configuration.projects.collect { it.key?.toString() })
+        def components =  componentService.getAll(Configuration.projects.collect { it.key?.toString() })
 
         if (!params.from)
             return redirect(action: 'report', params: params + [from: (new Date() - 1).format('MM/dd/yyyy')])

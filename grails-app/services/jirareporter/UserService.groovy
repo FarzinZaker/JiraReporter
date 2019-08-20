@@ -8,20 +8,13 @@ import org.codehaus.jettison.json.JSONObject
 @Transactional
 class UserService {
 
-    def cacheService
-
     List<JiraUser> search(String username) {
-
-        def jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(Configuration.username, Configuration.password))
-        def url = "${Configuration.serverURL}/rest/api/latest/user/search?startAt=0&maxResults=10&username=${username}"
-        def json = null
-        if (cacheService.has(url))
-            json = cacheService.retrieve(url)
-        else {
-            json = jiraClient.getURLAsList(url)
-            cacheService.store(url, json)
+        def nameList = CrossOverLog.createCriteria().list {
+            projections {
+                distinct('name')
+            }
         }
-        parseList(json as JSONArray)
+        JiraUser.findAllByDisplayNameInListAndNameIlikeAndDisplayNameIlike(nameList, "%$username%", "%$username%")
     }
 
     List<JiraUser> parseList(JSONArray list) {
