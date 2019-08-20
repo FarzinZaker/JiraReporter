@@ -12,23 +12,60 @@ import org.grails.web.json.JSONObject
 class CrossOverService {
 
     Map getWorkingHours(Date from, Date to, List<String> teams) {
+        def logs = CrossOverLog.createCriteria().list {
+            gte('date', from)
+            lte('date', to)
+            if (teams?.size()) {
+                'in'('team', teams)
+            }
+        }
+        def data = logs.groupBy { it.name }.each {
+            it.value = it.value.groupBy { new Date(it.date.getTime()) }.each {
+                it.value = it.value.hours?.find() ?: 0
+            }
+        }
+        def dates = data?.collect { it.value.keySet() }?.flatten()?.unique()
+        dates.each { date ->
+            data.each { developer ->
+                if (!developer.value.containsKey(date))
+                    developer.value.put(date, 0)
+            }
+        }
+        data
+    }
+
+    void persist(Date from, Date to, List<String> teams) {
         def crossOverData = [:]
         def xoTeams = Configuration.crossOverTeams
         if (teams?.size())
             xoTeams = xoTeams.findAll { teams.contains(it.name) }
         xoTeams.each { crossOverTeam ->
+            if (!crossOverData.containsKey(crossOverTeam.name))
+                crossOverData.put(crossOverTeam.name, [:])
             def newData = getWorkingHours(crossOverTeam.team, crossOverTeam.manager, from, to)
             newData.keySet().each { developer ->
-                if (!crossOverData.containsKey(developer))
-                    crossOverData.put(developer, [:])
+                if (!crossOverData[crossOverTeam.name].containsKey(developer))
+                    crossOverData[crossOverTeam.name].put(developer, [:])
                 newData[developer].keySet().each { date ->
-                    if (!crossOverData[developer].containsKey(date))
-                        crossOverData[developer].put(date, 0)
-                    crossOverData[developer][date] += newData[developer][date] ?: 0
+                    if (!crossOverData[crossOverTeam.name][developer].containsKey(date))
+                        crossOverData[crossOverTeam.name][developer].put(date, 0)
+                    crossOverData[crossOverTeam.name][developer][date] += newData[developer][date] ?: 0
                 }
             }
         }
-        crossOverData
+
+        crossOverData.each { team ->
+            team.value.each { developer ->
+                developer.value.each { date ->
+                    def xoLog = CrossOverLog.findByTeamAndNameAndDate(team.key, developer.key, date.key)
+                    if (!xoLog)
+                        xoLog = new CrossOverLog(team: team.key, name: developer.key, date: date.key)
+                    xoLog.hours = date.value
+                    xoLog.save()
+                }
+            }
+        }
+
     }
 
     Map<String, Map<Date, Double>> getWorkingHours(def teamId, def managerId, Date from, Date to) {

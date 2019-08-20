@@ -105,7 +105,7 @@ environments:
       username: root
       password: 4cl4t3w05l0g1!
       pooled: true
-      logSql: true
+      logSql: false
       driverClassName: com.mysql.jdbc.Driver
       dialect: org.hibernate.dialect.MySQL5Dialect
       configClass: eshop.DomainConfiguration

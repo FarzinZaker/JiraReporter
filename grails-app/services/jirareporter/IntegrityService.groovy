@@ -65,13 +65,15 @@ class IntegrityService {
         }
 
         dailySummary.keySet().each { developer ->
-            dailySummary[developer].keySet().each { date ->
+            dates.each { date ->
 
                 if (!totalSummary[developer]['jiraTime'])
                     totalSummary[developer].put('jiraTime', 0)
                 if (!totalSummary[developer]['crossOverTime'])
                     totalSummary[developer].put('crossOverTime', 0)
 
+                if (!dailySummary[developer][date])
+                    dailySummary[developer].put(date, [:])
                 if (!dailySummary[developer][date]['jiraTime'])
                     dailySummary[developer][date].put('jiraTime', 0)
                 if (!dailySummary[developer][date]['crossOverTime'])

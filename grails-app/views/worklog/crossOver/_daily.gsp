@@ -71,6 +71,7 @@
         series: [{
             name: 'Sales per employee',
             borderWidth: 1,
+            turboThreshold: 10000000,
             data: [
                 <g:each in="${summary.developers}" var="developer" status="i">
                 <g:each in="${summary.dates.sort()}" var="date" status="j">
