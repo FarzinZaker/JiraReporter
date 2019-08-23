@@ -1,5 +1,7 @@
 package jirareporter
 
+import grails.util.Environment
+
 class WorklogsSyncJob {
     static triggers = {
         simple repeatInterval: 5000l // execute job once in 5 seconds
@@ -10,6 +12,9 @@ class WorklogsSyncJob {
     def syncService
 
     def execute() {
+
+        if(Environment.isDevelopmentMode())
+            return
 
         //Recent
         def jobConfig = SyncJobConfig.findByName('RECENT_ISSUES')

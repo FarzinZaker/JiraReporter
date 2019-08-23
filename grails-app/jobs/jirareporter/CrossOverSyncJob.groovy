@@ -1,5 +1,7 @@
 package jirareporter
 
+import grails.util.Environment
+
 class CrossOverSyncJob {
 
     static triggers = {
@@ -12,6 +14,9 @@ class CrossOverSyncJob {
 
 
     def execute() {
+
+        if(Environment.isDevelopmentMode())
+            return
 
         //Recent
         def jobConfig = SyncJobConfig.findByName('RECENT_XO_LOGS')
