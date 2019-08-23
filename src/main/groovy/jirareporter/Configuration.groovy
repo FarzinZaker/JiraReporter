@@ -27,7 +27,8 @@ class Configuration {
                 [name: 'Platinum-TAKE', key: 'PLTAKE'],
                 [name: 'Platinum-Beckon', key: 'PLBECK'],
                 [name: 'Platinum-NorthPlains', key: 'PLNP'],
-                [name: 'Platinum-SMS', key: 'PLSMS']
+                [name: 'Platinum-SMS', key: 'PLSMS'],
+                [name: 'Platinum-OneSpot', key: 'PLOS']
         ]
     }
 
