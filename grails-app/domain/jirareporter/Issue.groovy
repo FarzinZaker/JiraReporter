@@ -22,6 +22,8 @@ class Issue {
     Double aggregateProgressTotal
     Double aggregateProgressPercent
 
+    Issue parent
+
     transient Map assignees = [:]
 
     static hasMany = [components: Component, clients: Client]
@@ -43,11 +45,11 @@ class Issue {
         aggregateProgressValue nullable: true
         aggregateProgressTotal nullable: true
         aggregateProgressPercent nullable: true
-
+        parent nullable: true
     }
 
     @Override
-    String toString(){
+    String toString() {
         key
     }
 }

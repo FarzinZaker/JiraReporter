@@ -35,6 +35,7 @@ class IssueService {
         if (!issue) {
             issue = new Issue(
                     key: key,
+                    parent: Issue.findByKey(JSONUtil.safeRead(obj, 'fields.parent.myHashMap.key')),
                     issueType: issueTypeService.parse(JSONUtil.safeRead(obj, 'fields.issuetype')),
                     assignee: userService.parse(JSONUtil.safeRead(obj, 'fields.assignee')),
                     remainingEstimate: JSONUtil.safeRead(obj, "fields.timetracking.remainingEstimate"),
