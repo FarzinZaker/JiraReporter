@@ -92,6 +92,7 @@ class IssueService {
         issue.aggregateProgressValue = JSONUtil.safeRead(obj, "fields.aggregateprogress.progress")
         issue.aggregateProgressTotal = JSONUtil.safeRead(obj, "fields.aggregateprogress.total")
         issue.aggregateProgressPercent = JSONUtil.safeRead(obj, "fields.aggregateprogress.percent")
+        issue.parent = Issue.findByKey(JSONUtil.safeRead(obj, 'fields.parent.myHashMap.key'))
 
         if (!issue.save(flush: true))
             throw new Exception("Error saving issue")

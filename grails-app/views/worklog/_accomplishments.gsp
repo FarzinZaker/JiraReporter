@@ -3,6 +3,12 @@
     <div class="task ${task.issueType.name.replace(' ', '_').replace('-', '')}">
         <div class="issue">
             <div>
+                <g:if test="${task.parent}">
+                    <a href="https://jira.devfactory.com/browse/${task.parent.key}" target="_blank">
+                        <img src="${task.parent.issueType.icon}" alt="${task.parent.issueType.name}"
+                             title="${task.parent.issueType.name}"/> ${task.parent.key}
+                    </a> - ${task.parent.summary} /
+                </g:if>
                 <a href="https://jira.devfactory.com/browse/${task.key}" target="_blank">
                     <img src="${task.issueType.icon}" alt="${task.issueType.name}"
                          title="${task.issueType.name}"/> ${task.key}
