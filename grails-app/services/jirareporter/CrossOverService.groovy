@@ -21,7 +21,7 @@ class CrossOverService {
         }
         def data = logs.groupBy { it.name }.each {
             it.value = it.value.groupBy { new Date(it.date.getTime()) }.each {
-                it.value = it.value.hours?.find() ?: 0
+                it.value = Math.round((it.value.hours?.find() ?: 0) * 6 as Double).toDouble() / 6
             }
         }
         def dates = data?.collect { it.value.keySet() }?.flatten()?.unique()

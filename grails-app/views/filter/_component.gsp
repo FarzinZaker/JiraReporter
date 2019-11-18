@@ -8,12 +8,15 @@
         $('#component').selectize({
             plugins: ['remove_button'],
             valueField: 'value',
-            labelField: 'value',
-            searchField: 'value',
+            labelField: 'text',
+            searchField: 'text',
             create: false,
             options: [
-                <g:each in="${components?.findAll{it}}" var="component">
-                {value: '${component.name}'},
+                <g:each in="${components?.findAll{it}?.sort{it.fullName}}" var="component">
+                {
+                    value: '${component.name}',
+                    text: '${component.fullName}'
+                },
                 </g:each>
             ]
         });

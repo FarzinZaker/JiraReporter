@@ -67,10 +67,10 @@ class RefinementService {
 
         worklogs.each { worklog ->
             worklog.task.components?.each { component ->
-                if (!summary.containsKey(component.name))
-                    summary.put(component.name, [timeSpent: 0, tasks: new HashSet<String>()])
-                summary[component.name].timeSpent += worklog.timeSpentSeconds
-                summary[component.name].tasks.add(worklog.issueId)
+                if (!summary.containsKey(component.fullName))
+                    summary.put(component.fullName, [timeSpent: 0, tasks: new HashSet<String>()])
+                summary[component.fullName].timeSpent += worklog.timeSpentSeconds
+                summary[component.fullName].tasks.add(worklog.issueId)
             }
         }
 
@@ -132,10 +132,10 @@ class RefinementService {
             if (!summary.containsKey(worklog.author.displayName))
                 summary.put(worklog.author.displayName, [data: worklog.author, others: [:]])
             worklog.task.components.each { component ->
-                if (!summary[worklog.author.displayName].others.containsKey(component.name))
-                    summary[worklog.author.displayName].others.put(component.name, [timeSpendSeconds: 0, tasks: new HashSet<String>()])
-                summary[worklog.author.displayName].others[component.name].timeSpendSeconds += worklog.timeSpentSeconds
-                summary[worklog.author.displayName].others[component.name].tasks.add(worklog.issueId)
+                if (!summary[worklog.author.displayName].others.containsKey(component.fullName))
+                    summary[worklog.author.displayName].others.put(component.fullName, [timeSpendSeconds: 0, tasks: new HashSet<String>()])
+                summary[worklog.author.displayName].others[component.fullName].timeSpendSeconds += worklog.timeSpentSeconds
+                summary[worklog.author.displayName].others[component.fullName].tasks.add(worklog.issueId)
             }
         }
 

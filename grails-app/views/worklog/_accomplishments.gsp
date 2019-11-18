@@ -45,6 +45,7 @@
             </g:if>
             ${task.status?.name}</span>
             Client: <span class="tag">${task.clients?.join(' - ')}</span>
+            Components: <span class="tag">${task.components?.name?.join(' - ')}</span>
         </div>
     </div>
 </g:each>
