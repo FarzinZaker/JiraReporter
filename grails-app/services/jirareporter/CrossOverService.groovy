@@ -79,7 +79,7 @@ class CrossOverService {
         while (date < to + 1) {
             def dateStr = date.format('yyyy-MM-dd')
 
-            def get = new HttpGet("https://api.crossover.com/api/v2/timetracking/timesheets/assignment?date=${dateStr}&fullTeam=true&managerId=${managerId}&period=WEEK&teamId=${teamId}")
+            def get = new HttpGet("https://api.crossover.com/api/v2/timetracking/timesheets/assignment?date=${dateStr}&fullTeam=true${managerId ? '&managerId=' + managerId : ''}&period=WEEK&teamId=${teamId}")
             get.addHeader('Accept', 'application/json, text/plain, */*')
             get.addHeader('Authorization', "Basic ${"${Configuration.crossOverUsername}:${Configuration.crossOverPassowrd}".bytes.encodeBase64().toString()}")
             get.addHeader('Content-Type', 'application/json;charset=UTF-8')

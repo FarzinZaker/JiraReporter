@@ -4,7 +4,7 @@
 
 <script language="JavaScript" type="text/javascript">
     function timeFormat(time) {
-        var secs = time * 3600;
+        var secs = Math.round(time * 3600);
         var mins = 0;
         var hours = 0;
         var days = 0;

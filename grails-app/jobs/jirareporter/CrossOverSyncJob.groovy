@@ -15,8 +15,8 @@ class CrossOverSyncJob {
 
     def execute() {
 
-        if(Environment.isDevelopmentMode())
-            return
+//        if(Environment.isDevelopmentMode())
+//            return
 
         //Recent
         def jobConfig = SyncJobConfig.findByName('RECENT_XO_LOGS')
