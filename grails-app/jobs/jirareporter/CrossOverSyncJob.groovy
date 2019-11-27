@@ -15,7 +15,7 @@ class CrossOverSyncJob {
 
     def execute() {
 
-        if(Environment.isDevelopmentMode())
+        if(!Environment.isDevelopmentMode())
             return
 
         //Recent
