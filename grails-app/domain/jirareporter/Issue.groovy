@@ -21,6 +21,8 @@ class Issue {
     Double aggregateProgressValue
     Double aggregateProgressTotal
     Double aggregateProgressPercent
+    Date startDate
+    Date dueDate
 
     Issue parent
 
@@ -46,6 +48,8 @@ class Issue {
         aggregateProgressTotal nullable: true
         aggregateProgressPercent nullable: true
         parent nullable: true
+        startDate nullable: true
+        dueDate nullable: true
     }
 
     @Override

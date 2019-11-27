@@ -1,5 +1,7 @@
 package jirareporter
 
+import org.grails.web.json.JSONObject
+
 class JSONUtil {
 
     static def safeRead(obj, property) {
@@ -9,7 +11,7 @@ class JSONUtil {
             parts.each { part ->
                 value = value."${part}"
             }
-            value
+            value == 'null' || value?.toString()?.toLowerCase() == 'null' ? null : value
         } catch (Exception ex) {
 //            println ex.message
             return null

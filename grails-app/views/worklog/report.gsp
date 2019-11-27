@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta name="layout" content="main"/>
-    <title>Worklog Report</title>
+    <title>Worklogs</title>
 </head>
 
 <body>

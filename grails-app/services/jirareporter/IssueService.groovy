@@ -33,6 +33,8 @@ class IssueService {
         def issue = Issue.findByKey(key)
 
         if (!issue) {
+            def startDateStr = JSONUtil.safeRead(obj, "fields.customfield_13310")
+            def dueDateStr = JSONUtil.safeRead(obj, "fields.duedate")
             issue = new Issue(
                     key: key,
                     parent: Issue.findByKey(JSONUtil.safeRead(obj, 'fields.parent.myHashMap.key')),
@@ -53,7 +55,9 @@ class IssueService {
                     priority: priorityService.parse(JSONUtil.safeRead(obj, 'fields.priority')),
                     aggregateProgressValue: JSONUtil.safeRead(obj, "fields.aggregateprogress.progress"),
                     aggregateProgressTotal: JSONUtil.safeRead(obj, "fields.aggregateprogress.total"),
-                    aggregateProgressPercent: JSONUtil.safeRead(obj, "fields.aggregateprogress.percent")
+                    aggregateProgressPercent: JSONUtil.safeRead(obj, "fields.aggregateprogress.percent"),
+                    startDate: startDateStr ? Date.parse("yyyy-MM-dd'T'hh:mm:ss.000+0000", startDateStr) : null,
+                    dueDate: dueDateStr ? Date.parse("yyyy-MM-dd'T'hh:mm:ss.000+0000", dueDateStr) : null
             )
             if (!issue.save(flush: true))
                 throw new Exception("Error saving issue")
@@ -93,6 +97,10 @@ class IssueService {
         issue.aggregateProgressTotal = JSONUtil.safeRead(obj, "fields.aggregateprogress.total")
         issue.aggregateProgressPercent = JSONUtil.safeRead(obj, "fields.aggregateprogress.percent")
         issue.parent = Issue.findByKey(JSONUtil.safeRead(obj, 'fields.parent.myHashMap.key'))
+        def startDateStr = JSONUtil.safeRead(obj, "fields.customfield_13310")
+        issue.startDate = startDateStr ? Date.parse("yyyy-MM-dd'T'hh:mm:ss.000+0000", startDateStr) : null
+        def endDateStr = JSONUtil.safeRead(obj, "fields.duedate")
+        issue.dueDate = endDateStr ? Date.parse("yyyy-MM-dd'T'hh:mm:ss.000+0000", endDateStr) : null
 
         if (!issue.save(flush: true))
             throw new Exception("Error saving issue")
@@ -111,5 +119,49 @@ class IssueService {
         if (!issue.save(flush: true))
             throw new Exception("Error saving issue")
         issue
+    }
+
+    List<Issue> parseLinks(JSONArray list, Issue issue) {
+        def links = []
+        for (def i = 0; i < list.length(); i++) {
+            def obj = list.getJSONObject(i)
+            links << parseLink(obj, issue)
+        }
+
+        links = links.findAll { it }
+
+        IssueLink.executeUpdate("delete from IssueLink where firstIssue = :issue and key not in :keyList", [issue: issue, keyList: links.collect(it.key) ?: ['-']])
+        links
+    }
+
+    IssueLink parseLink(JSONObject obj, Issue issue) {
+        if (obj == JSONObject.NULL)
+            return null
+
+        def key = JSONUtil.safeRead(obj, "id")
+        def application = JSONUtil.safeRead(obj, project: 'application.type')?.toString()
+        if (application != 'com.atlassian.jira')
+            return null
+
+        def type = JSONUtil.safeRead(obj, 'relationship')
+        def targetIssueKey = JSONUtil.safeRead(obj, 'object.title')?.toString()
+        def targetIssue = Issue.findByKey(targetIssueKey)
+        if (!targetIssue)
+            return null
+
+        def link = IssueLink.findByKey(key)
+        if (!link) {
+            link = new IssueLink(key: key, type: type, firstIssue: issue, secondIssue: targetIssue).save()
+            if (!link)
+                throw new Exception("Error creating Issue Link")
+        } else {
+            link.type = type
+            link.firstIssue = issue
+            link.secondIssue = targetIssue
+            link = link.save()
+            if (!link)
+                throw new Exception("Error Updating Issue Link")
+        }
+        link
     }
 }

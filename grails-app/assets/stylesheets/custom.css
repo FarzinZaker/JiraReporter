@@ -659,3 +659,16 @@ input[type=submit] {
     margin-bottom: 10px;
     margin-left: 60px;
 }
+
+#gantt {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.k-grid-header th.k-header{
+    white-space: pre-wrap;
+}
+
+.k-grid-content tr td{
+    /*white-space: pre-wrap;*/
+}

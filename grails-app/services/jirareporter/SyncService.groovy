@@ -1,6 +1,7 @@
 package jirareporter
 
 import grails.gorm.transactions.Transactional
+import org.grails.web.json.JSONArray
 
 @Transactional
 class SyncService {
@@ -39,6 +40,17 @@ class SyncService {
             def issue = issueService.parse(json)
 
 
+            if (cacheService.has(url + '/remotelink'))
+                json = cacheService.retrieve(url + '/remotelink')
+            else {
+                json = jiraClient.getURL(url + '/remotelink')
+                cacheService.store(url + '/remotelink', json)
+            }
+
+            def list = json as JSONArray
+            issueService.parseLinks(list, issue)
+
+
             if (cacheService.has(url + '/worklog'))
                 json = cacheService.retrieve(url + '/worklog')
             else {
@@ -46,7 +58,7 @@ class SyncService {
                 cacheService.store(url + '/worklog', json)
             }
 
-            def list = json.getJSONArray('worklogs')
+            list = json.getJSONArray('worklogs')
             worklogService.parseList(list, issue)
         }
     }
