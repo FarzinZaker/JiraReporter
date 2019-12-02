@@ -14,7 +14,7 @@ class ReportService {
     final String defaultProjectsList = Configuration.projects.collect { it.key }.join(',')
     final String defaultIssueTypeList = Configuration.issueTypes.collect { "\"${it}\"" }.join(',')
 
-    List<Worklog> getWorklogs(Date from, Date to, List<Project> projects = [], List<IssueType> issueTypes = [], List<Component> componentList = [], List<Client> clientList = [], List<JiraUser> users = [], List<JiraUser> teamMembers = [], Boolean filterTeamMembers, List<String> worklogTypes = [], List<Status> statusList = []) {
+    List<Worklog> getWorklogs(Date from, Date to, List<Project> projects = [], List<IssueType> issueTypes = [], List<Priority> priorities = [], List<Component> componentList = [], List<Client> clientList = [], List<JiraUser> users = [], List<JiraUser> teamMembers = [], Boolean filterTeamMembers, List<String> worklogTypes = [], List<Status> statusList = []) {
 
         println 'Started Query'
         Worklog.createCriteria().list {
@@ -37,11 +37,15 @@ class ReportService {
                 ilike('comment', '%[billable]%')
             }
 
-            if (componentList.size() || clientList.size() || issueTypes.size() || statusList.size()) {
+            if (componentList.size() || clientList.size() || issueTypes.size() || statusList.size() || priorities.size()) {
                 task {
 
                     if (issueTypes.size()) {
                         'in'('issueType', issueTypes)
+                    }
+
+                    if (priorities.size()) {
+                        'in'('priority', priorities)
                     }
 
                     if (statusList.size()) {

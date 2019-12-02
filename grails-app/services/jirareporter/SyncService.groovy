@@ -1,12 +1,12 @@
 package jirareporter
 
+import grails.converters.JSON
 import grails.gorm.transactions.Transactional
 import org.grails.web.json.JSONArray
 
 @Transactional
 class SyncService {
 
-    def queryService
     def cacheService
     def issueService
     def worklogService
@@ -16,17 +16,19 @@ class SyncService {
 
     void getWorklogs(Date from, Date to) {
 
-        String worklogQyery = "project in (${defaultProjectsList}) AND (labels not in (Legacy) OR labels is EMPTY) AND issuetype in (${defaultIssueTypeList})"
+        def jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(Configuration.username, Configuration.password))
 
-        def result = queryService.execute("${worklogQyery} AND worklogDate >= '${from.format('yyyy/MM/dd')}' AND worklogDate <= '${to.format('yyyy/MM/dd')}'")
+        String worklogQyery = "project in (${defaultProjectsList}) AND (labels not in (Legacy) OR labels is EMPTY) AND issuetype in (${defaultIssueTypeList})"
+        worklogQyery = "${worklogQyery} AND ((worklogDate >= '${from.format('yyyy/MM/dd')}' AND worklogDate <= '${to.format('yyyy/MM/dd')}') OR (updated >= '${from.format('yyyy/MM/dd')}' AND updated <= '${to.format('yyyy/MM/dd')}'))"
+
+        def result = jiraClient.getURL("${Configuration.serverURL}/rest/api/latest/search?jql=" + URLEncoder.encode(worklogQyery, 'UTF-8'))
         def tasks = [:]
-        result.issues?.each { issue ->
+        result.issues?.myArrayList?.each { issue ->
             tasks.put(issue.key, [
-                    url: Configuration.serverURL + issue.self.path
+                    url: issue.self
             ])
         }
 
-        def jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(Configuration.username, Configuration.password))
         tasks.each { task ->
             def json = null
             def url = task.value.url?.toString()
@@ -39,16 +41,7 @@ class SyncService {
             }
             def issue = issueService.parse(json)
 
-
-            if (cacheService.has(url + '/remotelink'))
-                json = cacheService.retrieve(url + '/remotelink')
-            else {
-                json = jiraClient.getURL(url + '/remotelink')
-                cacheService.store(url + '/remotelink', json)
-            }
-
-            def list = json as JSONArray
-            issueService.parseLinks(list, issue)
+            issueService.parseLinks(JSONUtil.safeRead(json, 'fields.issuelinks'), issue)
 
 
             if (cacheService.has(url + '/worklog'))
@@ -58,7 +51,7 @@ class SyncService {
                 cacheService.store(url + '/worklog', json)
             }
 
-            list = json.getJSONArray('worklogs')
+            def list = json.getJSONArray('worklogs')
             worklogService.parseList(list, issue)
         }
     }

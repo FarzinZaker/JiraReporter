@@ -7,6 +7,10 @@ class IssueLink {
     Issue firstIssue
     Issue secondIssue
 
+    static mapping = {
+        key column: 'jira_key'
+    }
+
     static constraints = {
     }
 }

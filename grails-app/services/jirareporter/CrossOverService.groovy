@@ -51,6 +51,12 @@ class CrossOverService {
                         crossOverData[crossOverTeam.name][developer].put(date, 0)
                     crossOverData[crossOverTeam.name][developer][date] += newData[developer][date] ?: 0
                 }
+
+                def jiraUser = JiraUser.findByDisplayName(developer)
+                if (jiraUser) {
+                    jiraUser.teamName = crossOverTeam.name
+                    jiraUser.save()
+                }
             }
         }
 

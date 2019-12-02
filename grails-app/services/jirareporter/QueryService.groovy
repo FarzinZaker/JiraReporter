@@ -14,7 +14,7 @@ class QueryService {
         final JerseyJiraRestClientFactory factory = new JerseyJiraRestClientFactory()
         final JiraRestClient restClient = factory.createWithBasicHttpAuthentication(new URI(Configuration.serverURL), Configuration.username, Configuration.password)
         final NullProgressMonitor pm = new NullProgressMonitor()
-        restClient.getSearchClient().searchJql(jql, 1000, 0, pm)
+        restClient.getSearchClient().searchJql(jql, 10000, 0, pm)
     }
 
     Issue getIssue(String key) {

@@ -13,16 +13,22 @@
 </head>
 
 <body>
-<div id="content" role="main" class="container-fluid">
-    <section class="row colset-2-its">
-        <div class="col-lg-2">
-            <g:render template="/filter/filter" model="${[hideTime: true]}"/>
-        </div>
+<div id="content" role="main">
+    <table class="main-body">
+        <tr>
+            <td class="filter-column">
+                <g:render template="filter"/>
+            </td>
 
-        <div class="col-lg-10">
-            <g:render template="grid"/>
-        </div>
-    </section>
+            <td class="expander-cell">
+                <g:render template="/filter/expander"/>
+            </td>
+
+            <td class="body-column">
+                <g:render template="grid"/>
+            </td>
+        </tr>
+    </table>
 </div>
 
 </body>

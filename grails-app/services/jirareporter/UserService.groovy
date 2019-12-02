@@ -27,7 +27,7 @@ class UserService {
     }
 
     JiraUser parse(def obj) {
-        if (obj == JSONObject.NULL)
+        if (!obj || obj == JSONObject.NULL)
             return null
 
         def name = obj.name

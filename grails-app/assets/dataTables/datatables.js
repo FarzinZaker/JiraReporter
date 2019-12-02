@@ -63830,7 +63830,7 @@ this.pdfMake = this.pdfMake || {}; this.pdfMake.vfs = {
 			str+input;
 	
 		var filter = $('<div/>', {
-				'id': ! features.f ? tableId+'_filter' : null,
+				'id': ! features.f ? tableId+'worklog._filter' : null,
 				'class': classes.sFilter
 			} )
 			.append( $('<label/>' ).append( str ) );

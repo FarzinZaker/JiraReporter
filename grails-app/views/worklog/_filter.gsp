@@ -1,9 +1,8 @@
 <g:form controller="worklog" action="report" class="filterPanel">
-    <g:if test="${!hideTime}">
     <g:render template="/filter/time"/>
-    </g:if>
     <g:render template="/filter/project"/>
     <g:render template="/filter/issueType"/>
+    <g:render template="/filter/priority"/>
     <g:render template="/filter/status"/>
     <g:render template="/filter/component"/>
     <g:render template="/filter/client"/>

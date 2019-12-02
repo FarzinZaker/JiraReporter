@@ -5,6 +5,8 @@ class Issue {
     String key
     IssueType issueType
     JiraUser assignee
+    String originalEstimate
+    Long originalEstimateSeconds
     String remainingEstimate
     Long remainingEstimateSeconds
     String timeSpent
@@ -16,6 +18,7 @@ class Issue {
     Double progressPercent
     Project project
     Date updated
+    Date created
     String summary
     Priority priority
     Double aggregateProgressValue
@@ -37,6 +40,8 @@ class Issue {
     static constraints = {
         assignee nullable: true
         summary nullable: true
+        originalEstimate nullable: true
+        originalEstimateSeconds nullable: true
         remainingEstimate nullable: true
         remainingEstimateSeconds nullable: true
         timeSpent nullable: true
@@ -50,6 +55,8 @@ class Issue {
         parent nullable: true
         startDate nullable: true
         dueDate nullable: true
+        updated nullable: true
+        created nullable: true
     }
 
     @Override

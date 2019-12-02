@@ -383,7 +383,8 @@ h2.tableHeader {
 .filterPanel {
     background: #ECEFF1;
     padding: 20px;
-    margin-top: 20px;
+    /*margin-top: 20px;*/
+    width:300px;
 }
 
 th {
@@ -415,7 +416,7 @@ th {
     width: 100%;
 }
 
-input[type=submit] {
+input[type=submit], input[type=button] {
     background: #673AB7;
     border: none;
     min-width: 80px;
@@ -665,10 +666,228 @@ input[type=submit] {
     margin-bottom: 10px;
 }
 
-.k-grid-header th.k-header{
+.k-grid-header th.k-header {
     white-space: pre-wrap;
 }
 
-.k-grid-content tr td{
+.k-grid-content tr td {
     /*white-space: pre-wrap;*/
+}
+
+.gantt_cal_quick_info {
+    width: auto !important;
+}
+
+.gantt_cal_qi_title {
+    padding-right: 12px !important;
+}
+
+.summary-row,
+.summary-row.odd {
+    background-color: #EEEEEE;
+    font-weight: bold;
+}
+
+.gantt_grid div,
+.gantt_data_area div {
+    font-size: 12px;
+}
+
+.summary-bar {
+    opacity: 0.4;
+}
+
+.gantt_grid_scale .gantt_grid_head_cell,
+.gantt_task .gantt_task_scale .gantt_scale_cell {
+    font-weight: bold;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.7);
+}
+
+.resource_marker {
+    text-align: center;
+}
+
+.resource_marker div {
+    width: 28px;
+    height: 28px;
+    line-height: 29px;
+    display: inline-block;
+    border-radius: 15px;
+    color: #FFF;
+    margin: 3px;
+}
+
+.resource_marker.workday_ok div {
+    background: #51c185;
+}
+
+.resource_marker.workday_over div {
+    background: #ff8686;
+}
+
+
+.owner-label {
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    font-size: 12px;
+    display: inline-block;
+    border: 1px solid #cccccc;
+    border-radius: 25px;
+    background: #e6e6e6;
+    color: #6f6f6f;
+    margin: 0 3px;
+    font-weight: bold;
+}
+
+.gantt_tooltip {
+    font-size: 13px;
+    line-height: 16px;
+}
+
+.weekend {
+    background: #f4f7f4;
+}
+
+.gantt_selected .weekend {
+    background: #f7eb91;
+}
+
+.gantt-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+}
+
+.gantt-task-link, .gantt-task-link:hover, .gantt-task-link:active, .gantt-task-link:focus {
+    /*color: #673AB7;*/
+    /*border-color: #673AB7;*/
+    display: inline-block;
+    border-radius: 3px;
+    padding: 0 5px;
+    line-height: 24px;
+    text-decoration: none;
+    /*opacity: 0.7;*/
+    color: black;
+    font-weight: bold;
+}
+
+.gantt-task-link:hover {
+    opacity: 1;
+}
+
+.gantt-task-link.Task, .gantt-task-link.Sub-task {
+    color: #2196F3;
+    border-color: #2196F3;
+}
+
+.gantt-task-link.Documentation, .gantt-task-link.Documentation_Sub-Task {
+    color: #9C27B0;
+    border-color: #9C27B0;
+}
+
+.gantt-task-link.Defect, .gantt-task-link.Defect_Sub-Task {
+    color: #F44336;
+    border-color: #F44336;
+}
+
+.gantt-task-link.Bugfix, .gantt-task-link.Bugfix_Sub-Task {
+    color: #FF9800;
+    border-color: #FF9800;
+}
+
+.gantt-task-link.Pairing, .gantt-task-link.Pairing_Sub-Task {
+    color: #4CAF50;
+    border-color: #4CAF50;
+}
+
+.gantt-task-link.Story, .gantt-task-link.Pairing_Sub-Task {
+    color: #009688;
+    border-color: #009688;
+}
+
+.gantt-task-link.Test, .gantt-task-link.Test_Sub-Task {
+    color: #8BC34A;
+    border-color: #8BC34A;
+}
+
+.gantt-task-link.Development, .gantt-task-link.Development_Sub-Task {
+    color: #00BCD4;
+    border-color: #00BCD4;
+}
+
+.gantt_tree_icon.gantt_file, .gantt_tree_icon.gantt_folder_open, .gantt_tree_icon.gantt_folder_closed {
+    display: none;
+}
+
+.priority-icon {
+    width: 16px;
+}
+
+.status-icon {
+    /*width: 16px;*/
+}
+
+#content {
+    padding: 15px 15px 15px 0;
+}
+
+.filter-table {
+    max-width: 100%;
+    width: 0;
+    margin-left: -15px;
+}
+
+.filter-table td {
+    white-space: normal !important;
+    padding: 0;
+}
+
+.expander {
+    padding-top: 20px;
+}
+
+.expander-button {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    display: inline-block;
+    background: #78909C;
+    color: white;
+    padding: 10px 2px;
+    font-size: 12px;
+    cursor: pointer;
+
+}
+
+.fullscreen .filter-column {
+    display: none;
+}
+
+.main-body {
+    width: 100%;
+    padding-right: 15px;
+    box-sizing: border-box;
+}
+
+.filter-column {
+    padding: 0;
+    white-space: normal !important;
+    /*transition-property: font-size;*/
+    transition-duration: 2s;
+    transition-delay: 0s;
+    width:300px;
+}
+
+.body-column {
+    padding: 0;
+    transition-duration: 2s;
+    transition-delay: 0s;
+}
+
+.expander-cell {
+    padding: 0;
+    padding-right: 15px;
+    width:45px;
+    box-sizing: border-box;
 }

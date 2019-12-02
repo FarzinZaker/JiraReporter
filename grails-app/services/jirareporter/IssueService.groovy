@@ -40,8 +40,10 @@ class IssueService {
                     parent: Issue.findByKey(JSONUtil.safeRead(obj, 'fields.parent.myHashMap.key')),
                     issueType: issueTypeService.parse(JSONUtil.safeRead(obj, 'fields.issuetype')),
                     assignee: userService.parse(JSONUtil.safeRead(obj, 'fields.assignee')),
+                    originalEstimate: JSONUtil.safeRead(obj, "fields.timetracking.originalEstimate"),
                     remainingEstimate: JSONUtil.safeRead(obj, "fields.timetracking.remainingEstimate"),
                     timeSpent: JSONUtil.safeRead(obj, "fields.timetracking.timeSpent"),
+                    originalEstimateSeconds: JSONUtil.safeRead(obj, "fields.timetracking.originalEstimateSeconds")?.toLong(),
                     remainingEstimateSeconds: JSONUtil.safeRead(obj, "fields.timetracking.remainingEstimateSeconds")?.toLong(),
                     timeSpentSeconds: JSONUtil.safeRead(obj, "fields.timetracking.timeSpentSeconds")?.toLong(),
                     status: statusService.parse(JSONUtil.safeRead(obj, 'fields.status')),
@@ -51,13 +53,14 @@ class IssueService {
                     progressPercent: JSONUtil.safeRead(obj, "fields.progress.percent"),
                     project: projectService.parse(JSONUtil.safeRead(obj, 'fields.project')),
                     updated: Date.parse("yyyy-MM-dd'T'hh:mm:ss.000+0000", JSONUtil.safeRead(obj, "fields.updated")),
+                    created: Date.parse("yyyy-MM-dd'T'hh:mm:ss.000+0000", JSONUtil.safeRead(obj, "fields.created")),
                     summary: JSONUtil.safeRead(obj, "fields.summary"),
                     priority: priorityService.parse(JSONUtil.safeRead(obj, 'fields.priority')),
                     aggregateProgressValue: JSONUtil.safeRead(obj, "fields.aggregateprogress.progress"),
                     aggregateProgressTotal: JSONUtil.safeRead(obj, "fields.aggregateprogress.total"),
                     aggregateProgressPercent: JSONUtil.safeRead(obj, "fields.aggregateprogress.percent"),
-                    startDate: startDateStr ? Date.parse("yyyy-MM-dd'T'hh:mm:ss.000+0000", startDateStr) : null,
-                    dueDate: dueDateStr ? Date.parse("yyyy-MM-dd'T'hh:mm:ss.000+0000", dueDateStr) : null
+                    startDate: startDateStr ? Date.parse("yyyy-MM-dd", startDateStr) : null,
+                    dueDate: dueDateStr ? Date.parse("yyyy-MM-dd", dueDateStr) : null
             )
             if (!issue.save(flush: true))
                 throw new Exception("Error saving issue")
@@ -80,8 +83,10 @@ class IssueService {
 
         issue.issueType = issueTypeService.parse(JSONUtil.safeRead(obj, 'fields.issuetype'))
         issue.assignee = userService.parse(JSONUtil.safeRead(obj, 'fields.assignee'))
+        issue.originalEstimate = JSONUtil.safeRead(obj, "fields.timetracking.originalEstimate")
         issue.remainingEstimate = JSONUtil.safeRead(obj, "fields.timetracking.remainingEstimate")
         issue.timeSpent = JSONUtil.safeRead(obj, "fields.timetracking.timeSpent")
+        issue.originalEstimateSeconds = JSONUtil.safeRead(obj, "fields.timetracking.originalEstimateSeconds")?.toLong()
         issue.remainingEstimateSeconds = JSONUtil.safeRead(obj, "fields.timetracking.remainingEstimateSeconds")?.toLong()
         issue.timeSpentSeconds = JSONUtil.safeRead(obj, "fields.timetracking.timeSpentSeconds")?.toLong()
         issue.status = statusService.parse(JSONUtil.safeRead(obj, 'fields.status'))
@@ -91,6 +96,7 @@ class IssueService {
         issue.progressTotal = JSONUtil.safeRead(obj, "fields.progress.total")
         issue.progressPercent = JSONUtil.safeRead(obj, "fields.progress.percent")
         issue.updated = Date.parse("yyyy-MM-dd'T'hh:mm:ss.000+0000", JSONUtil.safeRead(obj, "fields.updated"))
+        issue.created = Date.parse("yyyy-MM-dd'T'hh:mm:ss.000+0000", JSONUtil.safeRead(obj, "fields.created"))
         issue.summary = JSONUtil.safeRead(obj, "fields.summary")
         issue.priority = priorityService.parse(JSONUtil.safeRead(obj, 'fields.priority'))
         issue.aggregateProgressValue = JSONUtil.safeRead(obj, "fields.aggregateprogress.progress")
@@ -98,9 +104,9 @@ class IssueService {
         issue.aggregateProgressPercent = JSONUtil.safeRead(obj, "fields.aggregateprogress.percent")
         issue.parent = Issue.findByKey(JSONUtil.safeRead(obj, 'fields.parent.myHashMap.key'))
         def startDateStr = JSONUtil.safeRead(obj, "fields.customfield_13310")
-        issue.startDate = startDateStr ? Date.parse("yyyy-MM-dd'T'hh:mm:ss.000+0000", startDateStr) : null
+        issue.startDate = startDateStr ? Date.parse("yyyy-MM-dd", startDateStr) : null
         def endDateStr = JSONUtil.safeRead(obj, "fields.duedate")
-        issue.dueDate = endDateStr ? Date.parse("yyyy-MM-dd'T'hh:mm:ss.000+0000", endDateStr) : null
+        issue.dueDate = endDateStr ? Date.parse("yyyy-MM-dd", endDateStr) : null
 
         if (!issue.save(flush: true))
             throw new Exception("Error saving issue")
@@ -130,7 +136,10 @@ class IssueService {
 
         links = links.findAll { it }
 
-        IssueLink.executeUpdate("delete from IssueLink where firstIssue = :issue and key not in :keyList", [issue: issue, keyList: links.collect(it.key) ?: ['-']])
+        IssueLink.executeUpdate("delete IssueLink where firstIssue = :issue and key not in :keyList", [issue: issue, keyList: links.collect {
+            it.key
+        } ?: ['-']])
+
         links
     }
 
@@ -139,12 +148,14 @@ class IssueService {
             return null
 
         def key = JSONUtil.safeRead(obj, "id")
-        def application = JSONUtil.safeRead(obj, project: 'application.type')?.toString()
-        if (application != 'com.atlassian.jira')
-            return null
 
-        def type = JSONUtil.safeRead(obj, 'relationship')
-        def targetIssueKey = JSONUtil.safeRead(obj, 'object.title')?.toString()
+        def type = JSONUtil.safeRead(obj, 'type.inward')?.toString()
+        def targetIssueKey = JSONUtil.safeRead(obj, 'inwardIssue.key')?.toString()
+
+        if(!targetIssueKey){
+            type = JSONUtil.safeRead(obj, 'type.outward')?.toString()
+            targetIssueKey = JSONUtil.safeRead(obj, 'outwardIssue.key')?.toString()
+        }
         def targetIssue = Issue.findByKey(targetIssueKey)
         if (!targetIssue)
             return null

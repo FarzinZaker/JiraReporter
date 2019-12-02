@@ -41,8 +41,8 @@
     %{--<script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>--}%
     %{--<script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>--}%
 
-    <asset:javascript src="react.development.js"/>
-    <asset:javascript src="react-dom.development.js"/>
+%{--    <asset:javascript src="react.development.js"/>--}%
+%{--    <asset:javascript src="react-dom.development.js"/>--}%
 
     <g:layoutHead/>
 </head>

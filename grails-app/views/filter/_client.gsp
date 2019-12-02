@@ -7,8 +7,18 @@
     $(function () {
         $('#client').selectize({
             plugins: ['remove_button'],
-            create: true,
-            options: []
+            valueField: 'value',
+            labelField: 'text',
+            searchField: 'text',
+            create: false,
+            options: [
+                <g:each in="${clients?.findAll{it}?.sort{it.name}}" var="client">
+                {
+                    value: '${client.name}',
+                    text: '${client.name}'
+                },
+                </g:each>
+            ]
         });
     });
 </script>
