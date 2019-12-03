@@ -20,6 +20,7 @@ class Issue {
     Date updated
     Date created
     String summary
+    String description
     Priority priority
     Double aggregateProgressValue
     Double aggregateProgressTotal
@@ -35,11 +36,13 @@ class Issue {
 
     static mapping = {
         key column: 'jira_key'
+        description sqlType: 'text'
     }
 
     static constraints = {
         assignee nullable: true
         summary nullable: true
+        description nullable: true
         originalEstimate nullable: true
         originalEstimateSeconds nullable: true
         remainingEstimate nullable: true
@@ -57,6 +60,7 @@ class Issue {
         dueDate nullable: true
         updated nullable: true
         created nullable: true
+
     }
 
     @Override

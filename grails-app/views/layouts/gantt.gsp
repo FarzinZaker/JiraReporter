@@ -18,7 +18,6 @@
     <link rel="stylesheet" href="https://cdn.dhtmlx.com/edge/skins/terrace/dhtmlx.css?v=6.3.0">
 
     <asset:javascript src="dhtmlxgantt.js"/>
-    <asset:javascript src="dhtmlxgantt_tooltip.js"/>
     <asset:javascript src="dhtmlxgantt_quick_info.js"/>
     <asset:javascript src="dhtmlxgantt_critical_path.js"/>
     <asset:javascript src="ext/dhtmlxgantt_marker.js"/>
@@ -27,6 +26,7 @@
     <asset:javascript src="ext/dhtmlxgantt_grouping.js"/>
     <asset:javascript src="ext/dhtmlxgantt_auto_scheduling.js"/>
     <asset:javascript src="ext/dhtmlxgantt_drag_timeline.js"/>
+    <asset:javascript src="dhtmlxgantt_tooltip.js"/>
 %{--    <asset:javascript src="testdata.js"/>--}%
 
     <asset:stylesheet src="dhtmlxgantt.css"/>

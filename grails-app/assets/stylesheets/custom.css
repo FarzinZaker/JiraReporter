@@ -384,7 +384,7 @@ h2.tableHeader {
     background: #ECEFF1;
     padding: 20px;
     /*margin-top: 20px;*/
-    width:300px;
+    width: 300px;
 }
 
 th {
@@ -876,7 +876,7 @@ input[type=submit], input[type=button] {
     /*transition-property: font-size;*/
     transition-duration: 2s;
     transition-delay: 0s;
-    width:300px;
+    width: 300px;
 }
 
 .body-column {
@@ -888,6 +888,132 @@ input[type=submit], input[type=button] {
 .expander-cell {
     padding: 0;
     padding-right: 15px;
-    width:45px;
+    width: 45px;
     box-sizing: border-box;
+}
+
+.gantt_control {
+    background: #ECEFF1;
+    padding: 7px;
+    margin-bottom: 10px;
+}
+
+.task-info span {
+    /*background-color: #ECEFF1;*/
+    color: #37474F;
+    display: inline-block;
+    /*margin-right: 5px;*/
+    margin-top: 7px;
+    font-size: 12px;
+    padding: 2px 5px;
+}
+
+.task-info h2 {
+    margin: 0;
+    padding: 0;
+    margin-top: 10px;
+}
+
+.task-info .priority {
+    float: right;
+}
+
+.task-info .assignee {
+    float: right;
+    margin-top: 10px;
+}
+
+.task-info .status {
+    margin-top: 10px;
+}
+
+.estimates {
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 16px;
+    margin-top: 5px;
+    background-color: #ECEFF1;
+    padding: 7px;
+    margin-bottom: 5px;
+}
+
+.gantt_cal_qi_controls .gantt_menu_icon {
+    display: none;
+    text-align: center;
+}
+
+.gantt_cal_qi_controls .gantt_qi_big_icon {
+    padding: 0 10px;
+    min-width: 40px;
+}
+
+.gantt_cal_qi_content {
+    width: 500px;
+    padding: 2px !important;
+}
+
+.task-description {
+    padding: 13px;
+    white-space: normal;
+    max-height: 200px;
+    overflow: auto;
+}
+
+.task-description ul, .task-description ol {
+    padding-left: 15px;
+}
+
+.red .gantt_cell,
+.red .gantt_task_cell {
+    background-color: #FFEBEE;
+}
+
+.odd.red .gantt_cell,
+.odd.red .gantt_task_cell {
+    background-color: #FFCDD2;
+}
+
+.gantt_selected.red .gantt_cell,
+.gantt_selected.red .gantt_task_cell {
+    background: #EF9A9A;
+}
+
+.gantt_control input{
+    min-width: 10px;
+    padding-right:10px;
+    padding-left:10px;
+    font-weight: normal;
+}
+
+.bar-project {
+    border: 0px solid #7E57C2 !important;
+    color: #7E57C2 !important;
+    background: #7E57C2 !important;
+    box-shadow: none !important;
+}
+
+.bar-project .gantt_task_progress {
+    background: #512DA8 !important;
+}
+
+.bar-client {
+    border: 0px solid #26A69A !important;
+    color: #26A69A !important;
+    background: #26A69A !important;
+    box-shadow: none !important;
+}
+
+.bar-client .gantt_task_progress {
+    background: #00796B !important;
+}
+
+.bar-task {
+    border: 0px solid #42A5F5 !important;
+    color: #42A5F5 !important;
+    background: #42A5F5 !important;
+    box-shadow: none !important;
+}
+
+.bar-task .gantt_task_progress {
+    background: #1976D2 !important;
 }

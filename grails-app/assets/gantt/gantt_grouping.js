@@ -1,14 +1,14 @@
 
 
-gantt.templates.grid_row_class = gantt.templates.task_row_class = function (start, end, task) {
-    if (task.$virtual)
-        return "summary-row"
-};
-
-gantt.templates.task_class = function (start, end, task) {
-    if (task.$virtual)
-        return "summary-bar";
-};
+// gantt.templates.grid_row_class = gantt.templates.task_row_class = function (start, end, task) {
+//     if (task.$virtual)
+//         return "summary-row"
+// };
+//
+// gantt.templates.task_class = function (start, end, task) {
+//     if (task.$virtual)
+//         return "summary-bar";
+// };
 
 function showGroups(listname) {
     if (listname) {

@@ -12,6 +12,9 @@
 <script language="JavaScript" type="text/javascript">
     function reloadPlanner() {
         gantt.clearAll();
-        gantt.load('${createLink(controller: 'planner', action: 'issues')}?' + $('#filterForm').serialize())
+        gantt.load('${createLink(controller: 'planner', action: 'issues')}?' + $('#filterForm').serialize(), function () {
+            resourcesStore.parse(filterResources());
+            showToday();
+        });
     }
 </script>

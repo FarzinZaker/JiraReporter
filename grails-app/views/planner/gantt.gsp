@@ -14,7 +14,7 @@
 
 <body>
 <div id="content" role="main">
-    <table class="main-body">
+    <table class="main-body fullscreen">
         <tr>
             <td class="filter-column">
                 <g:render template="filter"/>

@@ -55,6 +55,7 @@ class IssueService {
                     updated: Date.parse("yyyy-MM-dd'T'hh:mm:ss.000+0000", JSONUtil.safeRead(obj, "fields.updated")),
                     created: Date.parse("yyyy-MM-dd'T'hh:mm:ss.000+0000", JSONUtil.safeRead(obj, "fields.created")),
                     summary: JSONUtil.safeRead(obj, "fields.summary"),
+                    description: JSONUtil.safeRead(obj, "fields.description"),
                     priority: priorityService.parse(JSONUtil.safeRead(obj, 'fields.priority')),
                     aggregateProgressValue: JSONUtil.safeRead(obj, "fields.aggregateprogress.progress"),
                     aggregateProgressTotal: JSONUtil.safeRead(obj, "fields.aggregateprogress.total"),
@@ -98,6 +99,7 @@ class IssueService {
         issue.updated = Date.parse("yyyy-MM-dd'T'hh:mm:ss.000+0000", JSONUtil.safeRead(obj, "fields.updated"))
         issue.created = Date.parse("yyyy-MM-dd'T'hh:mm:ss.000+0000", JSONUtil.safeRead(obj, "fields.created"))
         issue.summary = JSONUtil.safeRead(obj, "fields.summary")
+        issue.description = JSONUtil.safeRead(obj, "fields.description")
         issue.priority = priorityService.parse(JSONUtil.safeRead(obj, 'fields.priority'))
         issue.aggregateProgressValue = JSONUtil.safeRead(obj, "fields.aggregateprogress.progress")
         issue.aggregateProgressTotal = JSONUtil.safeRead(obj, "fields.aggregateprogress.total")
