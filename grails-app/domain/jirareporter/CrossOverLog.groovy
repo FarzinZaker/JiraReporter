@@ -9,4 +9,8 @@ class CrossOverLog {
 
     static constraints = {
     }
+
+    static mapping = {
+        version false
+    }
 }

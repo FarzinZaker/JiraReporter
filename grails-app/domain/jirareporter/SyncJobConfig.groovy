@@ -10,4 +10,8 @@ class SyncJobConfig {
         startDate nullable: true
         endDate nullable: true
     }
+
+    static mapping = {
+        version false
+    }
 }

@@ -28,6 +28,8 @@ class Issue {
     Date startDate
     Date dueDate
 
+    Date lastFix
+
     Issue parent
 
     transient Map assignees = [:]
@@ -37,6 +39,7 @@ class Issue {
     static mapping = {
         key column: 'jira_key'
         description sqlType: 'text'
+        version false
     }
 
     static constraints = {
@@ -60,7 +63,7 @@ class Issue {
         dueDate nullable: true
         updated nullable: true
         created nullable: true
-
+        lastFix nullable: true
     }
 
     @Override

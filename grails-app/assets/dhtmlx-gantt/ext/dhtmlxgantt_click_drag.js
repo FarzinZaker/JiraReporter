@@ -1,7 +1,7 @@
 /*
 @license
 
-dhtmlxGantt v.6.3.0 Professional Evaluation
+dhtmlxGantt v.6.3.0 Professional
 This software is covered by DHTMLX Evaluation License. Contact sales@dhtmlx.com to get Commercial or Enterprise license. Usage without proper license is prohibited.
 
 (c) XB Software Ltd.

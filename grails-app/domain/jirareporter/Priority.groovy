@@ -9,6 +9,10 @@ class Priority {
     static constraints = {
     }
 
+    static mapping = {
+        version false
+    }
+
     @Override
     String toString(){
         name

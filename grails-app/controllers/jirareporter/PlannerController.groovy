@@ -25,7 +25,6 @@ class PlannerController {
     }
 
     def issues() {
-        println params
         if (params.findAll { it.value && !it.key?.toString()?.toLowerCase()?.startsWith('dhxr') }.size() < 3) {
             redirect(uri: "/planner/issues?status=${['Draft', 'To Do', 'In Progress'].join(',')}&team=${Configuration.crossOverTeams.collect { it.name }.join(',')}")
             return
@@ -34,6 +33,7 @@ class PlannerController {
         def formatter = new SimpleDateFormat('dd-MM-yyyy')
 
         def data = []
+        def links = []
 
         def teams = filterService.formatTeams(params)
         def issues = issueReportService.getIssues(
@@ -53,10 +53,19 @@ class PlannerController {
 
             def completed = Configuration.statusList['Verification'].contains(issue.status.name) || Configuration.statusList['Closed'].contains(issue.status.name)
 
-            def duration = Math.ceil((issue.originalEstimateSeconds ?: 0) / 3600 / 8).toInteger()
-            if (duration < 1)
-                duration = 1
+            def estimateMinutes = Math.ceil((issue.originalEstimateSeconds ?: 1) / 60).toInteger()
+            def estimateHours = Math.ceil(estimateMinutes / 60)
+            def estimateDays = Math.ceil(estimateHours / 8)
 
+            def durationDays = 1
+            if (issue.startDate && issue.dueDate)
+                use(groovy.time.TimeCategory) {
+                    durationDays = (issue.dueDate - issue.startDate).days
+                    if (durationDays < 1) {
+                        durationDays = 1
+                        issue.dueDate = issue.dueDate + 1.day
+                    }
+                }
 
             def parent = issue.parent?.id ?: IssueLink.findByFirstIssueAndType(issue, 'is child of')?.secondIssue?.id ?: IssueLink.findBySecondIssueAndType(issue, 'is parent of')?.firstIssue?.id
             if (!parent) {
@@ -83,12 +92,12 @@ class PlannerController {
                     issueTypeIcon    : issue.issueType.icon,
                     owner            : issue.assignee ? [
                             resource_id: issue.assignee.id,
-                            value      : 2
+                            value      : Math.round(estimateHours / durationDays).toInteger()
                     ] : null,
                     start_date       : formatter.format((issue.startDate ?: issue.created ?: issue.updated)),
-//                    end_date         : formatter.format(dueDate),
+                    end_date         : formatter.format(dueDate),
                     dueDate          : issue.dueDate ? formatter.format(dueDate) : null,
-                    duration         : duration,
+//                    duration         : durationDays,
                     progress         : (issue.timeSpentSeconds ?: 0) / ((issue.timeSpentSeconds ?: 0) + (issue.remainingEstimateSeconds ?: 1)),
                     parent           : parent,
                     open             : true,
@@ -102,6 +111,15 @@ class PlannerController {
                     timeSpent        : [formatted: issue.timeSpent ?: '-', value: issue.timeSpentSeconds ?: 0],
                     overdue          : !completed && issue.dueDate && issue.dueDate < new Date()
             ]
+
+            IssueLink.findAllByFirstIssueAndTypeAndSecondIssueInList(issue, 'has to be done before', issues).each { link ->
+                links << [
+                        id         : link.id,
+                        source     : link.firstIssue?.id?.toString(),
+                        description: link.secondIssue?.id?.toString(),
+                        type       : 0.toString()
+                ]
+            }
         }
 
         projects.sort { it.name }.each { project ->
@@ -124,7 +142,6 @@ class PlannerController {
             }
         }
 
-        def links = []
         render([
                 data : data,
                 links: links

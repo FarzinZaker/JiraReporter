@@ -16,7 +16,6 @@ class ReportService {
 
     List<Worklog> getWorklogs(Date from, Date to, List<Project> projects = [], List<IssueType> issueTypes = [], List<Priority> priorities = [], List<Component> componentList = [], List<Client> clientList = [], List<JiraUser> users = [], List<JiraUser> teamMembers = [], Boolean filterTeamMembers, List<String> worklogTypes = [], List<Status> statusList = []) {
 
-        println 'Started Query'
         Worklog.createCriteria().list {
             gte('started', from)
             lte('started', to)

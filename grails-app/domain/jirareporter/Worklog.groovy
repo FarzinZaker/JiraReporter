@@ -18,6 +18,7 @@ class Worklog {
 
     static mapping = {
         comment sqlType: 'text'
+        version false
     }
 
     static constraints = {

@@ -14,6 +14,10 @@ class Component {
         project nullable: true
     }
 
+    static mapping = {
+        version false
+    }
+
     @Override
     String toString() {
         name

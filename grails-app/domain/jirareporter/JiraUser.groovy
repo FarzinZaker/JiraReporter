@@ -14,6 +14,7 @@ class JiraUser {
 
     static mapping = {
         key column: 'jira_key'
+        version false
     }
 
     static constraints = {

@@ -7,7 +7,6 @@ class IssueReportService {
 
     List<Issue> getIssues(List<Project> projects = [], List<IssueType> issueTypes = [], List<IssueType> priorities = [], List<Component> componentList = [], List<Client> clientList = [], List<JiraUser> users = [], List<JiraUser> teamMembers = [], Boolean filterTeamMembers, List<Status> statusList = []) {
 
-        println 'Started Query'
         Issue.createCriteria().list {
 
             if (projects.size()) {

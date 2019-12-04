@@ -81,31 +81,6 @@
     }
 
     gantt.locale.labels.column_priority = gantt.locale.labels.section_priority = "Priority";
-    gantt.locale.labels.column_owner = gantt.locale.labels.section_owner = "Owner";
-    gantt.locale.labels.column_stage = gantt.locale.labels.section_stage = "Stage";
-    gantt.serverList("Project-Client-Team-Assignee", [
-        {key: 1, "label": "Planning"},
-        {key: 2, "label": "Dev"},
-        {key: 3, "label": "Testing"}
-    ]);
-
-    gantt.serverList("user", [
-        {key: 0, label: "N/A"},
-        {key: 1, label: "John"},
-        {key: 2, label: "Mike"},
-        {key: 3, label: "Anna"}
-    ]);
-
-    gantt.serverList("userGroups", [
-        {key: 0, label: "N/A", "user": 6},
-        {key: 1, label: "John", "user": 4},
-        {key: 2, label: "Mike", "user": 5},
-        {key: 3, label: "Anna", "user": 4},
-        //multi level groups
-        {key: 4, label: "Dev"},
-        {key: 5, label: "QA"},
-        {key: 6, label: "Other"}
-    ]);
 
     gantt.serverList("priority", [
         <g:each in="${Priority.list().sort{it.id}}" var="priority">

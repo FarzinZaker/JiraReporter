@@ -63,6 +63,7 @@ class IssueService {
                     startDate: startDateStr ? Date.parse("yyyy-MM-dd", startDateStr) : null,
                     dueDate: dueDateStr ? Date.parse("yyyy-MM-dd", dueDateStr) : null
             )
+
             if (!issue.save(flush: true))
                 throw new Exception("Error saving issue")
 
@@ -79,6 +80,7 @@ class IssueService {
 
             if (!issue?.save(flush: true))
                 throw new Exception("Error saving issue")
+
             issue
         }
 
@@ -126,6 +128,9 @@ class IssueService {
         }
         if (!issue.save(flush: true))
             throw new Exception("Error saving issue")
+
+        Issue.executeUpdate("delete IssueDownloadItem where issue = :issue", [issue: issue])
+
         issue
     }
 
@@ -154,7 +159,7 @@ class IssueService {
         def type = JSONUtil.safeRead(obj, 'type.inward')?.toString()
         def targetIssueKey = JSONUtil.safeRead(obj, 'inwardIssue.key')?.toString()
 
-        if(!targetIssueKey){
+        if (!targetIssueKey) {
             type = JSONUtil.safeRead(obj, 'type.outward')?.toString()
             targetIssueKey = JSONUtil.safeRead(obj, 'outwardIssue.key')?.toString()
         }
