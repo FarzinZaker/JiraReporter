@@ -9,36 +9,56 @@ class IssueFixService {
     def issueUploadService
 
     def fix(Issue issue) {
-        if (!issue.originalEstimate || issue.originalEstimateSeconds == 0) {
+//        println 'OS:' + issue.originalEstimate
+//        println 'OSS:' + issue.originalEstimateSeconds
+        if (!issue.originalEstimate || issue.originalEstimate?.trim() == '' || issue.originalEstimateSeconds < 1) {
             issue.originalEstimateSeconds = 3600 // 1 hour
             issue.originalEstimate = formatDuration(issue.originalEstimateSeconds)
         }
 
-        if (!issue.remainingEstimate) {
+        if (!issue.remainingEstimate || issue.remainingEstimate?.trim() == '') {
             issue.remainingEstimateSeconds = issue.originalEstimateSeconds - (issue.timeSpentSeconds ?: 0)
             issue.remainingEstimate = formatDuration(issue.remainingEstimateSeconds)
         }
 
+        IssueDownloadItem downloadItem
         if (issue.created) {
             if (!issue.startDate)
                 issue.startDate = issue.created
 
             if (!issue.dueDate)
                 use(TimeCategory) {
-                    def daysCount = Math.ceil(issue.remainingEstimateSeconds / 3600 / 8).toInteger()
-                    if (daysCount < 1)
-                        daysCount = 1
-                    issue.dueDate = issue.created + daysCount.days
+//                    println issue.dueDate
+//                    println issue.startDate
+//                    println issue.originalEstimateSeconds.toInteger()
+                    issue.dueDate = issue.startDate + (issue.originalEstimateSeconds).toInteger().seconds
+//                    println issue.dueDate
+//
+//                    println()
+//                    println()
+//                    println()
                 }
         } else {
-            IssueDownloadItem downloadItem = new IssueDownloadItem(issue: issue, property: 'created')
-            downloadItem.save()
+            downloadItem = new IssueDownloadItem(issue: issue, property: 'created')
         }
 
         issueUploadService.enqueue(issue)
 
-        issue.lastFix = new Date()
-        issue.save()
+        issue.discard()
+
+        if (downloadItem)
+            IssueDownloadItem.withNewTransaction {
+                downloadItem.save()
+            }
+
+//        try {
+//            Issue.executeUpdate("update Issue set lastFix = :date where id = :id", [date: new Date(), id: issue.id])
+//        } catch (Exception ex) {
+//            println ex.message
+//        }
+//        issue = Issue.get(id)
+//        issue.lastFix = new Date()
+//        issue.save()
     }
 
 

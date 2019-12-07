@@ -21,7 +21,7 @@ gantt.templates.task_class = function (start, end, task) {
 };
 
 gantt.attachEvent("onTaskDrag", function (id, mode, task, original) {
-    console.log('drag')
+    // console.log('drag')
 });
 
 gantt.templates.scale_cell_class = function (date) {
@@ -42,113 +42,127 @@ gantt.config.drag_timeline = {
     useKey: false
 };
 
+var textEditor = {type: "text", map_to: "text"};
+var startDateEditor = {
+    type: "date", map_to: "start_date"
+};
+var endDateEditor = {
+    type: "date", map_to: "end_date"
+};
+var durationEditor = {type: "text", map_to: "originalEstimate"};
+
 gantt.config.columns = [
     {
-        name: "text", tree: true, width: 400, label: "Summary", resize: true, editor: textEditor
-        // , template: function (task) {
-        //     if (task.type === gantt.config.types.project)
-        //         return '<b>' + task.text + '</b>';
-        //     else
-        //         return '<a class="gantt-task-link" href="https://jira.devfactory.com/browse/' + task.key + '" target="_blank"><img src="' + task.issueTypeIcon + '" /> ' + task.key + '</a> ' + task.text;
-        // }
+        name: "text", width: 250, tree: true, label: "Summary", resize: true, template: function (task) {
+            if (task.type === gantt.config.types.project)
+                return '<b>' + task.text + '</b>';
+            else
+                return '<img src="' + task.issueTypeIcon + '" /> ' + task.text;
+        }
+    },
+    {
+      name: "key", width:100, label: "Key", resize: true, template: function (task) {
+            if (task.type === gantt.config.types.project)
+                return '';
+            else
+                return '<a class="gantt-task-link" href="https://jira.devfactory.com/browse/' + task.key + '" target="_blank"> ' + task.key + '</a>';
+        }
     },
     // {name: "start_date", align: "center", width: 80, resize: true},
-    // {
-    //     name: "owner", align: "left", width: 100, label: "Assignee", template: function (task) {
-    //         if (task.type === gantt.config.types.project) {
-    //             return "";
-    //         }
-    //
-    //         var store = gantt.getDatastore("resource");
-    //         var assignments = task[gantt.config.resource_property] || [];
-    //
-    //         // if (!assignments || !assignments.length) {
-    //         //     return "Unassigned";
-    //         // }
-    //
-    //         if (assignments.length == 1) {
-    //             return store.getItem(assignments[0].resource_id).text;
-    //         }
-    //
-    //         var result = "";
-    //         // assignments.forEach(function (assignment) {
-    //         var owner = store.getItem(assignments.resource_id);
-    //         if (!owner) {
-    //             return "Unassigned";
-    //         }
-    //         // result += "<div class='owner-label' title='" + owner.text + "'>" + owner.text.substr(0, 1) + "</div>";
-    //
-    //         result += '<img class="gantt-avatar" src="' + owner.avatar + '" /> ' + owner.text.split(' ')[0];
-    //
-    //         // });
-    //
-    //         return result;
-    //     }, resize: true
-    // },
-    // {
-    //     name: "status", width: 80, label: "Status", resize: true, template: function (task) {
-    //         if (task.type === gantt.config.types.project) {
-    //             return "";
-    //         }
-    //         return task.status.name;
-    //     }
-    // },
-    // {
-    //     name: "start_date", width: 80, label: "Start Date", resize: true, hide: false, template: function (task) {
-    //         if (task.type === gantt.config.types.project) {
-    //             return "";
-    //         }
-    //         return task.start_date ? task.start_date : '-';
-    //     }
-    // },
-    // {
-    //     name: "dueDate", width: 80, label: "Due Date", resize: true, hide: false, template: function (task) {
-    //         if (task.type === gantt.config.types.project) {
-    //             return "";
-    //         }
-    //         return task.dueDate ? task.dueDate : '-';
-    //     }
-    // },
-    // {
-    //     name: "originalEstimate",
-    //     width: 90,
-    //     label: "Orig. Est.",
-    //     resize: true,
-    //     hide: false,
-    //     editor: durationEditor,
-    //     template: function (task) {
-    //         if (task.type === gantt.config.types.project) {
-    //             return "";
-    //         }
-    //         return task.originalEstimate.formatted;
-    //     }
-    // },
-    // {
-    //     name: "remainingEstimate", width: 90, label: "Rem. Est.", resize: true, hide: true, template: function (task) {
-    //         if (task.type === gantt.config.types.project) {
-    //             return "";
-    //         }
-    //         return task.remainingEstimate.formatted;
-    //     }
-    // },
-    // {
-    //     name: "timeSpent", width: 90, label: "Time Spent", resize: true, hide: true, template: function (task) {
-    //         if (task.type === gantt.config.types.project) {
-    //             return "";
-    //         }
-    //         return task.timeSpent.formatted;
-    //     }
-    // },
-    // {
-    //     name: "priority", width: 32, label: "P", resize: true, template: function (task) {
-    //         if (task.type === gantt.config.types.project) {
-    //             return "";
-    //         }
-    //         return '<img class="priority-icon" alt="' + task.priorityName + '" src="' + task.priorityIcon + '"/>';
-    //     }
-    // }
-    // {name: "duration", width: 60, align: "center"},
-    // {name: "add", width: 44}
+    {
+        name: "owner", align: "left", width: 100, label: "Assignee", template: function (task) {
+            if (task.type === gantt.config.types.project) {
+                return "";
+            }
+
+            var store = gantt.getDatastore("resource");
+            var assignments = task[gantt.config.resource_property] || [];
+
+            // if (!assignments || !assignments.length) {
+            //     return "Unassigned";
+            // }
+
+            if (assignments.length == 1) {
+                return store.getItem(assignments[0].resource_id).text;
+            }
+
+            var result = "";
+            // assignments.forEach(function (assignment) {
+            var owner = store.getItem(assignments.resource_id);
+            if (!owner) {
+                return "Unassigned";
+            }
+            // result += "<div class='owner-label' title='" + owner.text + "'>" + owner.text.substr(0, 1) + "</div>";
+
+            result += '<img class="gantt-avatar" src="' + owner.avatar + '" /> ' + owner.text.split(' ')[0];
+
+            // });
+
+            return result;
+        }, resize: true
+    },
+    {
+        name: "status", width: 80, label: "Status", resize: true, template: function (task) {
+            if (task.type === gantt.config.types.project) {
+                return "";
+            }
+            return task.status.name;
+        }
+    },
+    {
+        name: "start_date", width: 80, label: "Start Date", resize: true, hide: false, editor: startDateEditor, template: function (task) {
+            if (task.type === gantt.config.types.project) {
+                return "";
+            }
+            return task.start_date ? task.start_date : '-';
+        }
+    },
+    {
+        name: "end_date", width: 80, label: "Due Date", resize: true, hide: false, editor: endDateEditor, template: function (task) {
+            if (task.type === gantt.config.types.project) {
+                return "";
+            }
+            return task.end_date ? task.end_date : '-';
+        }
+    },
+    {
+        name: "originalEstimate",
+        width: 90,
+        label: "Orig. Est.",
+        resize: true,
+        hide: true,
+        editor: durationEditor,
+        template: function (task) {
+            if (task.type === gantt.config.types.project) {
+                return "";
+            }
+            return task.originalEstimate.formatted;
+        }
+    },
+    {
+        name: "remainingEstimate", width: 90, label: "Rem. Est.", resize: true, hide: true, template: function (task) {
+            if (task.type === gantt.config.types.project) {
+                return "";
+            }
+            return task.remainingEstimate.formatted;
+        }
+    },
+    {
+        name: "timeSpent", width: 90, label: "Time Spent", resize: true, hide: true, template: function (task) {
+            if (task.type === gantt.config.types.project) {
+                return "";
+            }
+            return task.timeSpent.formatted;
+        }
+    },
+    {
+        name: "priority", width: 32, label: "P", resize: true, template: function (task) {
+            if (task.type === gantt.config.types.project) {
+                return "";
+            }
+            return '<img class="priority-icon" alt="' + task.priorityName + '" src="' + task.priorityIcon + '"/>';
+        }
+    }
 ];
 
 function getResourceAssignments(resource, store) {
@@ -329,7 +343,7 @@ gantt.templates.quick_info_date = function (start, end, task) {
     }
 
     return "<span>" + gantt.templates.tooltip_date_format(start) + '</span> - <span>' + gantt.templates.tooltip_date_format(end) + '</span><br/>' +
-        'Due Date: <span>' + (task.dueDate ? task.dueDate : '-') + '</span><br/>' +
+        'Due Date: <span>' + (task.end_date ? task.end_date : '-') + '</span><br/>' +
         "<div class='estimates'><span>Original Estimate:</span> " + task.originalEstimate.formatted + "<br/>" +
         "<span>Remaining Estimate:</span> " + task.remainingEstimate.formatted + "<br/>" +
         "<span>Time Spent:</span> " + task.timeSpent.formatted + "</div>";
@@ -357,9 +371,11 @@ function collapseAll() {
     gantt.render();
 }
 
+gantt.config.scale_height = 60;
 gantt.config.scales = [
     {unit: "month", step: 1, format: "%F, %Y"},
-    {unit: "day", step: 1, format: "%j, %D"}
+    {unit: "day", step: 1, format: "%j, %D"},
+    // {unit: "hour", step: 1, format: "%H"}
 ];
 
 gantt.templates.progress_text = function (start, end, task) {
@@ -373,16 +389,46 @@ gantt.config.drag_progress = false;
 gantt.config.drag_project = false;
 gantt.config.order_branch = false;
 
-var textEditor = {type: "text", map_to: "text"};
-var dateEditor = {
-    type: "date", map_to: "start_date", min: new Date(2018, 0, 1),
-    max: new Date(2022, 0, 1)
-};
-var durationEditor = {type: "text", map_to: "originalEstimate"};
-
 
 // gantt.attachEvent("onBeforeTaskDrag", function(id, mode, e){
 //     //any custom logic here
 //     return false;
 // });
+
+
+gantt.attachEvent("onBeforeLightbox", function(id) {
+    return false;
+});
+
+var inlineEditors = gantt.ext.inlineEditors;
+
+inlineEditors.attachEvent("onBeforeEditStart", function(state){
+    // console.log(state);
+    if(state.id.startsWith('p'))
+        return false;
+    // -> {id: itemId, columnName: columnName};
+    return true;
+});
+
+inlineEditors.attachEvent("onSave", function(state){
+    // console.log(stateete);
+    // -> { id: itemId,
+    //      columnName: columnName,
+    //      oldValue: value,
+    //      newValue: value
+    //    };
+});
+
+gantt.attachEvent("onBeforeLinkAdd", function(id,link){
+    console.log(link)
+    return true;
+});
+
+gantt.attachEvent("onAfterTaskUpdate", function(id,task){
+    console.log(task);
+});
+
+gantt.attachEvent("onAfterLinkAdd", function(id,link){
+    console.log(link)
+});
 

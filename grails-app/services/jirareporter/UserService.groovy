@@ -14,7 +14,11 @@ class UserService {
                 distinct('name')
             }
         }
-        JiraUser.findAllByDisplayNameInListAndNameIlikeAndDisplayNameIlike(nameList, "%$username%", "%$username%")
+        JiraUser.createCriteria().list {
+            'in'('displayName', nameList)
+            ilike('name', "%$username%")
+            ilike('displayName', "%$username%")
+        }
     }
 
     List<JiraUser> parseList(JSONArray list) {

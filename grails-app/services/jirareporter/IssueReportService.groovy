@@ -9,6 +9,10 @@ class IssueReportService {
 
         Issue.createCriteria().list {
 
+            isNotNull('originalEstimateSeconds')
+            isNotNull('startDate')
+            isNotNull('dueDate')
+
             if (projects.size()) {
                 'in'('project', projects)
             }

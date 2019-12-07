@@ -30,7 +30,7 @@ class PlannerController {
             return
         }
 
-        def formatter = new SimpleDateFormat('dd-MM-yyyy')
+        def formatter = new SimpleDateFormat('dd-MM-yyyy hh:mm:ss')
 
         def data = []
         def links = []
@@ -80,7 +80,6 @@ class PlannerController {
                 parent = 'p' + issue.project.id + 'c' + (client?.id ?: 0)
             }
 
-            def dueDate = issue.dueDate ?: issue.startDate ?: issue.created ?: issue.updated
             data << [
                     id               : issue.id,
                     key              : issue.key,
@@ -94,9 +93,9 @@ class PlannerController {
                             resource_id: issue.assignee.id,
                             value      : Math.round(estimateHours / durationDays).toInteger()
                     ] : null,
-                    start_date       : formatter.format((issue.startDate ?: issue.created ?: issue.updated)),
-                    end_date         : formatter.format(dueDate),
-                    dueDate          : issue.dueDate ? formatter.format(dueDate) : null,
+                    start_date       : issue.startDate ? formatter.format(issue.startDate) : null,
+                    end_date         : issue.dueDate ? formatter.format(issue.dueDate) : null,
+//                    dueDate          : issue.dueDate ? formatter.format(dueDate) : null,
 //                    duration         : durationDays,
                     progress         : (issue.timeSpentSeconds ?: 0) / ((issue.timeSpentSeconds ?: 0) + (issue.remainingEstimateSeconds ?: 1)),
                     parent           : parent,

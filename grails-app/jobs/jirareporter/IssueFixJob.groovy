@@ -8,20 +8,25 @@ class IssueFixJob {
     def issueFixService
 
     def execute() {
-        def issue = Issue.createCriteria().list {
-            isNull('lastFix')
-            maxResults(1)
-        }?.find() as Issue
 
-        if (issue)
+        def jobConfig = SyncJobConfig.findByName('FIXED_ISSUES')
+        if (!jobConfig)
+            jobConfig = new SyncJobConfig(name: 'FIXED_ISSUES').save(flush: true)
+
+        def endDate = jobConfig.startDate ?: new Date()
+        if (endDate < new Date() - 335)
+            endDate = new Date()
+        def startDate = endDate - 2
+
+        Issue.createCriteria().list {
+            between('updated', startDate, endDate)
+        }?.each { Issue issue ->
             issueFixService.fix(issue)
+        }
 
-        issue = Issue.createCriteria().list {
-            order('lastFix', 'asc')
-            maxResults(1)
-        }?.find() as Issue
-
-        if (issue)
-            issueFixService.fix(issue)
+        jobConfig = SyncJobConfig.findByName('FIXED_ISSUES')
+        jobConfig.startDate = startDate
+        jobConfig.endDate = endDate
+        jobConfig.save(flush: true)
     }
 }
