@@ -59,9 +59,7 @@ class IssueService {
         if (!issue.save(flush: true))
             throw new Exception("Error saving issue")
 
-        IssueDownloadItem.executeUpdate("delete IssueDownloadItem where issue = :issue", [issue: issueDownloadItem.issue])
-
-        Issue.executeUpdate("delete IssueDownloadItem where issue = :issue", [issue: issue])
+        IssueDownloadItem.executeUpdate("delete IssueDownloadItem where issue = :issue", [issue: issue])
 
         issue
     }

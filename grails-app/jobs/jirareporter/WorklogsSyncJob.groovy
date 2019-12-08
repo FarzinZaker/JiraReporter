@@ -11,19 +11,8 @@ class WorklogsSyncJob {
     static concurrent = false
 
     def downloadService
-    def issueDownloadService
 
     def execute() {
-
-        if (!Environment.isDevelopmentMode())
-            return
-
-        //Download Queue
-        while (IssueDownloadItem.count() > 0) {
-            def issueDownloadItem = IssueDownloadItem.findByIdGreaterThan(0)
-            issueDownloadService.download(issueDownloadItem.issue.key)
-            IssueDownloadItem.executeUpdate("delete IssueDownloadItem where issue = :issue", [issue: issueDownloadItem.issue])
-        }
 
         //Recent
         def jobConfig = SyncJobConfig.findByName('RECENT_ISSUES')
