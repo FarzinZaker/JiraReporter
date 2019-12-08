@@ -5,7 +5,7 @@ import grails.gorm.transactions.Transactional
 import org.grails.web.json.JSONArray
 
 @Transactional
-class SyncService {
+class DownloadService {
 
     def cacheService
     def issueService

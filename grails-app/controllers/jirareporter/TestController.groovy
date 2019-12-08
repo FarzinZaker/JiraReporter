@@ -4,13 +4,12 @@ import grails.converters.JSON
 
 class TestController {
 
-    def crossOverService
+    def issueUploadService
 
     def index() {
 
-        Date from = new Date() - 30
-        Date to = new Date()
-        def result = crossOverService.getWorkingHours('3439', '1721621', from, to)
-        render(result as JSON)
+        def issue = Issue.read(2922)
+        issueUploadService.update(issue)
+        render(issue.key)
     }
 }

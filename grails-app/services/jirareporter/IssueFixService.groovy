@@ -9,17 +9,12 @@ class IssueFixService {
     def issueUploadService
 
     def fix(Issue issue) {
-//        println 'OS:' + issue.originalEstimate
-//        println 'OSS:' + issue.originalEstimateSeconds
-        if (!issue.originalEstimate || issue.originalEstimate?.trim() == '' || issue.originalEstimateSeconds < 1) {
-            issue.originalEstimateSeconds = 3600 // 1 hour
-            issue.originalEstimate = formatDuration(issue.originalEstimateSeconds)
-        }
 
-        if (!issue.remainingEstimate || issue.remainingEstimate?.trim() == '') {
-            issue.remainingEstimateSeconds = issue.originalEstimateSeconds - (issue.timeSpentSeconds ?: 0)
-            issue.remainingEstimate = formatDuration(issue.remainingEstimateSeconds)
-        }
+        if (!issue.originalEstimate || issue.originalEstimate?.trim() == '' || issue.originalEstimateSeconds < 1)
+            issue.originalEstimate = formatDuration(3600)
+
+        if (!issue.remainingEstimate || issue.remainingEstimate?.trim() == '')
+            issue.remainingEstimate = formatDuration((issue.originalEstimateSeconds ?: 3600) - (issue.timeSpentSeconds ?: 0))
 
         IssueDownloadItem downloadItem
         if (issue.created) {
@@ -28,18 +23,10 @@ class IssueFixService {
 
             if (!issue.dueDate)
                 use(TimeCategory) {
-//                    println issue.dueDate
-//                    println issue.startDate
-//                    println issue.originalEstimateSeconds.toInteger()
-                    issue.dueDate = issue.startDate + (issue.originalEstimateSeconds).toInteger().seconds
-//                    println issue.dueDate
-//
-//                    println()
-//                    println()
-//                    println()
+                    issue.dueDate = issue.startDate + (issue.originalEstimateSeconds ?: 3600).toInteger().seconds
                 }
         } else {
-            downloadItem = new IssueDownloadItem(issue: issue, property: 'created')
+            downloadItem = new IssueDownloadItem(issue: issue)
         }
 
         issueUploadService.enqueue(issue)
@@ -93,6 +80,9 @@ class IssueFixService {
                 timeSpent += ' '
             timeSpent += mins + 'm'
         }
+
+        if (timeSpent == '')
+            timeSpent = '0'
 
         return timeSpent
     }

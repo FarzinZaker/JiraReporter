@@ -3,7 +3,6 @@ package jirareporter
 class IssueDownloadItem {
 
     Issue issue
-    String property
     String errorMessage
     Date lastTry
     Date dateCreated

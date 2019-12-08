@@ -1,5 +1,6 @@
 package jirareporter
 
+
 import grails.util.Environment
 
 class WorklogsSyncJob {
@@ -9,12 +10,20 @@ class WorklogsSyncJob {
 
     static concurrent = false
 
-    def syncService
+    def downloadService
+    def issueDownloadService
 
     def execute() {
 
-        if(!Environment.isDevelopmentMode())
+        if (!Environment.isDevelopmentMode())
             return
+
+        //Download Queue
+        while(IssueDownloadItem.count() > 0) {
+            def issueDownloadItem = IssueDownloadItem.findByIdGreaterThan(0)
+            issueDownloadService.download(issueDownloadItem.issue.key)
+            IssueDownloadItem.executeUpdate("delete IssueDownloadItem where issue = :issue", [issue: issueDownloadItem.issue])
+        }
 
         //Recent
         def jobConfig = SyncJobConfig.findByName('RECENT_ISSUES')
@@ -26,12 +35,16 @@ class WorklogsSyncJob {
             endDate = new Date() + 1
         def startDate = endDate - 2
 
-        syncService.getWorklogs(startDate, endDate)
+        try {
+            downloadService.getWorklogs(startDate, endDate)
 
-        jobConfig = SyncJobConfig.findByName('RECENT_ISSUES')
-        jobConfig.startDate = startDate
-        jobConfig.endDate = endDate
-        jobConfig.save(flush: true)
+            jobConfig = SyncJobConfig.findByName('RECENT_ISSUES')
+            jobConfig.startDate = startDate
+            jobConfig.endDate = endDate
+            jobConfig.save(flush: true)
+        } catch (Exception ex) {
+            println ex.message
+        }
 
         //Old
         jobConfig = SyncJobConfig.findByName('OLD_ISSUES')
@@ -43,11 +56,15 @@ class WorklogsSyncJob {
             endDate = new Date() - 30
         startDate = endDate - 2
 
-        syncService.getWorklogs(startDate, endDate)
+        try {
+            downloadService.getWorklogs(startDate, endDate)
 
-        jobConfig = SyncJobConfig.findByName('OLD_ISSUES')
-        jobConfig.startDate = startDate
-        jobConfig.endDate = endDate
-        jobConfig.save(flush: true)
+            jobConfig = SyncJobConfig.findByName('OLD_ISSUES')
+            jobConfig.startDate = startDate
+            jobConfig.endDate = endDate
+            jobConfig.save(flush: true)
+        } catch (Exception ex) {
+            println ex.message
+        }
     }
 }

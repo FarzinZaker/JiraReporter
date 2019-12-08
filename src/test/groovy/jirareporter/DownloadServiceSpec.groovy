@@ -3,7 +3,7 @@ package jirareporter
 import grails.testing.services.ServiceUnitTest
 import spock.lang.Specification
 
-class SyncServiceSpec extends Specification implements ServiceUnitTest<SyncService>{
+class DownloadServiceSpec extends Specification implements ServiceUnitTest<DownloadService>{
 
     def setup() {
     }

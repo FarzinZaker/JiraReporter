@@ -9,12 +9,14 @@ import com.sun.jersey.api.client.*
 import com.sun.jersey.client.apache.ApacheHttpClient
 import com.sun.jersey.client.apache.ApacheHttpClientHandler
 import com.sun.jersey.client.apache.config.DefaultApacheHttpClientConfig
+import grails.converters.JSON
 import org.apache.commons.httpclient.HttpClient
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager
 import org.codehaus.jettison.json.JSONArray
 import org.codehaus.jettison.json.JSONException
 import org.codehaus.jettison.json.JSONObject
 
+import javax.ws.rs.core.MediaType
 import javax.ws.rs.core.UriBuilder
 import java.util.concurrent.Callable
 
@@ -114,6 +116,7 @@ class JiraRestClient {
             throw new RestClientException(e);
         }
     }
+
     protected JSONArray invokeArray(Callable<JSONArray> callable) throws RestClientException {
         try {
             callable.call();
@@ -169,6 +172,21 @@ class JiraRestClient {
             }
         }
         return errorMessages;
+    }
+
+    def put(String issueUri, Map data) {
+        final URI roleUri = UriBuilder
+                .fromUri(new URI(issueUri))
+                .build()
+
+        invoke(new Callable<JSONObject>() {
+            @Override
+            public JSONObject call() throws Exception {
+                final WebResource.Builder webResource = client.resource(roleUri)
+                        .type(MediaType.APPLICATION_JSON_TYPE)
+                webResource.put((data as JSON).toString())
+            }
+        });
     }
 
 
