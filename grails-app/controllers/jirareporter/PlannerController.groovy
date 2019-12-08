@@ -77,7 +77,7 @@ class PlannerController {
 
             def isParent = Issue.findByParentAndIdInList(issue, idList) ?: IssueLink.findBySecondIssueAndTypeAndFirstIssueInList(issue, 'is child of', issues) ?: IssueLink.findByFirstIssueAndTypeAndSecondIssueInList(issue, 'is parent of', issues)
 
-            def parent = issue.parent?.id ?: IssueLink.findByFirstIssueAndType(issue, 'is child of')?.secondIssue?.id ?: IssueLink.findBySecondIssueAndType(issue, 'is parent of')?.firstIssue?.id
+            def parent = issue.parent?.key ?: IssueLink.findByFirstIssueAndType(issue, 'is child of')?.secondIssue?.key ?: IssueLink.findBySecondIssueAndType(issue, 'is parent of')?.firstIssue?.key
             if (!parent) {
 
                 if (!projects.any { issue.project?.id == it.id })
@@ -91,7 +91,7 @@ class PlannerController {
             }
 
             data << [
-                    id               : issue.id,
+                    id               : issue.key,
                     key              : issue.key,
                     text             : issue.summary,
                     description      : markdown.renderHtml(text: issue.description),
@@ -124,8 +124,8 @@ class PlannerController {
             IssueLink.findAllByFirstIssueAndTypeAndSecondIssueInList(issue, 'has to be done before', issues).each { link ->
                 links << [
                         id    : link.id,
-                        source: link.firstIssue?.id,
-                        target: link.secondIssue?.id,
+                        source: link.firstIssue?.key,
+                        target: link.secondIssue?.key,
                         type  : '0'
                 ]
             }

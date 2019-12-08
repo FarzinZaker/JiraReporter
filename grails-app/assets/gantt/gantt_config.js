@@ -7,7 +7,14 @@ gantt.config.auto_scheduling = true;
 gantt.config.auto_scheduling_strict = true;
 gantt.config.auto_scheduling_compatibility = true;
 
-gantt.attachEvent("onAfterTaskAutoSchedule",function(task, start, link, predecessor){
+var formatter = gantt.ext.formatters.durationFormatter({
+    enter: "day",
+    store: "day",
+    format: "auto"
+});
+var linksFormatter = gantt.ext.formatters.linkFormatter({durationFormatter: formatter});
+
+gantt.attachEvent("onAfterTaskAutoSchedule", function (task, start, link, predecessor) {
     gantt.sort('start_date', false);
 });
 
@@ -56,8 +63,11 @@ var endDateEditor = {
     type: "date", map_to: "end_date"
 };
 var durationEditor = {type: "text", map_to: "originalEstimate"};
+var predecessorsEditor = {type: "predecessor", map_to: "auto", formatter: linksFormatter}
+
 
 gantt.config.columns = [
+    {name: "wbs", label: "#", width: 60, align: "left", template: gantt.getWBSCode},
     {
         name: "text", width: 250, tree: true, label: "Summary", resize: true, template: function (task) {
             if (task.taskType === 'project' || task.taskType === 'client')
@@ -67,7 +77,7 @@ gantt.config.columns = [
         }
     },
     {
-      name: "key", width:100, label: "Key", resize: true, template: function (task) {
+        name: "key", width: 100, label: "Key", resize: true, template: function (task) {
             if (task.taskType === 'project' || task.taskType === 'client')
                 return '';
             else
@@ -116,7 +126,13 @@ gantt.config.columns = [
         }
     },
     {
-        name: "start_date", width: 80, label: "Start Date", resize: true, hide: false, editor: startDateEditor, template: function (task) {
+        name: "start_date",
+        width: 80,
+        label: "Start Date",
+        resize: true,
+        hide: false,
+        editor: startDateEditor,
+        template: function (task) {
             if (task.taskType === 'project' || task.taskType === 'client') {
                 return "";
             }
@@ -124,7 +140,13 @@ gantt.config.columns = [
         }
     },
     {
-        name: "end_date", width: 80, label: "Due Date", resize: true, hide: false, editor: endDateEditor, template: function (task) {
+        name: "end_date",
+        width: 80,
+        label: "Due Date",
+        resize: true,
+        hide: false,
+        editor: endDateEditor,
+        template: function (task) {
             if (task.taskType === 'project' || task.taskType === 'client') {
                 return "";
             }
@@ -167,6 +189,18 @@ gantt.config.columns = [
                 return "";
             }
             return '<img class="priority-icon" alt="' + task.priorityName + '" src="' + task.priorityIcon + '"/>';
+        }
+    },
+    {
+        name: "predecessors", label: "Pred.", width: 100, align: "center",
+        editor: predecessorsEditor, resize: true, template: function (task) {
+            var links = task.$target;
+            var labels = [];
+            for (var i = 0; i < links.length; i++) {
+                var link = gantt.getLink(links[i]);
+                labels.push(linksFormatter.format(link));
+            }
+            return labels.join(", ")
         }
     }
 ];
@@ -402,21 +436,28 @@ gantt.config.order_branch = false;
 // });
 
 
-gantt.attachEvent("onBeforeLightbox", function(id) {
+gantt.attachEvent("onBeforeLightbox", function (id) {
     return false;
 });
 
 var inlineEditors = gantt.ext.inlineEditors;
 
-inlineEditors.attachEvent("onBeforeEditStart", function(state){
+inlineEditors.attachEvent("onBeforeEditStart", function (state) {
     // console.log(state);
-    if(state.id.startsWith('p'))
+    if (state.id.startsWith('p'))
         return false;
     // -> {id: itemId, columnName: columnName};
     return true;
 });
 
-inlineEditors.attachEvent("onSave", function(state){
+gantt.attachEvent("onBeforeLinkAdd", function (id, link) {
+
+    if (link.source.startsWith('p') || link.target.startsWith('p'))
+        return false;
+    return true;
+});
+
+inlineEditors.attachEvent("onSave", function (state) {
     // console.log(stateete);
     // -> { id: itemId,
     //      columnName: columnName,
@@ -425,16 +466,5 @@ inlineEditors.attachEvent("onSave", function(state){
     //    };
 });
 
-gantt.attachEvent("onBeforeLinkAdd", function(id,link){
-    console.log(link)
-    return true;
-});
 
-gantt.attachEvent("onAfterTaskUpdate", function(id,task){
-    console.log(task);
-});
-
-gantt.attachEvent("onAfterLinkAdd", function(id,link){
-    console.log(link)
-});
 

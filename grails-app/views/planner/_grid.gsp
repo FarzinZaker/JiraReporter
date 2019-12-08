@@ -25,6 +25,7 @@
 <div id="gantt_here" style='width:100%; height:80vh'></div>
 
 <asset:javascript src="gantt_config.js"/>
+<asset:javascript src="gantt_persist.js"/>
 <script>
 
     gantt.init("gantt_here");
@@ -54,30 +55,30 @@
             if (task.owner && !idList.includes(task.owner.resource_id))
                 idList.push(task.owner.resource_id);
         });
-        var result = $.grep(resources, function(r) {
+        var result = $.grep(resources, function (r) {
             return idList.includes(r.id);
         });
-        $.each(result, function(index, id){
-            $.each($.grep(resources, function(r){
+        $.each(result, function (index, id) {
+            $.each($.grep(resources, function (r) {
                 return r.id >= 10000000;
-            }), function(i, r){
+            }), function (i, r) {
                 // console.log(r);
-                if(id.parent === r.id)
+                if (id.parent === r.id)
                     idList.push(r.id);
             });
         });
-        result = $.grep(resources, function(r) {
+        result = $.grep(resources, function (r) {
             return idList.includes(r.id);
         });
-        $.each(result, function(index, id){
-            $.each($.grep(resources, function(r){
+        $.each(result, function (index, id) {
+            $.each($.grep(resources, function (r) {
                 return r.id >= 10000000;
-            }), function(i, r){
-                if(id.parent === r.id)
+            }), function (i, r) {
+                if (id.parent === r.id)
                     idList.push(r.id);
             });
         });
-        result = $.grep(resources, function(r) {
+        result = $.grep(resources, function (r) {
             return idList.includes(r.id);
         });
         // console.log(result);
