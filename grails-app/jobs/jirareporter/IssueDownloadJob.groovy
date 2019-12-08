@@ -17,10 +17,18 @@ class IssueDownloadJob {
         if (!Environment.isDevelopmentMode())
             return
 
-        while (IssueDownloadItem.count() > 0) {
-            def issueDownloadItem = IssueDownloadItem.findByIdGreaterThan(0)
-            issueDownloadService.download(issueDownloadItem.issue.key)
-            IssueDownloadItem.executeUpdate("delete IssueDownloadItem where issue = :issue", [issue: issueDownloadItem.issue])
+        if (IssueDownloadItem.count() > 0) {
+            def issueDownloadItems = IssueDownloadItem.findAllByIdGreaterThan(0, [max: 20])
+            def threads = []
+            issueDownloadItems.each { issueDownloadItem ->
+                threads << Thread.start {
+                    Issue.withNewTransaction {
+                        issueDownloadService.download(issueDownloadItem.issue.key)
+                        IssueDownloadItem.executeUpdate("delete IssueDownloadItem where issue = :issue", [issue: issueDownloadItem.issue])
+                    }
+                }
+            }
+            threads.each { it.join() }
         }
     }
 }

@@ -25,6 +25,14 @@ class IssueFixService {
                 use(TimeCategory) {
                     issue.dueDate = issue.startDate + (issue.originalEstimateSeconds ?: 3600).toInteger().seconds
                 }
+
+            def minDueDate = issue.startDate
+            use(TimeCategory){
+                minDueDate = minDueDate + 1.day
+            }
+            if(issue.dueDate < minDueDate)
+                issue.dueDate = minDueDate
+
         } else {
             downloadItem = new IssueDownloadItem(issue: issue)
         }

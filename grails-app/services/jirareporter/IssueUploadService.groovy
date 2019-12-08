@@ -24,7 +24,7 @@ class IssueUploadService {
 
 
     String update(Issue issue) {
-        def list = IssueUploadItem.findAllByIssue(issue).sort { it.dateCreated }
+        def list = IssueUploadItem.findAllByIssueAndRetryCountLessThan(issue, 20).sort { it.dateCreated }
 
         def finalData = [:]
         list.each { issueUploadItem ->
@@ -60,8 +60,14 @@ class IssueUploadService {
             new IssueDownloadItem(issue: issue).save()
             IssueUploadItem.executeUpdate("delete IssueUploadItem where issue = :issue", [issue: issue])
         } catch (Exception ex) {
-//            println ex.message
-            throw ex
+            list.each {
+                it.errorMessage = ex.message
+                it.lastTry = new Date()
+                it.retryCount++
+                it.save()
+            }
+            println ex.message
+//            throw ex
         }
     }
 

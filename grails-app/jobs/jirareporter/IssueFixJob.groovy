@@ -31,7 +31,7 @@ class IssueFixJob {
         def statusList = filterService.formatStatus([status: ['Draft', 'To Do', 'In Progress'].join(',')])
         def users = JiraUser.findAllByTeamNameInList(Configuration.crossOverTeams.collect { it.name } ?: [null])
         Issue.createCriteria().list {
-            'in'('status', statusList)
+//            'in'('status', statusList)
             'in'('assignee', users)
             between('updated', startDate, endDate)
         }?.each { Issue issue ->

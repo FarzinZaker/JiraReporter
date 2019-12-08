@@ -6,6 +6,7 @@ class IssueUploadItem {
     String property
     String value
     String errorMessage
+    Integer retryCount = 0
     Date lastTry
     Date dateCreated
     Date lastUpdated

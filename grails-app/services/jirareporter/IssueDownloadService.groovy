@@ -11,6 +11,11 @@ class IssueDownloadService {
 
     def download(String issueKey) {
 
+        if(!issueKey){
+            println "Issue key is NULL"
+            return
+        }
+
         def jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(Configuration.username, Configuration.password))
 
         String worklogQyery = "key = ${issueKey}"

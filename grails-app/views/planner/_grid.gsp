@@ -30,6 +30,7 @@
     gantt.init("gantt_here");
     gantt.load("${createLink(action: 'issues')}", function () {
         resourcesStore.parse(filterResources());
+        gantt.refreshData();
         showToday();
     });
 

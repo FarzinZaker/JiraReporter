@@ -331,7 +331,7 @@ gantt.templates.quick_info_title = function (start, end, task) {
 
     return "<div class='task-info'><span class='client'>" + task.client + "</span>" +
         "<span class='priority'>" + task.priorityName + " <img class=\"priority-icon\" alt=\"" + task.priorityName + "\" src=\"" + task.priorityIcon + "\"/></span>" +
-        "<h2><a class=\"gantt-task-link\" href=\"https://jira.devfactory.com/browse/" + task.key + "\" target=\"_blank\"><img src=\"" + task.issueTypeIcon + "\" /> " + task.key + "</a> " + task.text + "</h2>" +
+        "<h2><img src=\"" + task.issueTypeIcon + "\" /> <a class=\"gantt-task-link\" href=\"https://jira.devfactory.com/browse/" + task.key + "\" target=\"_blank\">" + task.key + "</a> " + task.text + "</h2>" +
         "<span class='assignee'><img class=\"gantt-avatar\" src=\"" + owner.avatar + "\" /> " + owner.text + "</span>" +
         "<span class='status'>" + task.status.name + "</span><hr/>"
 };

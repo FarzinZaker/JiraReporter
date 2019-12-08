@@ -14,6 +14,7 @@
         gantt.clearAll();
         gantt.load('${createLink(controller: 'planner', action: 'issues')}?' + $('#filterForm').serialize(), function () {
             resourcesStore.parse(filterResources());
+            gantt.refreshData();
             showToday();
         });
     }

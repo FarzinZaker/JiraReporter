@@ -13,10 +13,10 @@ class IssueUploadJob {
 
     def execute() {
 
-        if(!Environment.isDevelopmentMode())
+        if (!Environment.isDevelopmentMode())
             return
 
-        def issueUploadItems = IssueUploadItem.findAllByIdGreaterThan(0)
+        def issueUploadItems = IssueUploadItem.findAllByRetryCountLessThan(20, [max: 20])
         def threads = []
         issueUploadItems.each { issueUploadItem ->
             threads << Thread.start {
@@ -26,7 +26,5 @@ class IssueUploadJob {
             }
         }
         threads.each { it.join() }
-
-//        println 'upload complete'
     }
 }

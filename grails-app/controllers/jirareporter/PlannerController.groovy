@@ -150,6 +150,7 @@ class PlannerController {
     def syncStatus() {
         render([
                 upload  : IssueUploadItem.createCriteria().list {
+                    lt('retryCount', 20)
                     projections {
                         property('issue')
                     }

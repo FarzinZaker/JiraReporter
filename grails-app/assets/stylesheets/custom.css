@@ -770,7 +770,7 @@ input[type=submit], input[type=button] {
     /*opacity: 0.7;*/
     color: #2196F3;
     text-decoration: underline;
-    /*font-weight: bold;*/
+    font-weight: bold;
 }
 
 .gantt-task-link:hover {
@@ -973,9 +973,19 @@ input[type=submit], input[type=button] {
     background-color: #FFCDD2;
 }
 
+.red:hover .gantt_cell,
+.red:hover .gantt_task_cell {
+    background-color: #f7eb91;
+}
+
+.odd.red:hover .gantt_cell,
+.odd.red:hover .gantt_task_cell {
+    background-color: #f7eb91;
+}
+
 .gantt_selected.red .gantt_cell,
 .gantt_selected.red .gantt_task_cell {
-    background: #EF9A9A;
+    background: #f7eb91;
 }
 
 .gantt_control input {
