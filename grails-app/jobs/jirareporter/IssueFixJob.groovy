@@ -1,5 +1,7 @@
 package jirareporter
 
+import grails.util.Environment
+
 class IssueFixJob {
     static triggers = {
         simple repeatInterval: 1000l // execute job once in 5 seconds
@@ -11,6 +13,9 @@ class IssueFixJob {
     def filterService
 
     def execute() {
+
+        if(!Environment.isDevelopmentMode())
+            return
 
         def jobConfig = SyncJobConfig.findByName('FIXED_ISSUES')
         if (!jobConfig)

@@ -1,5 +1,7 @@
 package jirareporter
 
+import grails.util.Environment
+
 class IssueUploadJob {
     static triggers = {
         simple repeatInterval: 5000l // execute job once in 5 seconds
@@ -10,6 +12,10 @@ class IssueUploadJob {
     def issueUploadService
 
     def execute() {
+
+        if(!Environment.isDevelopmentMode())
+            return
+
         def issueUploadItems = IssueUploadItem.findAllByIdGreaterThan(0)
         def threads = []
         issueUploadItems.each { issueUploadItem ->
