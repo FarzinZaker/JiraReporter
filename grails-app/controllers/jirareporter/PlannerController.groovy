@@ -146,4 +146,15 @@ class PlannerController {
                 links: links
         ] as JSON)
     }
+
+    def syncStatus() {
+        render([
+                upload  : IssueUploadItem.createCriteria().list {
+                    projections {
+                        property('issue')
+                    }
+                }.unique().size(),
+                download: IssueDownloadItem.count()
+        ] as JSON)
+    }
 }

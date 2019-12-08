@@ -18,6 +18,8 @@
     <input type="button" onclick="toggleMode(this)" value="Zoom to Fit" style="background: #FF9800"/>
     <input type="button" onclick="showToday()" value="Today" style="background: #FF9800"/>
 
+    <g:render template="syncStatus"/>
+
 </div>
 
 <div id="gantt_here" style='width:100%; height:80vh'></div>

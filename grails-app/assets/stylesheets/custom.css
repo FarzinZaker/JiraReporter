@@ -1026,3 +1026,13 @@ input[type=submit], input[type=button] {
 .link:hover {
     text-decoration: none !important;
 }
+
+.sync-status {
+    float: right;
+}
+
+.sync-status span {
+    font-weight: bold;
+    display: inline-block;
+    margin-right: 10px;
+}

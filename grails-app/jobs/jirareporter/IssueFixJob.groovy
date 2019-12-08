@@ -19,7 +19,7 @@ class IssueFixJob {
         def endDate = jobConfig.startDate ?: new Date()
         if (endDate < new Date() - 335) {
             endDate = new Date()
-            println 'FIX is DONE'
+//            println 'FIX is DONE'
         }
         def startDate = endDate - 2
 

@@ -10,8 +10,17 @@ class IssueUploadJob {
     def issueUploadService
 
     def execute() {
-        def issueUploadItem = IssueUploadItem.findByIdGreaterThan(0)
-        issueUploadService.update(issueUploadItem.issue)
+        def issueUploadItems = IssueUploadItem.findAllByIdGreaterThan(0)
+        def threads = []
+        issueUploadItems.each { issueUploadItem ->
+            threads << Thread.start {
+                Issue.withNewTransaction {
+                    issueUploadService.update(issueUploadItem.issue)
+                }
+            }
+        }
+        threads.each { it.join() }
+
 //        println 'upload complete'
     }
 }

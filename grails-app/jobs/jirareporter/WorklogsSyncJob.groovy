@@ -19,7 +19,7 @@ class WorklogsSyncJob {
             return
 
         //Download Queue
-        while(IssueDownloadItem.count() > 0) {
+        while (IssueDownloadItem.count() > 0) {
             def issueDownloadItem = IssueDownloadItem.findByIdGreaterThan(0)
             issueDownloadService.download(issueDownloadItem.issue.key)
             IssueDownloadItem.executeUpdate("delete IssueDownloadItem where issue = :issue", [issue: issueDownloadItem.issue])
@@ -33,7 +33,7 @@ class WorklogsSyncJob {
         def endDate = jobConfig.startDate ?: (new Date() + 1)
         if (endDate < new Date() - 30)
             endDate = new Date() + 1
-        def startDate = endDate - 2
+        def startDate = endDate - 1
 
         try {
             downloadService.getWorklogs(startDate, endDate)
@@ -54,7 +54,7 @@ class WorklogsSyncJob {
         endDate = jobConfig.startDate ?: (new Date() - 30)
         if (endDate < new Date() - 335)
             endDate = new Date() - 30
-        startDate = endDate - 2
+        startDate = endDate - 1
 
         try {
             downloadService.getWorklogs(startDate, endDate)
