@@ -16,6 +16,7 @@
             resourcesStore.parse(filterResources());
             gantt.refreshData();
             showToday();
+            gantt.sort('start_date', false);
         });
     }
 </script>

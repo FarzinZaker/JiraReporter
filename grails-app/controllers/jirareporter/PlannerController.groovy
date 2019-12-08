@@ -49,13 +49,21 @@ class PlannerController {
 
         def projects = []
 
+        def idList = issues.collect{it.id} ?: [0]
         issues.each { issue ->
 
             def completed = Configuration.statusList['Verification'].contains(issue.status.name) || Configuration.statusList['Closed'].contains(issue.status.name)
 
-            def estimateMinutes = Math.ceil((issue.originalEstimateSeconds ?: 1) / 60).toInteger()
+            def originalEstimateSeconds = issue.originalEstimateSeconds
+            if (!originalEstimateSeconds) {
+                if (issue.originalEstimate && issue.originalEstimate.trim() != '') {
+                    originalEstimateSeconds = getDurationSeconds(issue.originalEstimate)
+                } else
+                    originalEstimateSeconds = 3600
+            }
+            def estimateMinutes = Math.ceil((originalEstimateSeconds ?: 1) / 60).toInteger()
             def estimateHours = Math.ceil(estimateMinutes / 60)
-            def estimateDays = Math.ceil(estimateHours / 8)
+//            def estimateDays = Math.ceil(estimateHours / 8)
 
             def durationDays = 1
             if (issue.startDate && issue.dueDate)
@@ -66,6 +74,8 @@ class PlannerController {
                         issue.dueDate = issue.dueDate + 1.day
                     }
                 }
+
+            def isParent = Issue.findByParentAndIdInList(issue, idList) ?: IssueLink.findBySecondIssueAndTypeAndFirstIssueInList(issue, 'is child of', issues) ?: IssueLink.findByFirstIssueAndTypeAndSecondIssueInList(issue, 'is parent of', issues)
 
             def parent = issue.parent?.id ?: IssueLink.findByFirstIssueAndType(issue, 'is child of')?.secondIssue?.id ?: IssueLink.findBySecondIssueAndType(issue, 'is parent of')?.firstIssue?.id
             if (!parent) {
@@ -85,7 +95,7 @@ class PlannerController {
                     key              : issue.key,
                     text             : issue.summary,
                     description      : markdown.renderHtml(text: issue.description),
-                    type             : 'task',
+                    type             : isParent ? 'project' : 'task',
                     taskType         : 'task',
                     issueType        : issue.issueType.name.replace(' ', '_'),
                     issueTypeIcon    : issue.issueType.icon,
@@ -105,7 +115,7 @@ class PlannerController {
                     priorityIcon     : issue.priority.icon,
                     client           : issue.clients.collect { it.name }.join(', '),
                     status           : [name: issue.status.name, icon: issue.status.icon],
-                    originalEstimate : [formatted: issue.originalEstimate ?: '-', value: issue.originalEstimateSeconds ?: 0],
+                    originalEstimate : [formatted: issue.originalEstimate ?: '-', value: originalEstimateSeconds ?: 0],
                     remainingEstimate: [formatted: issue.remainingEstimate ?: '-', value: issue.remainingEstimateSeconds ?: 0],
                     timeSpent        : [formatted: issue.timeSpent ?: '-', value: issue.timeSpentSeconds ?: 0],
                     overdue          : !completed && issue.dueDate && issue.dueDate < new Date()
@@ -113,10 +123,10 @@ class PlannerController {
 
             IssueLink.findAllByFirstIssueAndTypeAndSecondIssueInList(issue, 'has to be done before', issues).each { link ->
                 links << [
-                        id         : link.id,
-                        source     : link.firstIssue?.id?.toString(),
-                        description: link.secondIssue?.id?.toString(),
-                        type       : 0.toString()
+                        id    : link.id,
+                        source: link.firstIssue?.id,
+                        target: link.secondIssue?.id,
+                        type  : '0'
                 ]
             }
         }
@@ -157,5 +167,24 @@ class PlannerController {
                 }.unique().size(),
                 download: IssueDownloadItem.count()
         ] as JSON)
+    }
+
+    private getDurationSeconds(String duration) {
+        if (!duration)
+            return 0
+
+        def seconds = 0
+        def parts = duration.split(' ').collect { it.trim() }.findAll { it && !it == '' }
+        parts.each { dur ->
+            if (dur.endsWith('w'))
+                seconds += dur.replace('w', '').toInteger() * 60 * 60 * 8 * 5
+            else if (dur.endsWith('d'))
+                seconds += dur.replace('d', '').toInteger() * 60 * 60 * 8
+            else if (dur.endsWith('h'))
+                seconds += dur.replace('h', '').toInteger() * 60 * 60
+            else
+                seconds += dur.replace('m', '').toInteger() * 60 * 60
+            seconds
+        }
     }
 }

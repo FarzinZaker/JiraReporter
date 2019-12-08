@@ -9,7 +9,7 @@ class IssueReportService {
 
         Issue.createCriteria().list {
 
-            isNotNull('originalEstimateSeconds')
+            isNotNull('originalEstimate')
             isNotNull('startDate')
             isNotNull('dueDate')
 

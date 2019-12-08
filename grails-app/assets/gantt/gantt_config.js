@@ -1,9 +1,15 @@
 gantt.config.xml_date = "%d-%m-%Y";
 gantt.config.grid_resize = true;
+gantt.config.fit_tasks = true;
+gantt.config.sort = true;
 
 gantt.config.auto_scheduling = true;
 gantt.config.auto_scheduling_strict = true;
 gantt.config.auto_scheduling_compatibility = true;
+
+gantt.attachEvent("onAfterTaskAutoSchedule",function(task, start, link, predecessor){
+    gantt.sort('start_date', false);
+});
 
 gantt.templates.grid_row_class = function (start_date, end_date, item) {
     // console.log(item.overdue);
@@ -54,7 +60,7 @@ var durationEditor = {type: "text", map_to: "originalEstimate"};
 gantt.config.columns = [
     {
         name: "text", width: 250, tree: true, label: "Summary", resize: true, template: function (task) {
-            if (task.type === gantt.config.types.project)
+            if (task.taskType === 'project' || task.taskType === 'client')
                 return '<b>' + task.text + '</b>';
             else
                 return '<img src="' + task.issueTypeIcon + '" /> ' + task.text;
@@ -62,7 +68,7 @@ gantt.config.columns = [
     },
     {
       name: "key", width:100, label: "Key", resize: true, template: function (task) {
-            if (task.type === gantt.config.types.project)
+            if (task.taskType === 'project' || task.taskType === 'client')
                 return '';
             else
                 return '<a class="gantt-task-link" href="https://jira.devfactory.com/browse/' + task.key + '" target="_blank"> ' + task.key + '</a>';
@@ -71,7 +77,7 @@ gantt.config.columns = [
     // {name: "start_date", align: "center", width: 80, resize: true},
     {
         name: "owner", align: "left", width: 100, label: "Assignee", template: function (task) {
-            if (task.type === gantt.config.types.project) {
+            if (task.taskType === 'project' || task.taskType === 'client') {
                 return "";
             }
 
@@ -103,7 +109,7 @@ gantt.config.columns = [
     },
     {
         name: "status", width: 80, label: "Status", resize: true, template: function (task) {
-            if (task.type === gantt.config.types.project) {
+            if (task.taskType === 'project' || task.taskType === 'client') {
                 return "";
             }
             return task.status.name;
@@ -111,7 +117,7 @@ gantt.config.columns = [
     },
     {
         name: "start_date", width: 80, label: "Start Date", resize: true, hide: false, editor: startDateEditor, template: function (task) {
-            if (task.type === gantt.config.types.project) {
+            if (task.taskType === 'project' || task.taskType === 'client') {
                 return "";
             }
             return task.start_date ? task.start_date : '-';
@@ -119,7 +125,7 @@ gantt.config.columns = [
     },
     {
         name: "end_date", width: 80, label: "Due Date", resize: true, hide: false, editor: endDateEditor, template: function (task) {
-            if (task.type === gantt.config.types.project) {
+            if (task.taskType === 'project' || task.taskType === 'client') {
                 return "";
             }
             return task.end_date ? task.end_date : '-';
@@ -133,7 +139,7 @@ gantt.config.columns = [
         hide: true,
         editor: durationEditor,
         template: function (task) {
-            if (task.type === gantt.config.types.project) {
+            if (task.taskType === 'project' || task.taskType === 'client') {
                 return "";
             }
             return task.originalEstimate.formatted;
@@ -141,7 +147,7 @@ gantt.config.columns = [
     },
     {
         name: "remainingEstimate", width: 90, label: "Rem. Est.", resize: true, hide: true, template: function (task) {
-            if (task.type === gantt.config.types.project) {
+            if (task.taskType === 'project' || task.taskType === 'client') {
                 return "";
             }
             return task.remainingEstimate.formatted;
@@ -149,7 +155,7 @@ gantt.config.columns = [
     },
     {
         name: "timeSpent", width: 90, label: "Time Spent", resize: true, hide: true, template: function (task) {
-            if (task.type === gantt.config.types.project) {
+            if (task.taskType === 'project' || task.taskType === 'client') {
                 return "";
             }
             return task.timeSpent.formatted;
@@ -157,7 +163,7 @@ gantt.config.columns = [
     },
     {
         name: "priority", width: 32, label: "P", resize: true, template: function (task) {
-            if (task.type === gantt.config.types.project) {
+            if (task.taskType === 'project' || task.taskType === 'client') {
                 return "";
             }
             return '<img class="priority-icon" alt="' + task.priorityName + '" src="' + task.priorityIcon + '"/>';
@@ -321,7 +327,7 @@ gantt.$click.buttons.close_button = function (id) {
 };
 
 gantt.templates.quick_info_title = function (start, end, task) {
-    if (task.type === gantt.config.types.project) {
+    if (task.taskType === 'project' || task.taskType === 'client') {
         return task.text;
     }
 
@@ -338,7 +344,7 @@ gantt.templates.quick_info_title = function (start, end, task) {
 
 gantt.templates.quick_info_date = function (start, end, task) {
 
-    if (task.type === gantt.config.types.project) {
+    if (task.taskType === 'project' || task.taskType === 'client') {
         return "<span>" + gantt.templates.tooltip_date_format(start) + '</span> - <span>' + gantt.templates.tooltip_date_format(end) + '</span>';
     }
 
@@ -350,7 +356,7 @@ gantt.templates.quick_info_date = function (start, end, task) {
 };
 
 gantt.templates.quick_info_content = function (start, end, task) {
-    if (task.type === gantt.config.types.project) {
+    if (task.taskType === 'project' || task.taskType === 'client') {
         return '';
     }
 
