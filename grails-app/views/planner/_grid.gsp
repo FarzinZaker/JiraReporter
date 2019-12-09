@@ -28,17 +28,32 @@
 <asset:javascript src="gantt_config.js"/>
 <script language="JavaScript">
     gantt.attachEvent("onAfterTaskUpdate", function (id, task) {
-        $.ajax({
-            url: '${createLink(action: 'updateIssue')}',
-            dataType: 'json',
-            type: 'post',
-            data: task,
-            success: function (data, textStatus, jQxhr) {
-            },
-            error: function (jqXhr, textStatus, errorThrown) {
-                console.log(errorThrown);
-            }
-        });
+
+        // console.log(task.owner.value);
+        var end_date = new Date();
+        end_date.setDate(task.end_date.getDate() - 1);
+        var diffDays = workingDaysBetweenDates(task.start_date, end_date);
+        var estimateHours = getDurationSeconds(task.originalEstimate) / 3600;
+        console.log(diffDays);
+        var newValue = Math.round(estimateHours * 10 / diffDays) / 10;
+        var oldOwnerValue = task.owner.value;
+        if (oldOwnerValue !== newValue) {
+            gantt.getTask(id).owner.value = newValue;
+            gantt.updateTask(id);
+            // console.log(getTask(id).owner.value);
+        } else {
+            $.ajax({
+                url: '${createLink(action: 'updateIssue')}',
+                dataType: 'json',
+                type: 'post',
+                data: task,
+                success: function (data, textStatus, jQxhr) {
+                },
+                error: function (jqXhr, textStatus, errorThrown) {
+                    console.log(errorThrown);
+                }
+            });
+        }
     });
 
 

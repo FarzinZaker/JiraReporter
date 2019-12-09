@@ -85,13 +85,10 @@ gantt.config.editor_types.originalEstimateEditor = {
     },
 
     is_changed: function (value, id, column, node) {
-        // console.log(value.originalEstimate);
-        // console.log(node.querySelector('input[name="' + column.name + '"]').value);
         return node.querySelector('input[name="' + column.name + '"]').value !== value.originalEstimate
     },
 
     is_valid: function (value, id, column, node) {
-        // console.log(validateDuration(value));
         return validateDuration(value);
     },
 
@@ -99,6 +96,7 @@ gantt.config.editor_types.originalEstimateEditor = {
         var task = gantt.getTask(id);
         task.originalEstimate = reformatDuration(node.querySelector('input[name="' + column.name + '"]').value);
         gantt.updateTask(id);
+        console.log(task);
     },
     focus: function (node) {
     }
@@ -193,8 +191,8 @@ gantt.config.columns = [
     },
     {
         name: "originalEstimate",
-        width: 90,
-        label: "Orig. Est.",
+        width: 70,
+        label: "Est.",
         resize: true,
         hide: false,
         editor: durationEditor,
@@ -214,7 +212,7 @@ gantt.config.columns = [
         }
     },
     {
-        name: "timeSpent", width: 90, label: "Time Spent", resize: true, hide: true, template: function (task) {
+        name: "timeSpent", width: 0, label: "Time Spent", resize: true, hide: true, template: function (task) {
             if (task.taskType === 'project' || task.taskType === 'client') {
                 return "";
             }
