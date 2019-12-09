@@ -2,6 +2,7 @@ package jirareporter
 
 import grails.converters.JSON
 import grails.gorm.transactions.Transactional
+import grails.util.Holders
 
 @Transactional
 class IssueUploadService {
@@ -17,6 +18,9 @@ class IssueUploadService {
                     throw new Exception("Unable to save sync item: ${issueSyncItem.errorMessage}")
             }
         }
+
+        println issue.dirtyPropertyNames
+
         issue.discard()
     }
 
@@ -31,14 +35,26 @@ class IssueUploadService {
             if (!JiraIssueMapper.fieldsMap.containsKey(fieldName) || !JiraIssueMapper.fieldsMap[fieldName].containsKey('field'))
                 return "$fieldName is not Mapped"
 
-            def path = JiraIssueMapper.fieldsMap[fieldName]['field'].split('\\.')
-            for (def i = path.size() - 1; i >= 0; i--) {
-                if (i == path.size() - 1)
-                    data.put(path[i], issueUploadItem.value)
-                else {
-                    def newData = [:]
-                    newData.put(path[i], data)
-                    data = newData
+            if (JiraIssueMapper.fieldsMap[fieldName]['parser']) {
+                def d = Holders.grailsApplication.mainContext.getBean(JiraIssueMapper.fieldsMap[fieldName].parser).updateData(issue)
+                d.each { item ->
+                    if (!data.containsKey(item.key))
+                        data.put(item.key, item.value)
+                    else
+                        item.value.each {
+                            data[item.key].put(it.key, it.value)
+                        }
+                }
+            } else {
+                def path = JiraIssueMapper.fieldsMap[fieldName]['field'].split('\\.')
+                for (def i = path.size() - 1; i >= 0; i--) {
+                    if (i == path.size() - 1)
+                        data.put(path[i], issueUploadItem.value)
+                    else {
+                        def newData = [:]
+                        newData.put(path[i], data)
+                        data = newData
+                    }
                 }
             }
             data.each { item ->
@@ -51,7 +67,7 @@ class IssueUploadService {
             }
         }
 
-//        println(finalData as JSON)
+        println(finalData as JSON)
         try {
             def jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(Configuration.username, Configuration.password))
             jiraClient.put("${Configuration.serverURL}/rest/api/latest/issue/${issue.key}", [fields: finalData])

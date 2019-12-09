@@ -24,6 +24,24 @@
 
 <div id="gantt_here" style='width:100%; height:80vh'></div>
 
+<script language="JavaScript">
+    gantt.serverList("priority", [
+        <g:each in="${[
+        Priority.findByName('Showstopper'),
+        Priority.findByName('High'),
+        Priority.findByName('Medium'),
+        Priority.findByName('Minor'),
+        Priority.findByName('Low'),
+        ]}" var="priority">
+        {key: ${priority.id}, label: "${priority.name}"},
+        </g:each>
+    ]);
+
+    var priorityIcons = {};
+    <g:each in="${Priority.list()}" var="priority">
+    priorityIcons.p${priority.id} = '${priority.icon}';
+    </g:each>
+</script>
 <asset:javascript src="gantt_helper.js"/>
 <asset:javascript src="gantt_config.js"/>
 <script language="JavaScript">

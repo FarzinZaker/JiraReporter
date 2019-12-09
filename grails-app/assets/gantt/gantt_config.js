@@ -65,7 +65,9 @@ var endDateEditor = {
     type: "date", map_to: "end_date"
 };
 var durationEditor = {type: "originalEstimateEditor", map_to: "auto"};
-var predecessorsEditor = {type: "predecessor", map_to: "auto", formatter: linksFormatter}
+var predecessorsEditor = {type: "predecessor", map_to: "auto", formatter: linksFormatter};
+var priorityEditor = {type:"select", map_to:"priority", options:gantt.serverList("priority")};
+
 
 gantt.config.editor_types.originalEstimateEditor = {
     show: function (id, column, config, placeholder) {
@@ -220,11 +222,12 @@ gantt.config.columns = [
         }
     },
     {
-        name: "priority", width: 32, label: "P", resize: true, template: function (task) {
+        name: "priority", width: 32, label: "P", resize: true, editor: priorityEditor, template: function (task) {
             if (task.taskType === 'project' || task.taskType === 'client') {
                 return "";
             }
-            return '<img class="priority-icon" alt="' + task.priorityName + '" src="' + task.priorityIcon + '"/>';
+            // return task.priority;
+            return '<img class="priority-icon" src="' + priorityIcons['p' + task.priority] + '"/>';
         }
     },
     {

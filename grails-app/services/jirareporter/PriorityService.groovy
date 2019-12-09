@@ -25,4 +25,8 @@ class PriorityService {
         }
         priority
     }
+
+    Map updateData(Issue issue) {
+        [priority: [name: issue.priority.name]]
+    }
 }

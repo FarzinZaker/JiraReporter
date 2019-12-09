@@ -194,7 +194,7 @@ class PlannerController {
         println params
         def firstIssue = Issue.findByKey(params.source)
         def secondIssue = Issue.findByKey(params.target)
-        IssueLink.findByFirstIssueAndSecondIssueAndType(firstIssue, secondIssue, 'has to be done before').each{
+        IssueLink.findByFirstIssueAndSecondIssueAndType(firstIssue, secondIssue, 'has to be done before').each {
             it.deleted = true
             it.save()
         }
@@ -220,6 +220,8 @@ class PlannerController {
         issue.startDate = formatter.parse(issueData.start_date).clearTime()
         issue.dueDate = formatter.parse(issueData.end_date).clearTime()
         issue.originalEstimate = issueData.originalEstimate
+        issue.priority = Priority.get(issueData.priority)
+
         issueUploadService.enqueue(issue, 'Planner')
 
         render 1
