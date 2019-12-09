@@ -49,7 +49,7 @@ class PlannerController {
 
         def projects = []
 
-        def idList = issues.collect{it.id} ?: [0]
+        def idList = issues.collect { it.id } ?: [0]
         issues.each { issue ->
 
             def completed = Configuration.statusList['Verification'].contains(issue.status.name) || Configuration.statusList['Closed'].contains(issue.status.name)
@@ -75,9 +75,9 @@ class PlannerController {
                     }
                 }
 
-            def isParent = Issue.findByParentAndIdInList(issue, idList) ?: IssueLink.findBySecondIssueAndTypeAndFirstIssueInList(issue, 'is child of', issues) ?: IssueLink.findByFirstIssueAndTypeAndSecondIssueInList(issue, 'is parent of', issues)
+            def isParent = Issue.findByParentAndIdInList(issue, idList) ?: IssueLink.findByDeletedAndSecondIssueAndTypeAndFirstIssueInList(false, issue, 'is child of', issues) ?: IssueLink.findByDeletedAndFirstIssueAndTypeAndSecondIssueInList(false, issue, 'is parent of', issues)
 
-            def parent = issue.parent?.key ?: IssueLink.findByFirstIssueAndType(issue, 'is child of')?.secondIssue?.key ?: IssueLink.findBySecondIssueAndType(issue, 'is parent of')?.firstIssue?.key
+            def parent = issue.parent?.key ?: IssueLink.findByDeletedAndFirstIssueAndType(false, issue, 'is child of')?.secondIssue?.key ?: IssueLink.findByDeletedAndSecondIssueAndType(false, issue, 'is parent of')?.firstIssue?.key
             if (!parent) {
 
                 if (!projects.any { issue.project?.id == it.id })
@@ -121,7 +121,7 @@ class PlannerController {
                     overdue          : !completed && issue.dueDate && issue.dueDate < new Date()
             ]
 
-            IssueLink.findAllByFirstIssueAndTypeAndSecondIssueInList(issue, 'has to be done before', issues).each { link ->
+            IssueLink.findAllByDeletedAndFirstIssueAndTypeAndSecondIssueInList(false, issue, 'has to be done before', issues).each { link ->
                 links << [
                         id    : link.id,
                         source: link.firstIssue?.key,
@@ -186,5 +186,17 @@ class PlannerController {
                 seconds += dur.replace('m', '').toInteger() * 60 * 60
             seconds
         }
+    }
+
+    def deleteLink() {
+
+    }
+
+    def addLink() {
+
+    }
+
+    def updateIssue() {
+
     }
 }

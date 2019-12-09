@@ -6,6 +6,8 @@ gantt.config.sort = true;
 gantt.config.auto_scheduling = true;
 gantt.config.auto_scheduling_strict = true;
 gantt.config.auto_scheduling_compatibility = true;
+gantt.config.keyboard_navigation_cells = true;
+
 
 var formatter = gantt.ext.formatters.durationFormatter({
     enter: "day",

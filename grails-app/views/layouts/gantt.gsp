@@ -27,12 +27,13 @@
     <asset:javascript src="ext/dhtmlxgantt_auto_scheduling.js"/>
     <asset:javascript src="ext/dhtmlxgantt_drag_timeline.js"/>
     <asset:javascript src="dhtmlxgantt_tooltip.js"/>
-%{--    <asset:javascript src="testdata.js"/>--}%
+    <asset:javascript src="ext/dhtmlxgantt_keyboard_navigation.js"/>
+    %{--    <asset:javascript src="testdata.js"/>--}%
 
     <asset:stylesheet src="dhtmlxgantt.css"/>
 
     <asset:stylesheet src="css/bootstrap-datepicker.min.css"/>
-%{--    <asset:javascript src="js/bootstrap-datepicker.min.js"/>--}%
+    %{--    <asset:javascript src="js/bootstrap-datepicker.min.js"/>--}%
 
     <asset:stylesheet src="css/selectize.css"/>
     <asset:stylesheet src="css/selectize.bootstrap3.css"/>

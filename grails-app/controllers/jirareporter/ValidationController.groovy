@@ -34,7 +34,9 @@ class ValidationController {
                 filterService.formatUsersList(params),
                 JiraUser.findAllByTeamNameInList(teams ?: [null]),
                 teams?.size > 0,
-                filterService.formatStatus(params)).findAll { it.originalEstimateSeconds }
+                filterService.formatStatus(params)).findAll {
+            !it.originalEstimate || it.originalEstimate?.trim() == ''
+        }
 
         def data = issues.collect {
             [
