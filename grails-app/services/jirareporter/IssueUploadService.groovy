@@ -6,20 +6,18 @@ import grails.gorm.transactions.Transactional
 @Transactional
 class IssueUploadService {
 
-    def enqueue(Issue issue) {
+    def enqueue(Issue issue, String source) {
         def list = []
 
         issue.dirtyPropertyNames.each { property ->
             if (!IssueUploadItem.findByIssueAndProperty(issue, property)) {
                 list << property
-                def issueSyncItem = new IssueUploadItem(issue: issue, property: property, value: JiraIssueMapper.formatType(property, issue."${property}"))
+                def issueSyncItem = new IssueUploadItem(issue: issue, property: property, value: JiraIssueMapper.formatType(property, issue."${property}"), source: source)
                 if (!issueSyncItem.save())
                     throw new Exception("Unable to save sync item: ${issueSyncItem.errorMessage}")
             }
         }
-
-//        if (list)
-//            println list as JSON
+        issue.discard()
     }
 
 
@@ -57,14 +55,24 @@ class IssueUploadService {
         try {
             def jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(Configuration.username, Configuration.password))
             jiraClient.put("${Configuration.serverURL}/rest/api/latest/issue/${issue.key}", [fields: finalData])
-            new IssueDownloadItem(issue: issue).save()
-            IssueUploadItem.executeUpdate("delete IssueUploadItem where issue = :issue", [issue: issue])
+
+            new IssueDownloadItem(issue: issue, source: 'Issue Updated').save(flush: true)
+
+//            IssueUploadItem.findAllByIssue(issue).each {
+//                try {
+//                    it.delete(flush: true)
+//                } catch (ex) {
+//                    println ex
+//                    println it
+//                }
+//            }
+            println IssueUploadItem.executeUpdate("delete IssueUploadItem where issue = :issue", [issue: issue])
         } catch (Exception ex) {
             list.each {
                 it.errorMessage = ex.message
                 it.lastTry = new Date()
                 it.retryCount++
-                it.save()
+                it.save(flush: true)
             }
             println ex.message
 //            throw ex

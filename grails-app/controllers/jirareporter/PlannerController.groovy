@@ -9,6 +9,7 @@ class PlannerController {
     def componentService
     def filterService
     def issueReportService
+    def issueUploadService
 
     def index() {
         redirect(action: 'gantt')
@@ -105,6 +106,7 @@ class PlannerController {
                     ] : null,
                     start_date       : issue.startDate ? formatter.format(issue.startDate) : null,
                     end_date         : issue.dueDate ? formatter.format(issue.dueDate) : null,
+                    lastSync         : issue.lastSync ? formatter.format(issue.lastSync) : null,
 //                    dueDate          : issue.dueDate ? formatter.format(dueDate) : null,
 //                    duration         : durationDays,
                     progress         : (issue.timeSpentSeconds ?: 0) / ((issue.timeSpentSeconds ?: 0) + (issue.remainingEstimateSeconds ?: 1)),
@@ -192,7 +194,11 @@ class PlannerController {
         println params
         def firstIssue = Issue.findByKey(params.source)
         def secondIssue = Issue.findByKey(params.target)
-        IssueLink.executeUpdate("update IssueLink set deleted = :deleted where firstIssue = :firstIssue and secondIssue = :secondIssue", [deleted: true, firstIssue: firstIssue, secondIssue: secondIssue])
+        IssueLink.findByFirstIssueAndSecondIssueAndType(firstIssue, secondIssue, 'has to be done before').each{
+            it.deleted = true
+            it.save()
+        }
+//        IssueLink.executeUpdate("update IssueLink set deleted = :deleted where firstIssue = :firstIssue and secondIssue = :secondIssue", [deleted: true, firstIssue: firstIssue, secondIssue: secondIssue])
         render 1
     }
 
@@ -214,8 +220,7 @@ class PlannerController {
         issue.startDate = formatter.parse(issueData.start_date).clearTime()
         issue.dueDate = formatter.parse(issueData.end_date).clearTime()
         issue.originalEstimate = issueData.originalEstimate
-        println issue.dirtyPropertyNames
-        issue.discard()
+        issueUploadService.enqueue(issue, 'Planner')
 
         render 1
     }

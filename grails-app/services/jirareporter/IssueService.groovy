@@ -39,7 +39,8 @@ class IssueService {
             issue."${field}" = JiraIssueMapper.getFieldValue(obj, field)
         }
 
-        if (!issue.save(flush: true))
+        issue.lastSync = new Date()
+        if (!issue.save())
             throw new Exception("Error saving issue")
 
         def parentKey = JSONUtil.safeRead(obj, "fields.parent.myHashMap.key")
@@ -56,10 +57,14 @@ class IssueService {
             issue.addToClients(client)
 
         }
+
         if (!issue.save(flush: true))
             throw new Exception("Error saving issue")
 
-        IssueDownloadItem.executeUpdate("delete IssueDownloadItem where issue = :issue", [issue: issue])
+        IssueDownloadItem.findAllByIssue(issue).each {
+            it.delete()
+        }
+//        IssueDownloadItem.executeUpdate("delete IssueDownloadItem where issue = :issue", [issue: issue])
 
         issue
     }
@@ -73,9 +78,13 @@ class IssueService {
 
         links = links.findAll { it }
 
-        IssueLink.executeUpdate("delete IssueLink where firstIssue = :issue and key not in :keyList", [issue: issue, keyList: links.collect {
+        IssueLink.findAllByFirstIssueAndKeyNotInListAndAdded(issue, links.collect {
             it.key
-        } ?: ['-']])
+        } ?: ['-'], false).each { it.delete() }
+
+//        IssueLink.executeUpdate("delete IssueLink where firstIssue = :issue and key not in :keyList", [issue: issue, keyList: links.collect {
+//            it.key
+//        } ?: ['-']])
 
         links
     }
@@ -97,12 +106,13 @@ class IssueService {
         if (!targetIssue)
             return null
 
-        def link = IssueLink.findByKey(key)
+        def link = IssueLink.findByFirstIssueAndTypeAndSecondIssue(issue, type, targetIssue)
         if (!link) {
             link = new IssueLink(key: key, type: type, firstIssue: issue, secondIssue: targetIssue).save()
             if (!link)
                 throw new Exception("Error creating Issue Link")
         } else {
+            link.key = key
             link.type = type
             link.firstIssue = issue
             link.secondIssue = targetIssue

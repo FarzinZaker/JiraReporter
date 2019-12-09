@@ -34,7 +34,7 @@
         end_date.setDate(task.end_date.getDate() - 1);
         var diffDays = workingDaysBetweenDates(task.start_date, end_date);
         var estimateHours = getDurationSeconds(task.originalEstimate) / 3600;
-        console.log(diffDays);
+        // console.log(diffDays);
         var newValue = Math.round(estimateHours * 10 / diffDays) / 10;
         var oldOwnerValue = task.owner.value;
         if (oldOwnerValue !== newValue) {
@@ -42,7 +42,8 @@
             gantt.updateTask(id);
             // console.log(getTask(id).owner.value);
         } else {
-            console.log(JSON.stringify(task));
+            console.log('UPDATE TASK:');
+            console.log(task);
             $.ajax({
                 url: '${createLink(action: 'updateIssue')}',
                 dataType: 'json',

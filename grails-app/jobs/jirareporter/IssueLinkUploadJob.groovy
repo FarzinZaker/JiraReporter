@@ -1,20 +1,18 @@
 package jirareporter
 
-import grails.converters.JSON
+class IssueLinkUploadJob {
+    static triggers = {
+        simple repeatInterval: 5000l // execute job once in 5 seconds
+    }
 
-class TestController {
+    static concurrent = false
 
-    def issueUploadService
     def issueLinkUploadService
 
-    def index() {
+    def execute() {
 
-//        def issue = Issue.read(2922)
-//        issueUploadService.update(issue)
-//        render(issue.key)
-
-        //deleted unnecessary items
-//        IssueLink.executeUpdate("delete IssueLink where added = :added and deleted = :deleted", [added: true, deleted: true])
+        //remove unnecessary links
+        IssueLink.findAllByAddedAndDeleted(true, true).each { it.delete() }
 
         //delete removed links
         IssueLink.findAllByAddedAndDeletedAndKeyNotEqual(false, true, '-').each { link ->
@@ -28,10 +26,7 @@ class TestController {
 
         //update added link
         IssueLink.findAllByAddedAndDeletedAndKey(false, true, '-').each { link ->
-            new IssueDownloadItem(issue: link.firstIssue).save()
+            new IssueDownloadItem(issue: link.firstIssue, source: 'Fill Empty Link Keys').save()
         }
-
-
-        render 'DONE'
     }
 }

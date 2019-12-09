@@ -14,15 +14,25 @@ class WorklogsSyncJob {
 
     def execute() {
 
+        //Today
+        def endDate = new Date() + 1
+        def startDate = endDate - 2
+
+        try {
+            downloadService.getWorklogs(startDate, endDate)
+        } catch (Exception ex) {
+            println ex.message
+        }
+
         //Recent
         def jobConfig = SyncJobConfig.findByName('RECENT_ISSUES')
         if (!jobConfig)
             jobConfig = new SyncJobConfig(name: 'RECENT_ISSUES').save(flush: true)
 
-        def endDate = jobConfig.startDate ?: (new Date() + 1)
+        endDate = jobConfig.startDate ?: (new Date() + 1)
         if (endDate < new Date() - 30)
             endDate = new Date() + 1
-        def startDate = endDate - 1
+        startDate = endDate - 1
 
         try {
             downloadService.getWorklogs(startDate, endDate)

@@ -28,6 +28,8 @@ class Issue {
     Date startDate
     Date dueDate
 
+    Date lastSync
+
     Date lastFix
 
     Issue parent
@@ -64,6 +66,7 @@ class Issue {
         updated nullable: true
         created nullable: true
         lastFix nullable: true
+        lastSync nullable: true
     }
 
     @Override

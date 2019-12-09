@@ -16,7 +16,7 @@ class IssueUploadJob {
         if (!Environment.isDevelopmentMode())
             return
 
-        def issueUploadItems = IssueUploadItem.findAllByRetryCountLessThan(20, [max: 20])
+        def issueUploadItems = IssueUploadItem.findAllByRetryCountLessThan(20, [max: 100])
         def threads = []
         issueUploadItems.each { issueUploadItem ->
             threads << Thread.start {

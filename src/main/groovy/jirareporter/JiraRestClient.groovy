@@ -186,7 +186,37 @@ class JiraRestClient {
                         .type(MediaType.APPLICATION_JSON_TYPE)
                 webResource.put((data as JSON).toString())
             }
-        });
+        })
+    }
+
+    def post(String issueUri, Map data) {
+        final URI roleUri = UriBuilder
+                .fromUri(new URI(issueUri))
+                .build()
+
+        invoke(new Callable<JSONObject>() {
+            @Override
+            public JSONObject call() throws Exception {
+                final WebResource.Builder webResource = client.resource(roleUri)
+                        .type(MediaType.APPLICATION_JSON_TYPE)
+                webResource.post((data as JSON).toString())
+            }
+        })
+    }
+
+    def delete(String issueUri) {
+        final URI roleUri = UriBuilder
+                .fromUri(new URI(issueUri))
+                .build()
+
+        invoke(new Callable<JSONObject>() {
+            @Override
+            public JSONObject call() throws Exception {
+                final WebResource.Builder webResource = client.resource(roleUri)
+                        .type(MediaType.APPLICATION_JSON_TYPE)
+                webResource.delete()
+            }
+        })
     }
 
 

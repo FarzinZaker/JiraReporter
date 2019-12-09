@@ -27,19 +27,20 @@ class IssueFixService {
                 }
 
             def minDueDate = issue.startDate
-            use(TimeCategory){
+            use(TimeCategory) {
                 minDueDate = minDueDate + 1.day
             }
-            if(issue.dueDate < minDueDate)
+            if (issue.dueDate < minDueDate)
                 issue.dueDate = minDueDate
 
         } else {
-            downloadItem = new IssueDownloadItem(issue: issue)
+            downloadItem = new IssueDownloadItem(issue: issue, source: 'Fix Issues')
         }
 
-        issueUploadService.enqueue(issue)
+        issueUploadService.enqueue(issue, 'Fix Issues')
 
-        issue.discard()
+        issue.lastFix = new Date()
+        issue.save()
 
         if (downloadItem)
             IssueDownloadItem.withNewTransaction {

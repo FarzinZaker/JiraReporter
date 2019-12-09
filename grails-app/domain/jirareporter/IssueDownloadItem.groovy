@@ -3,6 +3,7 @@ package jirareporter
 class IssueDownloadItem {
 
     Issue issue
+    String source
     String errorMessage
     Date lastTry
     Date dateCreated
@@ -11,6 +12,7 @@ class IssueDownloadItem {
     static constraints = {
         errorMessage nullable: true
         lastTry nullable: true
+        source nullable: true
     }
 
     static mapping = {

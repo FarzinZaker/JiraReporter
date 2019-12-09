@@ -417,12 +417,11 @@ gantt.templates.quick_info_date = function (start, end, task) {
     if (task.taskType === 'project' || task.taskType === 'client') {
         return "<span>" + gantt.templates.tooltip_date_format(start) + '</span> - <span>' + gantt.templates.tooltip_date_format(end) + '</span>';
     }
-
     return "<span>" + gantt.templates.tooltip_date_format(start) + '</span> - <span>' + gantt.templates.tooltip_date_format(end) + '</span><br/>' +
-        'Due Date: <span>' + (task.end_date ? task.end_date : '-') + '</span><br/>' +
-        "<div class='estimates'><span>Original Estimate:</span> " + task.originalEstimate + "<br/>" +
-        "<span>Remaining Estimate:</span> " + task.remainingEstimate + "<br/>" +
-        "<span>Time Spent:</span> " + task.timeSpent + "</div>";
+    'Last Sync: <span>' + (task.lastSync ? task.lastSync : '-') + '</span><br/>' +
+    "<div class='estimates'><span>Original Estimate:</span> " + task.originalEstimate + "<br/>" +
+    "<span>Remaining Estimate:</span> " + task.remainingEstimate ? task.remainingEstimate : '-' + "<br/>" +
+    "<span>Time Spent:</span> " + task.timeSpent ? task.timeSpent : '-' + "</div>";
 };
 
 gantt.templates.quick_info_content = function (start, end, task) {

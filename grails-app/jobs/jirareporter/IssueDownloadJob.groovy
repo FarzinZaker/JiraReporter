@@ -19,16 +19,20 @@ class IssueDownloadJob {
 
         if (IssueDownloadItem.count() > 0) {
             def issueDownloadItems = IssueDownloadItem.findAllByIdGreaterThan(0, [max: 20])
-            def threads = []
+//            def threads = []
             issueDownloadItems.each { issueDownloadItem ->
-                threads << Thread.start {
-                    Issue.withNewTransaction {
-                        issueDownloadService.download(issueDownloadItem.issue.key)
-                        IssueDownloadItem.executeUpdate("delete IssueDownloadItem where issue = :issue", [issue: issueDownloadItem.issue])
-                    }
-                }
+//                threads << Thread.start {
+//                    try {
+//                        Issue.withNewTransaction {
+                            issueDownloadService.download(issueDownloadItem.issue.key)
+                            IssueDownloadItem.executeUpdate("delete IssueDownloadItem where issue = :issue", [issue: issueDownloadItem.issue])
+//                        }
+//                    } catch (ex) {
+//                        println ex.message
+//                    }
+//                }
             }
-            threads.each { it.join() }
+//            threads.each { it.join() }
         }
     }
 }

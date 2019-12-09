@@ -682,6 +682,10 @@ input[type=submit], input[type=button] {
     padding-right: 12px !important;
 }
 
+.gantt_cal_qi_title h2 {
+    text-wrap: normal;
+}
+
 .summary-row,
 .summary-row.odd {
     background-color: #EEEEEE;
