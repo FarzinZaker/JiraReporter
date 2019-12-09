@@ -24,8 +24,52 @@
 
 <div id="gantt_here" style='width:100%; height:80vh'></div>
 
+<asset:javascript src="gantt_helper.js"/>
 <asset:javascript src="gantt_config.js"/>
-<asset:javascript src="gantt_persist.js"/>
+<script language="JavaScript">
+    gantt.attachEvent("onAfterTaskUpdate", function (id, task) {
+        $.ajax({
+            url: '${createLink(action: 'updateIssue')}',
+            dataType: 'json',
+            type: 'post',
+            data: task,
+            success: function (data, textStatus, jQxhr) {
+            },
+            error: function (jqXhr, textStatus, errorThrown) {
+                console.log(errorThrown);
+            }
+        });
+    });
+
+
+    gantt.attachEvent("onAfterLinkAdd", function (id, link) {
+        $.ajax({
+            url: '${createLink(action: 'addLink')}',
+            dataType: 'json',
+            type: 'post',
+            data: link,
+            success: function (data, textStatus, jQxhr) {
+            },
+            error: function (jqXhr, textStatus, errorThrown) {
+                console.log(errorThrown);
+            }
+        });
+    });
+
+    gantt.attachEvent("onAfterLinkDelete", function (id, link) {
+        $.ajax({
+            url: '${createLink(action: 'deleteLink')}',
+            dataType: 'json',
+            type: 'post',
+            data: link,
+            success: function (data, textStatus, jQxhr) {
+            },
+            error: function (jqXhr, textStatus, errorThrown) {
+                console.log(errorThrown);
+            }
+        });
+    });
+</script>
 <script>
 
     gantt.init("gantt_here");

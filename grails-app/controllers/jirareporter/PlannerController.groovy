@@ -115,9 +115,9 @@ class PlannerController {
                     priorityIcon     : issue.priority.icon,
                     client           : issue.clients.collect { it.name }.join(', '),
                     status           : [name: issue.status.name, icon: issue.status.icon],
-                    originalEstimate : [formatted: issue.originalEstimate ?: '-', value: originalEstimateSeconds ?: 0],
-                    remainingEstimate: [formatted: issue.remainingEstimate ?: '-', value: issue.remainingEstimateSeconds ?: 0],
-                    timeSpent        : [formatted: issue.timeSpent ?: '-', value: issue.timeSpentSeconds ?: 0],
+                    originalEstimate : issue.originalEstimate,
+                    remainingEstimate: issue.remainingEstimate,
+                    timeSpent        : issue.timeSpent,
                     overdue          : !completed && issue.dueDate && issue.dueDate < new Date()
             ]
 
@@ -189,14 +189,25 @@ class PlannerController {
     }
 
     def deleteLink() {
-
+        println params
+        def firstIssue = Issue.findByKey(params.source)
+        def secondIssue = Issue.findByKey(params.target)
+        IssueLink.executeUpdate("update IssueLink set deleted = :deleted where firstIssue = :firstIssue and secondIssue = :secondIssue", [deleted: true, firstIssue: firstIssue, secondIssue: secondIssue])
+        render 1
     }
 
     def addLink() {
-
+        println params
+        def firstIssue = Issue.findByKey(params.source)
+        def secondIssue = Issue.findByKey(params.target)
+        def link = new IssueLink(firstIssue: firstIssue, secondIssue: secondIssue, type: 'has to be done before', added: true, key: '-')
+        if (!link.save(flush: true))
+            throw new Exception("Unable to create the link")
+        render 1
     }
 
     def updateIssue() {
-
+        println params
+        render 1
     }
 }

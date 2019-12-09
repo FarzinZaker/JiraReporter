@@ -64,9 +64,45 @@ var startDateEditor = {
 var endDateEditor = {
     type: "date", map_to: "end_date"
 };
-var durationEditor = {type: "text", map_to: "originalEstimate"};
+var durationEditor = {type: "originalEstimateEditor", map_to: "auto"};
 var predecessorsEditor = {type: "predecessor", map_to: "auto", formatter: linksFormatter}
 
+gantt.config.editor_types.originalEstimateEditor = {
+    show: function (id, column, config, placeholder) {
+        placeholder.innerHTML = "<div><input type='text' name='" + column.name + "'></div>";
+    },
+    hide: function () {
+        // called when input is hidden
+        // destroy any complex editors or detach event listeners from here
+    },
+
+    set_value: function (value, id, column, node) {
+        node.querySelector('input[name="' + column.name + '"]').value = value.originalEstimate;
+    },
+
+    get_value: function (id, column, node) {
+        return node.querySelector('input[name="' + column.name + '"]').value
+    },
+
+    is_changed: function (value, id, column, node) {
+        // console.log(value.originalEstimate);
+        // console.log(node.querySelector('input[name="' + column.name + '"]').value);
+        return node.querySelector('input[name="' + column.name + '"]').value !== value.originalEstimate
+    },
+
+    is_valid: function (value, id, column, node) {
+        // console.log(validateDuration(value));
+        return validateDuration(value);
+    },
+
+    save: function (id, column, node) {
+        var task = gantt.getTask(id);
+        task.originalEstimate = reformatDuration(node.querySelector('input[name="' + column.name + '"]').value);
+        gantt.updateTask(id);
+    },
+    focus: function (node) {
+    }
+};
 
 gantt.config.columns = [
     {name: "wbs", label: "#", width: 60, align: "left", template: gantt.getWBSCode},
@@ -160,13 +196,13 @@ gantt.config.columns = [
         width: 90,
         label: "Orig. Est.",
         resize: true,
-        hide: true,
+        hide: false,
         editor: durationEditor,
         template: function (task) {
             if (task.taskType === 'project' || task.taskType === 'client') {
                 return "";
             }
-            return task.originalEstimate.formatted;
+            return task.originalEstimate;
         }
     },
     {
@@ -174,7 +210,7 @@ gantt.config.columns = [
             if (task.taskType === 'project' || task.taskType === 'client') {
                 return "";
             }
-            return task.remainingEstimate.formatted;
+            return task.remainingEstimate;
         }
     },
     {
@@ -182,7 +218,7 @@ gantt.config.columns = [
             if (task.taskType === 'project' || task.taskType === 'client') {
                 return "";
             }
-            return task.timeSpent.formatted;
+            return task.timeSpent;
         }
     },
     {
@@ -386,9 +422,9 @@ gantt.templates.quick_info_date = function (start, end, task) {
 
     return "<span>" + gantt.templates.tooltip_date_format(start) + '</span> - <span>' + gantt.templates.tooltip_date_format(end) + '</span><br/>' +
         'Due Date: <span>' + (task.end_date ? task.end_date : '-') + '</span><br/>' +
-        "<div class='estimates'><span>Original Estimate:</span> " + task.originalEstimate.formatted + "<br/>" +
-        "<span>Remaining Estimate:</span> " + task.remainingEstimate.formatted + "<br/>" +
-        "<span>Time Spent:</span> " + task.timeSpent.formatted + "</div>";
+        "<div class='estimates'><span>Original Estimate:</span> " + task.originalEstimate + "<br/>" +
+        "<span>Remaining Estimate:</span> " + task.remainingEstimate + "<br/>" +
+        "<span>Time Spent:</span> " + task.timeSpent + "</div>";
 };
 
 gantt.templates.quick_info_content = function (start, end, task) {
