@@ -207,7 +207,16 @@ class PlannerController {
     }
 
     def updateIssue() {
-        println params
+
+        def issueData = JSON.parse(params.issue)
+        def formatter = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'")
+        def issue = Issue.findByKey(issueData.key)
+        issue.startDate = formatter.parse(issueData.start_date).clearTime()
+        issue.dueDate = formatter.parse(issueData.end_date).clearTime()
+        issue.originalEstimate = issueData.originalEstimate
+        println issue.dirtyPropertyNames
+        issue.discard()
+
         render 1
     }
 }

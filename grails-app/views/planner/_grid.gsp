@@ -42,11 +42,12 @@
             gantt.updateTask(id);
             // console.log(getTask(id).owner.value);
         } else {
+            console.log(JSON.stringify(task));
             $.ajax({
                 url: '${createLink(action: 'updateIssue')}',
                 dataType: 'json',
                 type: 'post',
-                data: task,
+                data: {issue: JSON.stringify(task)},
                 success: function (data, textStatus, jQxhr) {
                 },
                 error: function (jqXhr, textStatus, errorThrown) {
