@@ -34,7 +34,8 @@
                            aria-controls="crossOver" aria-selected="false">CrossOver</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="accomplishments-tab" data-toggle="tab" href="#accomplishments" role="tab"
+                        <a class="nav-link" id="accomplishments-tab" data-toggle="tab" href="#accomplishments"
+                           role="tab"
                            aria-controls="accomplishments" aria-selected="false">Tasks</a>
                     </li>
                     <li class="nav-item">
@@ -45,8 +46,10 @@
 
                 <div class="tab-content" id="myTabContent">
                     <div class="tab-pane fade" id="summary" role="tabpanel" aria-labelledby="summary-tab">
-                        <g:render template="summary" model="${[items: userSummary, label: 'Engineer', timeColor: '#673AB7', tasksColor: '#B39DDB']}"/>
-                        <g:render template="summary" model="${[items: clientSummary, label: 'Client', timeColor: '#009688', tasksColor: '#80CBC4']}"/>
+                        <g:render template="summary"
+                                  model="${[items: userSummary, label: 'Engineer', timeColor: '#673AB7', tasksColor: '#B39DDB']}"/>
+                        <g:render template="summary"
+                                  model="${[items: clientSummary, label: 'Client', timeColor: '#009688', tasksColor: '#80CBC4']}"/>
                         <g:render template="summary"
                                   model="${[items: projectSummary, label: 'Project', timeColor: '#3F51B5', tasksColor: '#9FA8DA']}"/>
                         <g:render template="summary"
@@ -63,11 +66,14 @@
                     </div>
 
                     <div class="tab-pane fade" id="crossOver" role="tabpanel" aria-labelledby="crossOver-tab">
-                        <g:render template="crossOver/total" model="${[summary: integritySummary.total, label: 'Total']}"/>
-                        <g:render template="crossOver/daily" model="${[summary: integritySummary.daily, label: 'Daily']}"/>
+                        <g:render template="crossOver/total"
+                                  model="${[summary: integritySummary.total, label: 'Total']}"/>
+                        <g:render template="crossOver/daily"
+                                  model="${[summary: integritySummary.daily, label: 'Daily']}"/>
                     </div>
 
-                    <div class="tab-pane fade" id="accomplishments" role="tabpanel" aria-labelledby="accomplishments-tab">
+                    <div class="tab-pane fade" id="accomplishments" role="tabpanel"
+                         aria-labelledby="accomplishments-tab">
                         <g:render template="accomplishments" model="${[accomplishments: accomplishments]}"/>
                     </div>
 
@@ -79,6 +85,22 @@
         </tr>
     </table>
 </div>
+<script>
+    $(document).ready(function () {
+        var url = document.location.toString();
+        if (url.match('#')) {
+            $('.nav-tabs #' + url.split('#')[1] + '-tab').click();
+            setTimeout(function () {
+                window.scrollTo(0, 0);
+            }, 1000);
+        }
+
+        // Change hash for page-reload
+        $('.nav-tabs a').on('shown.bs.tab', function (e) {
+            window.location.hash = e.target.hash;
+        })
+    });
+</script>
 
 </body>
 </html>

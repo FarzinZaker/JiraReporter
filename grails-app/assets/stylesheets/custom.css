@@ -450,16 +450,25 @@ input[type=submit], input[type=button] {
 
 .header {
     background-color: #ffffff;
+    height:67px;
+    border-bottom:5px solid #37474F;
 }
 
 .header .logo {
-    display: inline-block;
+    display: block;
     margin: 10px 10px 10px 20px;
+    float: left;
 }
 
 .header .logo img {
     height: 48px;
     float: left;
+}
+
+#menu {
+    float: left;
+    margin-top: 10px;
+    margin-left:50px;
 }
 
 .header .logo span {
@@ -1085,6 +1094,6 @@ input[type=submit], input[type=button] {
     margin-bottom: 10px;
 }
 
-.footer{
+.footer {
     display: none;
 }

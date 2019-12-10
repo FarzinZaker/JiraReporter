@@ -61,10 +61,8 @@
                 ${g.layoutTitle()?.toString()?.toUpperCase()}
             </span>
         </span>
+        <g:render template="/layouts/menu"/>
     </div>
-</div>
-
-<div class="navbar navbar-default navbar-static-top" role="navigation">
 </div>
 
 <g:layoutBody/>

@@ -38,62 +38,64 @@
         return timeSpent;
     }
 
-    Highcharts.chart('totalSummary_${label?.replace(' ', '_')}', {
-        chart: {
-            type: 'column'
-        },
-        title: false,
-        xAxis: {
-            categories: [
-                <g:each in="${summary}" var="item">
-                '${item.key}',
-                </g:each>
-            ],
-            crosshair: true
-        },
-        yAxis: {
-            min: 0,
-            title: {
-                text: 'Time Spent (hours)'
-            }
-        },
-        legend: false,
-        tooltip: {
-            formatter: function (tooltip) {
-                return '<div style="font-size:10px">' + this.point.category + '</div>' + this.series.name + ': <b>' + timeFormat(this.point.y) + '</b>';
+    $(document).ready(function () {
+        Highcharts.chart('totalSummary_${label?.replace(' ', '_')}', {
+            chart: {
+                type: 'column'
             },
-            useHTML: true
-        },
-        plotOptions: {
-            column: {
-                pointPadding: 0.2,
-                borderWidth: 0
+            title: false,
+            xAxis: {
+                categories: [
+                    <g:each in="${summary}" var="item">
+                    '${item.key}',
+                    </g:each>
+                ],
+                crosshair: true
             },
-            series: {
-                dataLabels: {
-                    enabled: true,
-                    formatter: function () {
-                        return timeFormat(this.y);
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Time Spent (hours)'
+                }
+            },
+            legend: false,
+            tooltip: {
+                formatter: function (tooltip) {
+                    return '<div style="font-size:10px">' + this.point.category + '</div>' + this.series.name + ': <b>' + timeFormat(this.point.y) + '</b>';
+                },
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                },
+                series: {
+                    dataLabels: {
+                        enabled: true,
+                        formatter: function () {
+                            return timeFormat(this.y);
+                        }
                     }
                 }
-            }
-        },
-        series: [{
-            name: 'Jira',
-            data: [
-                <g:each in="${summary}" var="item">
-                ${item.value.jiraTime / 3600},
-                </g:each>
-            ],
-            color: '#009688'
-        }, {
-            name: 'CrossOver',
-            data: [
-                <g:each in="${summary}" var="item">
-                ${item.value.crossOverTime / 3600},
-                </g:each>
-            ],
-            color: '#3F51B5 '
-        }]
+            },
+            series: [{
+                name: 'Jira',
+                data: [
+                    <g:each in="${summary}" var="item">
+                    ${item.value.jiraTime / 3600},
+                    </g:each>
+                ],
+                color: '#009688'
+            }, {
+                name: 'CrossOver',
+                data: [
+                    <g:each in="${summary}" var="item">
+                    ${item.value.crossOverTime / 3600},
+                    </g:each>
+                ],
+                color: '#3F51B5 '
+            }]
+        });
     });
 </script>
