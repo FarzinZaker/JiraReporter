@@ -5,11 +5,33 @@
 <script language="JavaScript">
     $(document).ready(function () {
         $('.expander-button').click(function () {
-            var mainBody = $('.main-body')[0];
-            if (mainBody.getAttribute('class').indexOf('fullscreen') === -1)
-                $(mainBody).addClass('fullscreen');
-            else
-                $(mainBody).removeClass('fullscreen');
+            toggleFilterPanel();
         });
+
+        resizeGantt();
+    });
+
+    function toggleFilterPanel() {
+
+        var mainBody = $('.main-body')[0];
+        if (mainBody.getAttribute('class').indexOf('fullscreen') === -1)
+            $(mainBody).addClass('fullscreen');
+        else
+            $(mainBody).removeClass('fullscreen');
+        resizeGantt()
+    }
+
+    function resizeGantt() {
+        $('#gantt_here').height($(window).height() - 190);
+
+        var mainBody = $('.main-body')[0];
+        if (mainBody.getAttribute('class').indexOf('fullscreen') === -1)
+            $('#gantt_here').width($(window).width() - 360);
+        else
+            $('#gantt_here').width($(window).width() - 60);
+    }
+
+    $(window).resize(function () {
+        resizeGantt();
     });
 </script>

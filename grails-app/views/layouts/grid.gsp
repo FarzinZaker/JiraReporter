@@ -15,7 +15,8 @@
     <asset:javascript src="jquery-2.2.0.min.js"/>
 
     <asset:javascript src="js/kendo.all.min.js"/>
-    <asset:stylesheet src="styles/kendo.material-v2.min.css"/>
+    <asset:stylesheet src="styles/kendo.common-material.min.css"/>
+    <asset:stylesheet src="styles/kendo.material.min.css"/>
 
     <asset:stylesheet src="css/bootstrap-datepicker.min.css"/>
 %{--    <asset:javascript src="js/bootstrap-datepicker.min.js"/>--}%

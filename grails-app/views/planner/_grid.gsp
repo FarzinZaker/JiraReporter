@@ -1,26 +1,8 @@
 <%@ page import="jirareporter.Priority; jirareporter.JiraUser; jirareporter.Configuration" %>
 
-<div class="gantt_control">
-    <input class="action" value="Show Critical Path" type="button" onclick="updateCriticalPath(this)"
-           style="background: #E91E63;">
-    <input class="action" name="undo" value="Undo" type="button" style="background: #2196F3">
-    <input class="action" name="redo" value="Redo" type="button" style="background: #2196F3">
-    <input class="action" name="indent" value="Indent" type="button" style="background: #4CAF50">
-    <input class="action" name="outdent" value="Outdent" type="button" style="background: #4CAF50">
-    <input class="action" name="moveForward" value="Move Forward" type="button" style="background: #4CAF50">
-    <input class="action" name="moveBackward" value="Move Backward" type="button" style="background: #4CAF50">
-    <input type='button' id='default' onclick="showGroups()" value="Tree" style="background: #9C27B0">
-    <input type='button' id='priority' onclick="showGroups('priority')" value="Group by priority"
-           style="background: #9C27B0">
-    %{--    <input type='button' id='user' onclick="showGroups('userGroups')" value="Group by owner">--}%
-    <input type='button' id='expandAll' onclick="expandAll()" value="Expand All" style="background: #FF9800">
-    <input type='button' id='collapseAll' onclick="collapseAll()" value="Collapse All" style="background: #FF9800">
-    <input type="button" onclick="toggleMode(this)" value="Zoom to Fit" style="background: #FF9800"/>
-    <input type="button" onclick="showToday()" value="Today" style="background: #FF9800"/>
+<g:render template="toolbar"/>
 
-    <g:render template="syncStatus"/>
-
-</div>
+<g:render template="syncStatus"/>
 
 <div id="gantt_here" style='width:100%; height:80vh'></div>
 
@@ -33,7 +15,7 @@
         Priority.findByName('Minor'),
         Priority.findByName('Low'),
         ]}" var="priority">
-        {key: ${priority.id}, label: "${priority.name}"},
+        {key: ${priority.id}, label: "${priority.name}", name: "${priority.name}"},
         </g:each>
     ]);
 
@@ -109,12 +91,13 @@
 <script>
 
     gantt.init("gantt_here");
-    gantt.load("${createLink(action: 'issues')}", function () {
-        resourcesStore.parse(filterResources());
-        gantt.refreshData();
-        showToday();
-        gantt.sort('start_date', false);
-    });
+    reloadPlanner();
+    %{--gantt.load("${createLink(action: 'issues')}", function () {--}%
+    %{--    resourcesStore.parse(filterResources());--}%
+    %{--    gantt.refreshData();--}%
+    %{--    showToday();--}%
+    %{--    gantt.sort('start_date', false);--}%
+    %{--});--}%
 
     var resources = [
         <g:each in="${Configuration.crossOverTeams}" var="team" status="i">
@@ -167,11 +150,11 @@
 
     gantt.locale.labels.column_priority = gantt.locale.labels.section_priority = "Priority";
 
-    gantt.serverList("priority", [
-        <g:each in="${Priority.list().sort{it.id}}" var="priority">
-        {key: ${priority.id}, label: "${priority.name}"},
-        </g:each>
-    ]);
+    %{--gantt.serverList("priority", [--}%
+    %{--    <g:each in="${Priority.list().sort{it.id}}" var="priority">--}%
+    %{--    {key: ${priority.id}, label: "${priority.name}"},--}%
+    %{--    </g:each>--}%
+    %{--]);--}%
 </script>
 
 <asset:javascript src="gantt_tooltip.js"/>

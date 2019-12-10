@@ -14,6 +14,10 @@
 
     <asset:javascript src="jquery-2.2.0.min.js"/>
 
+    <asset:javascript src="js/kendo.all.min.js"/>
+    <asset:stylesheet src="styles/kendo.common-material.min.css"/>
+    <asset:stylesheet src="styles/kendo.material.min.css"/>
+
     <script src="https://cdn.dhtmlx.com/edge/dhtmlx.js?v=6.3.0"></script>
     <link rel="stylesheet" href="https://cdn.dhtmlx.com/edge/skins/terrace/dhtmlx.css?v=6.3.0">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css?v=6.3.1">

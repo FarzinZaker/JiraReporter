@@ -11,12 +11,16 @@
 </form>
 <script language="JavaScript" type="text/javascript">
     function reloadPlanner() {
+        $('#toolbar').slideUp();
+        toggleFilterPanel();
         gantt.clearAll();
         gantt.load('${createLink(controller: 'planner', action: 'issues')}?' + $('#filterForm').serialize(), function () {
             resourcesStore.parse(filterResources());
             gantt.refreshData();
-            showToday();
             gantt.sort('start_date', false);
+            $('#toolbar').slideDown();
+            showToday();
+            resizeGantt();
         });
     }
 </script>
