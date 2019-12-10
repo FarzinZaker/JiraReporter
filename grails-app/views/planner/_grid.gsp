@@ -42,6 +42,7 @@
     priorityIcons.p${priority.id} = '${priority.icon}';
     </g:each>
 </script>
+<asset:javascript src="gantt_fullscreen.js"/>
 <asset:javascript src="gantt_helper.js"/>
 <asset:javascript src="gantt_config.js"/>
 <script language="JavaScript">

@@ -16,8 +16,10 @@ class UserService {
         }
         JiraUser.createCriteria().list {
             'in'('displayName', nameList)
-            ilike('name', "%$username%")
-            ilike('displayName', "%$username%")
+            or {
+                ilike('name', "%$username%")
+                ilike('displayName', "%$username%")
+            }
         }
     }
 

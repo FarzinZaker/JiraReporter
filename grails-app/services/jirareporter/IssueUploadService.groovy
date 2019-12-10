@@ -38,12 +38,12 @@ class IssueUploadService {
             if (JiraIssueMapper.fieldsMap[fieldName]['parser']) {
                 def d = Holders.grailsApplication.mainContext.getBean(JiraIssueMapper.fieldsMap[fieldName].parser).updateData(issue)
                 d.each { item ->
-                    if (!data.containsKey(item.key))
-                        data.put(item.key, item.value)
-                    else
-                        item.value.each {
-                            data[item.key].put(it.key, it.value)
-                        }
+//                    if (!data.containsKey(item.key))
+                    data.put(item.key, item.value)
+//                    else
+//                        item.value.each {
+//                            data[item.key].put(it.key, it.value)
+//                        }
                 }
             } else {
                 def path = JiraIssueMapper.fieldsMap[fieldName]['field'].split('\\.')
@@ -57,13 +57,14 @@ class IssueUploadService {
                     }
                 }
             }
+            println issueUploadItem.property
             data.each { item ->
-                if (!finalData.containsKey(item.key))
-                    finalData.put(item.key, item.value)
-                else
-                    item.value.each {
-                        finalData[item.key].put(it.key, it.value)
-                    }
+//                if (!finalData.containsKey(item.key))
+                finalData.put(item.key, item.value)
+//                else
+//                    item.value.each {
+//                        finalData[item.key].put(it.key, it.value)
+//                    }
             }
         }
 

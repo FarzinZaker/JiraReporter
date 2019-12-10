@@ -16,6 +16,7 @@
 
     <script src="https://cdn.dhtmlx.com/edge/dhtmlx.js?v=6.3.0"></script>
     <link rel="stylesheet" href="https://cdn.dhtmlx.com/edge/skins/terrace/dhtmlx.css?v=6.3.0">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css?v=6.3.1">
 
     <asset:javascript src="dhtmlxgantt.js"/>
     <asset:javascript src="dhtmlxgantt_quick_info.js"/>
@@ -28,6 +29,7 @@
     <asset:javascript src="ext/dhtmlxgantt_drag_timeline.js"/>
     <asset:javascript src="dhtmlxgantt_tooltip.js"/>
     <asset:javascript src="ext/dhtmlxgantt_keyboard_navigation.js"/>
+    <asset:javascript src="ext/dhtmlxgantt_fullscreen.js"/>
     %{--    <asset:javascript src="testdata.js"/>--}%
 
     <asset:stylesheet src="dhtmlxgantt.css"/>

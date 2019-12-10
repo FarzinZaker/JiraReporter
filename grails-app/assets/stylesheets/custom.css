@@ -1050,3 +1050,24 @@ input[type=submit], input[type=button] {
     display: inline-block;
     margin-right: 10px;
 }
+
+.gantt-fullscreen {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 30px;
+    height: 30px;
+    padding: 2px;
+    font-size: 32px;
+    background: transparent;
+    cursor: pointer;
+    opacity: 0.5;
+    text-align: center;
+    -webkit-transition: background-color 0.5s, opacity 0.5s;
+    transition: background-color 0.5s, opacity 0.5s;
+}
+
+.gantt-fullscreen:hover {
+    background: rgba(150, 150, 150, 0.5);
+    opacity: 1;
+}
