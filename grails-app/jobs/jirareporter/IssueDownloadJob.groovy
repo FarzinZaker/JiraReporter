@@ -17,22 +17,22 @@ class IssueDownloadJob {
         if (!Environment.isDevelopmentMode())
             return
 
-        if (IssueDownloadItem.count() > 0) {
-            def issueDownloadItems = IssueDownloadItem.findAllByIdGreaterThan(0, [max: 20])
-//            def threads = []
-            issueDownloadItems.each { issueDownloadItem ->
-//                threads << Thread.start {
-//                    try {
-//                        Issue.withNewTransaction {
-                            issueDownloadService.download(issueDownloadItem.issue.key)
-                            IssueDownloadItem.executeUpdate("delete IssueDownloadItem where issue = :issue", [issue: issueDownloadItem.issue])
-//                        }
-//                    } catch (ex) {
-//                        println ex.message
-//                    }
-//                }
-            }
-//            threads.each { it.join() }
-        }
+//        if (IssueDownloadItem.count() > 0) {
+//            def issueDownloadItems = IssueDownloadItem.findAllByIdGreaterThan(0, [max: 20])
+////            def threads = []
+//            issueDownloadItems.each { issueDownloadItem ->
+////                threads << Thread.start {
+////                    try {
+////                        Issue.withNewTransaction {
+//                            issueDownloadService.download(issueDownloadItem.issue.key)
+//                            IssueDownloadItem.executeUpdate("delete IssueDownloadItem where issue = :issue", [issue: issueDownloadItem.issue])
+////                        }
+////                    } catch (ex) {
+////                        println ex.message
+////                    }
+////                }
+//            }
+////            threads.each { it.join() }
+//        }
     }
 }

@@ -11,6 +11,12 @@ class FilterService {
         }?.findAll { it } ?: []) + ['-'])
     }
 
+    List<Issue> formatIssueList(params) {
+        Issue.findAllByKeyInList((params.issue?.split(',')?.collect {
+            it.split('\\(')?.first()?.replace(':', '')?.trim()
+        }?.findAll { it } ?: []) + ['-'])
+    }
+
     List<JiraUser> formatTeamMembers(Set<String> users) {
         JiraUser.findAllByDisplayNameInList((users?.toList() ?: []) + ['-'])
     }

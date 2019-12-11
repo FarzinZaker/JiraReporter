@@ -14,6 +14,15 @@ class IssueService {
     def projectService
     def clientService
 
+    List<Issue> search(String phrase) {
+        Issue.createCriteria().list {
+            or {
+                ilike('key', "%$phrase%")
+                ilike('summary', "%$phrase%")
+            }
+        }
+    }
+
     List<Issue> parseList(JSONArray list) {
 
 

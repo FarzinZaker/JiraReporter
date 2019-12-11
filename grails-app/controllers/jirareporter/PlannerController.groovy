@@ -26,6 +26,7 @@ class PlannerController {
     }
 
     def issues() {
+
         if (params.findAll { it.value && !it.key?.toString()?.toLowerCase()?.startsWith('dhxr') }.size() < 3) {
             redirect(uri: "/planner/issues?status=${['Draft', 'To Do', 'In Progress'].join(',')}&team=${Configuration.crossOverTeams.collect { it.name }.join(',')}")
             return
@@ -38,6 +39,7 @@ class PlannerController {
 
         def teams = filterService.formatTeams(params)
         def issues = issueReportService.getIssues(
+                filterService.formatIssueList(params),
                 filterService.formatProjects(params),
                 filterService.formatIssueTypes(params),
                 filterService.formatPriorities(params),
@@ -191,7 +193,7 @@ class PlannerController {
     }
 
     def deleteLink() {
-        println params
+//        println params
         def firstIssue = Issue.findByKey(params.source)
         def secondIssue = Issue.findByKey(params.target)
         IssueLink.findByFirstIssueAndSecondIssueAndType(firstIssue, secondIssue, 'has to be done before').each {
@@ -204,7 +206,7 @@ class PlannerController {
     }
 
     def addLink() {
-        println params
+//        println params
         def firstIssue = Issue.findByKey(params.source)
         def secondIssue = Issue.findByKey(params.target)
         def link = new IssueLink(firstIssue: firstIssue, secondIssue: secondIssue, type: 'has to be done before', added: true, key: '-')

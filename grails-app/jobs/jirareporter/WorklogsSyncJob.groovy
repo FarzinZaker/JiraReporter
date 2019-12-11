@@ -11,8 +11,27 @@ class WorklogsSyncJob {
     static concurrent = false
 
     def downloadService
+    def issueDownloadService
 
     def execute() {
+
+//        if (IssueDownloadItem.count() > 0) {
+        def issueDownloadItems = IssueDownloadItem.findAllByIdGreaterThan(0, [max: 100])
+//            def threads = []
+        issueDownloadItems.each { issueDownloadItem ->
+//                threads << Thread.start {
+//                    try {
+//                        Issue.withNewTransaction {
+            issueDownloadService.download(issueDownloadItem.issue.key)
+            IssueDownloadItem.executeUpdate("delete IssueDownloadItem where issue = :issue", [issue: issueDownloadItem.issue])
+//                        }
+//                    } catch (ex) {
+//                        println ex.message
+//                    }
+//                }
+//            }
+//            threads.each { it.join() }
+        }
 
         //Today
         def endDate = new Date() + 1

@@ -32,7 +32,12 @@ class IssueLinkUploadService {
 
     def removeLink(IssueLink link) {
         def jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(Configuration.username, Configuration.password))
-        jiraClient.delete("${Configuration.serverURL}/rest/api/latest/issueLink/${link.key}")
+        try {
+            jiraClient.delete("${Configuration.serverURL}/rest/api/latest/issueLink/${link.key}")
+        } catch (ex) {
+            if (!ex.message.contains("No issue link with id '${link.key}' exists"))
+                throw ex
+        }
         new IssueDownloadItem(issue: link.firstIssue, source: 'Remove Link').save()
         new IssueDownloadItem(issue: link.secondIssue, source: 'Remove Link').save()
         link.delete(flush: true)

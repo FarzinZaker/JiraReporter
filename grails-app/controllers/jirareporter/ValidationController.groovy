@@ -26,6 +26,7 @@ class ValidationController {
 
         def teams = filterService.formatTeams(params)
         def issues = issueReportService.getIssues(
+                filterService.formatIssueList(params),
                 filterService.formatProjects(params),
                 filterService.formatIssueTypes(params),
                 filterService.formatPriorities(params),

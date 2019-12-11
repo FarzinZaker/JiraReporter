@@ -5,13 +5,20 @@ import grails.gorm.transactions.Transactional
 @Transactional
 class IssueReportService {
 
-    List<Issue> getIssues(List<Project> projects = [], List<IssueType> issueTypes = [], List<IssueType> priorities = [], List<Component> componentList = [], List<Client> clientList = [], List<JiraUser> users = [], List<JiraUser> teamMembers = [], Boolean filterTeamMembers, List<Status> statusList = []) {
+    List<Issue> getIssues(List<Issue> issues = [], List<Project> projects = [], List<IssueType> issueTypes = [], List<IssueType> priorities = [], List<Component> componentList = [], List<Client> clientList = [], List<JiraUser> users = [], List<JiraUser> teamMembers = [], Boolean filterTeamMembers, List<Status> statusList = []) {
 
         Issue.createCriteria().list {
 
             isNotNull('originalEstimate')
             isNotNull('startDate')
             isNotNull('dueDate')
+
+            if (issues.size()) {
+//                or {
+                'in'('id', findChildIssues(issues).collect { it.id })
+//                    'in'('parent', issues)
+//                }
+            }
 
             if (projects.size()) {
                 'in'('project', projects)
@@ -50,4 +57,14 @@ class IssueReportService {
         } as List<Issue>
     }
 
+    List<Issue> findChildIssues(List<Issue> issues) {
+        if (!issues?.size())
+            return []
+        issues + findChildIssues(
+                (Issue.findAllByParentInList(issues) +
+                IssueLink.findAllByDeletedAndSecondIssueInListAndType(false, issues, 'is child of').firstIssue +
+                IssueLink.findAllByDeletedAndFirstIssueInListAndType(false, issues, 'is parent of').secondIssue)
+                .unique { it.id })
+
+    }
 }

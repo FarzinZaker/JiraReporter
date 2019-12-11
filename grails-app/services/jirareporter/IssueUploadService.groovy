@@ -19,7 +19,7 @@ class IssueUploadService {
             }
         }
 
-        println issue.dirtyPropertyNames
+//        println issue.dirtyPropertyNames
 
         issue.discard()
     }
@@ -57,7 +57,7 @@ class IssueUploadService {
                     }
                 }
             }
-            println issueUploadItem.property
+//            println issueUploadItem.property
             data.each { item ->
 //                if (!finalData.containsKey(item.key))
                 finalData.put(item.key, item.value)
@@ -68,7 +68,7 @@ class IssueUploadService {
             }
         }
 
-        println(finalData as JSON)
+//        println(finalData as JSON)
         try {
             def jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(Configuration.username, Configuration.password))
             jiraClient.put("${Configuration.serverURL}/rest/api/latest/issue/${issue.key}", [fields: finalData])
@@ -83,7 +83,7 @@ class IssueUploadService {
 //                    println it
 //                }
 //            }
-            println IssueUploadItem.executeUpdate("delete IssueUploadItem where issue = :issue", [issue: issue])
+//            println IssueUploadItem.executeUpdate("delete IssueUploadItem where issue = :issue", [issue: issue])
         } catch (Exception ex) {
             list.each {
                 it.errorMessage = ex.message
