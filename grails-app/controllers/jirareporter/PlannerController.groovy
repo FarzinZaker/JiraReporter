@@ -196,7 +196,8 @@ class PlannerController {
         def secondIssue = Issue.findByKey(params.target)
         IssueLink.findByFirstIssueAndSecondIssueAndType(firstIssue, secondIssue, 'has to be done before').each {
             it.deleted = true
-            it.save()
+            if (!it.save(flush: true))
+                throw new Exception('Unable to delete the link')
         }
 //        IssueLink.executeUpdate("update IssueLink set deleted = :deleted where firstIssue = :firstIssue and secondIssue = :secondIssue", [deleted: true, firstIssue: firstIssue, secondIssue: secondIssue])
         render 1

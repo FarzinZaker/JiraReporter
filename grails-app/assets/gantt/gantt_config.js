@@ -3,9 +3,9 @@ gantt.config.grid_resize = true;
 gantt.config.fit_tasks = true;
 gantt.config.sort = true;
 
-gantt.config.auto_scheduling = true;
-gantt.config.auto_scheduling_strict = true;
-gantt.config.auto_scheduling_compatibility = true;
+gantt.config.auto_scheduling = false;
+gantt.config.auto_scheduling_strict = false;
+gantt.config.auto_scheduling_compatibility = false;
 gantt.config.keyboard_navigation_cells = true;
 
 

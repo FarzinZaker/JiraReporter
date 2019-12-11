@@ -30,16 +30,20 @@ class IssueFixJob {
 //        def startDate = endDate - 2
 
 //        def statusList = filterService.formatStatus([status: ['Draft', 'To Do', 'In Progress'].join(',')])
-        def lastFixDate = new Date()
-        use(TimeCategory) {
-            lastFixDate = lastFixDate - 1.hour
-        }
+//        def lastFixDate = new Date()
+//        use(TimeCategory) {
+//            lastFixDate = lastFixDate - 1.hour
+//        }
+        def downloadQueue = IssueDownloadItem.list().collect{it.issueId}?:[0]
         def users = JiraUser.findAllByTeamNameInList(Configuration.crossOverTeams.collect { it.name } ?: [null])
         Issue.createCriteria().list {
 //            'in'('status', statusList)
             'in'('assignee', users)
 //            between('updated', startDate, endDate)
-            lt('lastFix', lastFixDate)
+//            lt('lastFix', lastFixDate)
+            not{
+                'in'('id', downloadQueue)
+            }
             or {
                 isNull('originalEstimate')
                 eq('originalEstimate', '')
@@ -54,7 +58,7 @@ class IssueFixJob {
             maxResults(20)
         }?.each { Issue issue ->
             issueFixService.fix(issue)
-            println issue.key
+//            println issue.key
         }
 
 //        jobConfig = SyncJobConfig.findByName('FIXED_ISSUES')
