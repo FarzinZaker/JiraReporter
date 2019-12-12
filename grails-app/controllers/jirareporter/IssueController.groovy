@@ -9,7 +9,7 @@ class IssueController {
     def search() {
         render((params.id ? issueService.search(params.id)?.collect {
             [
-                    value: "${it.key}: (${it.summary})"
+                    value: "${it.key}: ${it.summary}"
             ]
         } : []) as JSON)
     }

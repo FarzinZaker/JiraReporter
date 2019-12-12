@@ -75,14 +75,14 @@ class IssueUploadService {
 
             new IssueDownloadItem(issue: issue, source: 'Issue Updated').save(flush: true)
 
-//            IssueUploadItem.findAllByIssue(issue).each {
-//                try {
-//                    it.delete(flush: true)
-//                } catch (ex) {
-//                    println ex
-//                    println it
-//                }
-//            }
+            IssueUploadItem.findAllByIssue(issue).each {
+                try {
+                    it.delete(flush: true)
+                } catch (ex) {
+                    println ex
+                    println it
+                }
+            }
 //            println IssueUploadItem.executeUpdate("delete IssueUploadItem where issue = :issue", [issue: issue])
         } catch (Exception ex) {
             list.each {

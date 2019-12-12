@@ -13,7 +13,7 @@ class FilterService {
 
     List<Issue> formatIssueList(params) {
         Issue.findAllByKeyInList((params.issue?.split(',')?.collect {
-            it.split('\\(')?.first()?.replace(':', '')?.trim()
+            it.split(':')?.first()?.trim()
         }?.findAll { it } ?: []) + ['-'])
     }
 

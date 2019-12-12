@@ -17,14 +17,14 @@ class IssueUploadJob {
             return
 
         def issueUploadItems = IssueUploadItem.findAllByRetryCountLessThan(20, [max: 100])
-        def threads = []
+//        def threads = []
         issueUploadItems.each { issueUploadItem ->
-            threads << Thread.start {
-                Issue.withNewTransaction {
+//            threads << Thread.start {
+//                Issue.withNewTransaction {
                     issueUploadService.update(issueUploadItem.issue)
-                }
-            }
+//                }
+//            }
         }
-        threads.each { it.join() }
+//        threads.each { it.join() }
     }
 }
