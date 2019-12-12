@@ -1,7 +1,9 @@
 package jirareporter
 
+import grails.plugin.springsecurity.annotation.Secured
 import groovy.time.TimeCategory
 
+@Secured([Roles.ADMIN, Roles.JIRA_USER])
 class WorklogController {
 
     def reportService

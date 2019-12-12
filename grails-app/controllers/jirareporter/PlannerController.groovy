@@ -1,9 +1,11 @@
 package jirareporter
 
 import grails.converters.JSON
+import grails.plugin.springsecurity.annotation.Secured
 
 import java.text.SimpleDateFormat
 
+@Secured([Roles.ADMIN, Roles.JIRA_USER])
 class PlannerController {
 
     def componentService

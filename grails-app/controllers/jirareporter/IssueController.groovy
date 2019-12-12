@@ -1,7 +1,9 @@
 package jirareporter
 
 import grails.converters.JSON
+import grails.plugin.springsecurity.annotation.Secured
 
+@Secured([Roles.ADMIN, Roles.JIRA_USER])
 class IssueController {
 
     def issueService

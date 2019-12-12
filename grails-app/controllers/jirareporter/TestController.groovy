@@ -1,7 +1,9 @@
 package jirareporter
 
 import grails.converters.JSON
+import grails.plugin.springsecurity.annotation.Secured
 
+@Secured([Roles.ADMIN])
 class TestController {
 
     def issueUploadService
