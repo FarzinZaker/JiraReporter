@@ -450,8 +450,8 @@ input[type=submit], input[type=button] {
 
 .header {
     background-color: #ffffff;
-    height:67px;
-    border-bottom:5px solid #37474F;
+    height: 67px;
+    border-bottom: 5px solid #37474F;
 }
 
 .header .logo {
@@ -468,7 +468,7 @@ input[type=submit], input[type=button] {
 #menu {
     float: left;
     margin-top: 10px;
-    margin-left:50px;
+    margin-left: 50px;
 }
 
 .header .logo span {
@@ -1096,4 +1096,9 @@ input[type=submit], input[type=button] {
 
 .footer {
     display: none;
+}
+
+.gantt_cal_qi_title {
+    width: 500px;
+    white-space: normal;
 }

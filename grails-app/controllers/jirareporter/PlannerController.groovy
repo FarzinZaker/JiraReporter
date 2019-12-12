@@ -81,15 +81,18 @@ class PlannerController {
             def isParent = Issue.findByParentAndIdInList(issue, idList) ?: IssueLink.findByDeletedAndSecondIssueAndTypeAndFirstIssueInList(false, issue, 'is child of', issues) ?: IssueLink.findByDeletedAndFirstIssueAndTypeAndSecondIssueInList(false, issue, 'is parent of', issues)
 
             def parent = issue.parent?.key ?: IssueLink.findByDeletedAndFirstIssueAndType(false, issue, 'is child of')?.secondIssue?.key ?: IssueLink.findByDeletedAndSecondIssueAndType(false, issue, 'is parent of')?.firstIssue?.key
+
+            if (!issues.any { it.key == parent })
+                parent = null
+
+            if (!projects.any { issue.project?.id == it.id })
+                projects << [id: issue.project?.id, name: issue.project?.name, clients: []]
+            def project = projects.find { it.id == issue.project?.id }
+            def client = issue.clients?.find()
+            if (!project.clients.any { it.id == client?.id })
+                project.clients << [id: client?.id ?: 0, name: client?.name]
+
             if (!parent) {
-
-                if (!projects.any { issue.project?.id == it.id })
-                    projects << [id: issue.project?.id, name: issue.project?.name, clients: []]
-                def project = projects.find { it.id == issue.project?.id }
-                def client = issue.clients?.find()
-                if (!project.clients.any { it.id == client?.id })
-                    project.clients << [id: client?.id ?: 0, name: client?.name]
-
                 parent = 'p' + issue.project.id + 'c' + (client?.id ?: 0)
             }
 
