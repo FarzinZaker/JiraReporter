@@ -55,6 +55,7 @@
             </li>
         </sec:ifAnyGranted>
         <li>
+            <sec:username/>
             ${User.findByUsername(sec.username()?.toString())}
             <ul>
                 <li>
