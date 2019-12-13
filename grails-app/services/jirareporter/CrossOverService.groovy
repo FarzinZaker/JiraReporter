@@ -61,13 +61,7 @@ class CrossOverService {
 
             team.value.each { developer ->
                 developer.value.each { date ->
-                    def xoLog = CrossOverLog.createCriteria().list {
-                        or {
-                            eq('team', team.key as Team)
-                            eq('teamName', ((Team) team.key).xoName)
-                        }
-                        eq('date', date.key)
-                    }.find() as CrossOverLog
+                    def xoLog = CrossOverLog.findByTeamAndDate(team.key as Team, date.key)
                     if (!xoLog)
                         xoLog = new CrossOverLog(name: developer.key, date: date.key)
                     xoLog.team = Team.get(team.key.id)

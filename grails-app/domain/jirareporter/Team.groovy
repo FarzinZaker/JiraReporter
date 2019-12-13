@@ -1,6 +1,6 @@
 package jirareporter
 
-class Team {
+class Team implements Serializable {
 
     String name
     String xoName
@@ -9,6 +9,9 @@ class Team {
 
     static constraints = {
         xoManagerId nullable: true
+    }
+    static mapping = {
+        version false
     }
 
     @Override

@@ -10,7 +10,7 @@ class JiraUser {
     Boolean active
     String timezone
     String avatar
-    String teamName
+//    String teamName
     Team team
 
     static mapping = {
@@ -22,7 +22,7 @@ class JiraUser {
         emailAddress nullable: true
         timezone nullable: true
         avatar nullable: true
-        teamName nullable: true
+//        teamName nullable: true
         team nullable: true
     }
 

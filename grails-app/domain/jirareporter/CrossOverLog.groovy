@@ -2,7 +2,7 @@ package jirareporter
 
 class CrossOverLog {
 
-    String teamName
+//    String teamName
     Team team
     String name
     Date date
@@ -13,7 +13,7 @@ class CrossOverLog {
     }
 
     static mapping = {
-        teamName column: 'team'
+//        teamName column: 'team'
         version false
     }
 }
