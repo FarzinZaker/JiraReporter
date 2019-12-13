@@ -5,7 +5,7 @@ import grails.plugin.springsecurity.annotation.Secured
 
 import java.text.SimpleDateFormat
 
-@Secured([Roles.ADMIN, Roles.JIRA_USER])
+@Secured([Roles.ADMIN, Roles.MANAGER, Roles.JIRA_USER])
 class PlannerController {
 
     def componentService

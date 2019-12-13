@@ -56,8 +56,7 @@
                 model: {
                     id: "id",
                     fields: {
-                        firstName: {type: "string", validation: {required: true}},
-                        lastName: {type: "string", validation: {required: true}},
+                        displayName: {type: "string", validation: {required: true}},
                         username: {type: "string", validation: {required: true}},
                         password: {type: "string"},
                         enabled: {type: "boolean"},
@@ -74,8 +73,7 @@
             pageable: true,
             toolbar: [{name: "create", text: "New User"}],
             columns: [
-                {field: "firstName", title: "First Name"},
-                {field: "lastName", title: "Last Name"},
+                {field: "displayName", title: "Display Name"},
                 {field: "username", title: "Username"},
                 {field: "password", title: "Password", hidden: true},
                 {field: "enabled", title: "Enabled", editor: enabledEditor, template: enabledTemplate},

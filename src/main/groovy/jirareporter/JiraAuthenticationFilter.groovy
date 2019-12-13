@@ -26,7 +26,9 @@ class JiraAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
             authentication = super.attemptAuthentication(request, response)
         } catch (ex) {
             def authenticationResult = jiraUserService.authenticate(obtainUsername(request), obtainPassword(request))
-            authentication = new UsernamePasswordAuthenticationToken(authenticationResult.principal, null, authenticationResult.authorities)
+            if (authenticationResult)
+                authentication = new UsernamePasswordAuthenticationToken(authenticationResult.principal, null, authenticationResult.authorities)
+            else throw ex
         }
 
 //        println authentication

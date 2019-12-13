@@ -1,4 +1,4 @@
-<%@ page import="jirareporter.Priority; jirareporter.JiraUser; jirareporter.Configuration" %>
+<%@ page import="jirareporter.Roles; jirareporter.Priority; jirareporter.JiraUser; jirareporter.Configuration" %>
 
 <g:render template="toolbar"/>
 
@@ -7,6 +7,19 @@
 <div id="gantt_here" style='width:100%; height:80vh'></div>
 
 <script language="JavaScript">
+    <sec:ifNotGranted roles="${[Roles.ADMIN, Roles.MANAGER].join(',')}">
+    var readonly = true;
+    gantt.config.drag_links = false;
+    gantt.config.drag_move = false;
+    gantt.config.drag_project = false;
+    gantt.config.drag_resize = false;
+    gantt.config.drag_timeline = false;
+    gantt.config.click_drag = false;
+    </sec:ifNotGranted>
+    <sec:ifAnyGranted roles="${[Roles.ADMIN, Roles.MANAGER].join(',')}">
+    var readonly = false;
+    </sec:ifAnyGranted>
+
     gantt.serverList("priority", [
         <g:each in="${[
         Priority.findByName('Showstopper'),

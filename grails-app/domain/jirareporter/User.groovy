@@ -13,8 +13,7 @@ class User implements Serializable {
 
     String username
     String password
-    String firstName
-    String lastName
+    String displayName
     boolean enabled = true
     boolean accountExpired
     boolean accountLocked
@@ -25,8 +24,7 @@ class User implements Serializable {
     }
 
     static constraints = {
-        firstName nullable: true
-        lastName nullable: true
+        displayName nullable: true
         password nullable: false, blank: false, password: true
         username nullable: false, blank: false, unique: true
     }
@@ -37,6 +35,6 @@ class User implements Serializable {
 
     @Override
     String toString() {
-        "$firstName $lastName"
+        displayName
     }
 }

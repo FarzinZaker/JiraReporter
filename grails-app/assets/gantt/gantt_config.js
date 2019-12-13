@@ -160,7 +160,7 @@ gantt.config.columns = [
             if (!task.taskType || task.taskType === 'project' || task.taskType === 'client') {
                 return "";
             }
-                return task.status.name;
+            return task.status.name;
         }
     },
     {
@@ -482,7 +482,7 @@ var inlineEditors = gantt.ext.inlineEditors;
 
 inlineEditors.attachEvent("onBeforeEditStart", function (state) {
     // console.log(state);
-    if (state.id.startsWith('p'))
+    if (state.id.startsWith('p') || readonly)
         return false;
     // -> {id: itemId, columnName: columnName};
     return true;
@@ -492,6 +492,13 @@ gantt.attachEvent("onBeforeLinkAdd", function (id, link) {
 
     if (link.source.startsWith('p') || link.target.startsWith('p'))
         return false;
+    return true;
+});
+
+gantt.attachEvent("onBeforeTaskDrag", function (id, parent, tindex) {
+    if (readonly)
+        return false;
+
     return true;
 });
 

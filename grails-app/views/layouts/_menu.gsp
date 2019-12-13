@@ -55,12 +55,13 @@
             </li>
         </sec:ifAnyGranted>
         <li>
-            <sec:username/>
-            ${User.findByUsername(sec.username()?.toString())}
+            ${User.findByUsername(sec.username()?.toString()) ?: sec.username()}
             <ul>
-                <li>
-                    <a href="${createLink(controller: 'user', action: 'changePassword')}">Change Password</a>
-                </li>
+                <sec:ifAnyGranted roles="${[Roles.ADMIN].join(',')}">
+                    <li>
+                        <a href="${createLink(controller: 'user', action: 'changePassword')}">Change Password</a>
+                    </li>
+                </sec:ifAnyGranted>
                 <li>
                     <a href="${createLink(controller: 'logout')}">Logout</a>
                 </li>

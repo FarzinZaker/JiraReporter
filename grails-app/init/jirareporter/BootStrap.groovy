@@ -13,7 +13,7 @@ class BootStrap {
 
         def admin = User.findByUsername('admin')
         if (!admin)
-            admin = new User(username: 'admin', password: 'JP!@#', firstName: 'System', lastName: 'Administrator')
+            admin = new User(username: 'admin', password: 'JP!@#', displayName: 'Administrator')
 
         admin.accountLocked = false
         admin.accountExpired = false

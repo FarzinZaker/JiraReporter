@@ -8,7 +8,7 @@ class UserController {
     def userService
     def springSecurityService
 
-    @Secured([Roles.ADMIN, Roles.JIRA_USER])
+    @Secured([Roles.ADMIN, Roles.MANAGER, Roles.JIRA_USER])
     def search() {
         render((params.id ? userService.search(params.id)?.collect {
             [
@@ -37,8 +37,7 @@ class UserController {
         value.data = list.collect {
             [
                     id             : it.id,
-                    firstName      : it.firstName,
-                    lastName       : it.lastName,
+                    displayName      : it.displayName,
                     username       : it.username?.replace('@', ' @ '),
                     enabled        : it.enabled,
                     accountExpired : it.accountExpired,
@@ -59,8 +58,7 @@ class UserController {
             if (model.id)
                 item = User.get(model.id)
 
-            item.firstName = model.firstName
-            item.lastName = model.lastName
+            item.displayName = model.displayName
             item.username = model.username
             if (model.password)
                 item.password = model.password
@@ -102,13 +100,13 @@ class UserController {
         render 1
     }
 
-    @Secured([Roles.ADMIN, Roles.JIRA_USER])
+    @Secured([Roles.ADMIN, Roles.MANAGER, Roles.JIRA_USER])
     def changePassword() {
         def user = User.findByUsername((springSecurityService.currentUser as User).username)
         [askForOldPassword: user.password != springSecurityService.encodePassword(' ')]
     }
 
-    @Secured([Roles.ADMIN, Roles.JIRA_USER])
+    @Secured([Roles.ADMIN, Roles.MANAGER, Roles.JIRA_USER])
     def saveNewPassword() {
         def user = User.findByUsername((springSecurityService.currentUser as User).username)
         if (springSecurityService.passwordEncoder.isPasswordValid(user.password, params.oldPassword, null)) {
@@ -136,7 +134,7 @@ class UserController {
         }
     }
 
-    @Secured([Roles.ADMIN, Roles.JIRA_USER])
+    @Secured([Roles.ADMIN, Roles.MANAGER, Roles.JIRA_USER])
     def passwordChanged() {
 
     }
