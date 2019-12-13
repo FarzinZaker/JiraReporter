@@ -11,7 +11,7 @@ import org.grails.web.json.JSONObject
 @Transactional
 class CrossOverService {
 
-    Map getWorkingHours(Date from, Date to, List<String> teams) {
+    Map getWorkingHours(Date from, Date to, List<Team> teams) {
         def logs = CrossOverLog.createCriteria().list {
             gte('date', from)
             lte('date', to)
@@ -34,38 +34,43 @@ class CrossOverService {
         data
     }
 
-    void persist(Date from, Date to, List<String> teams) {
+    void persist(Date from, Date to, List<Team> teams) {
         def crossOverData = [:]
-        def xoTeams = Configuration.crossOverTeams
-        if (teams?.size())
-            xoTeams = xoTeams.findAll { teams.contains(it.name) }
-        xoTeams.each { crossOverTeam ->
-            if (!crossOverData.containsKey(crossOverTeam.name))
-                crossOverData.put(crossOverTeam.name, [:])
-            def newData = getWorkingHours(crossOverTeam.team, crossOverTeam.manager, from, to)
+        teams?.each { crossOverTeam ->
+            if (!crossOverData.containsKey(crossOverTeam))
+                crossOverData.put(crossOverTeam, [:])
+            def newData = getWorkingHours(crossOverTeam.xoKey, crossOverTeam.xoManagerId, from, to)
             newData.keySet().each { developer ->
-                if (!crossOverData[crossOverTeam.name].containsKey(developer))
-                    crossOverData[crossOverTeam.name].put(developer, [:])
+                if (!crossOverData[crossOverTeam].containsKey(developer))
+                    crossOverData[crossOverTeam].put(developer, [:])
                 newData[developer].keySet().each { date ->
-                    if (!crossOverData[crossOverTeam.name][developer].containsKey(date))
-                        crossOverData[crossOverTeam.name][developer].put(date, 0)
-                    crossOverData[crossOverTeam.name][developer][date] += newData[developer][date] ?: 0
+                    if (!crossOverData[crossOverTeam][developer].containsKey(date))
+                        crossOverData[crossOverTeam][developer].put(date, 0)
+                    crossOverData[crossOverTeam][developer][date] += newData[developer][date] ?: 0
                 }
 
                 def jiraUser = JiraUser.findByDisplayName(developer)
                 if (jiraUser) {
-                    jiraUser.teamName = crossOverTeam.name
+                    jiraUser.team = crossOverTeam
                     jiraUser.save()
                 }
             }
         }
 
         crossOverData.each { team ->
+
             team.value.each { developer ->
                 developer.value.each { date ->
-                    def xoLog = CrossOverLog.findByTeamAndNameAndDate(team.key, developer.key, date.key)
+                    def xoLog = CrossOverLog.createCriteria().list {
+                        or {
+                            eq('team', team.key as Team)
+                            eq('teamName', ((Team) team.key).xoName)
+                        }
+                        eq('date', date.key)
+                    }.find() as CrossOverLog
                     if (!xoLog)
-                        xoLog = new CrossOverLog(team: team.key, name: developer.key, date: date.key)
+                        xoLog = new CrossOverLog(name: developer.key, date: date.key)
+                    xoLog.team = Team.get(team.key.id)
                     xoLog.hours = date.value
                     xoLog.save()
                 }

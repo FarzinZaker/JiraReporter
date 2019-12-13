@@ -1,4 +1,4 @@
-<%@ page import="jirareporter.Roles; jirareporter.Priority; jirareporter.JiraUser; jirareporter.Configuration" %>
+<%@ page import="jirareporter.Team; jirareporter.Roles; jirareporter.Priority; jirareporter.JiraUser; jirareporter.Configuration" %>
 
 <g:render template="toolbar"/>
 
@@ -113,14 +113,14 @@
     %{--});--}%
 
     var resources = [
-        <g:each in="${Configuration.crossOverTeams}" var="team" status="i">
+        <g:each in="${Team.list()}" var="team" status="i">
         {id: ${10000000 + i}, text: "${team.name}", parent: null},
-        <g:each in="${JiraUser.findAllByTeamName(team.name)}" var="user">
+        <g:each in="${JiraUser.findAllByTeam(team)}" var="user">
         {id: ${user.id}, text: "${user.displayName}", parent: ${10000000 + i}, avatar: '${user.avatar}'},
         </g:each>
         </g:each>
         {id: ${20000000}, text: "Other Teams", parent: null},
-        <g:each in="${JiraUser.findAllByTeamNameIsNull()}" var="user">
+        <g:each in="${JiraUser.findAllByTeamIsNull()}" var="user">
         {id: ${user.id}, text: "${user.displayName}", parent: ${20000000}, avatar: '${user.avatar}'},
         </g:each>
     ];

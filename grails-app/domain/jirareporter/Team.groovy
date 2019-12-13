@@ -10,4 +10,9 @@ class Team {
     static constraints = {
         xoManagerId nullable: true
     }
+
+    @Override
+    String toString() {
+        name
+    }
 }

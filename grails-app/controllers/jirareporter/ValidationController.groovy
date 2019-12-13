@@ -12,9 +12,10 @@ class ValidationController {
 
     def estimate() {
         if (params.findAll { it.value }.size() < 3) {
-            redirect(uri: "/validation/estimate?status=${['Draft', 'To Do', 'In Progress'].join(',')}&team=${Configuration.crossOverTeams.collect { it.name }.join(',')}")
+            redirect(uri: "/validation/estimate?status=${['Draft', 'To Do', 'In Progress'].join(',')}&team=${Team.list().collect { it.id }.join(',')}")
             return
         }
+
         def components = componentService.getAll(Configuration.projects.collect { it.key?.toString() })
         def clients = Client.list()
         [components: components, clients: clients]
@@ -22,7 +23,7 @@ class ValidationController {
 
     def estimateJson() {
         if (params.findAll { it.value && !it.key?.toString()?.toLowerCase()?.startsWith('dhxr') }.size() < 3) {
-            redirect(uri: "/validation/estimateJson?status=${['Draft', 'To Do', 'In Progress'].join(',')}&team=${Configuration.crossOverTeams.collect { it.name }.join(',')}")
+            redirect(uri: "/validation/estimateJson?status=${['Draft', 'To Do', 'In Progress'].join(',')}&team=${Team.list().collect { it.id }.join(',')}")
             return
         }
 
@@ -35,7 +36,7 @@ class ValidationController {
                 filterService.formatComponents(params),
                 filterService.formatClients(params),
                 filterService.formatUsersList(params),
-                JiraUser.findAllByTeamNameInList(teams ?: [null]),
+                JiraUser.findAllByTeamInList(teams) ?: [null],
                 teams?.size > 0,
                 filterService.formatStatus(params)).findAll {
             !it.originalEstimate || it.originalEstimate?.trim() == ''

@@ -65,7 +65,9 @@ class FilterService {
         Status.findAllByNameInList(list + ['-'])
     }
 
-    List<String> formatTeams(params) {
-        params.team?.split(',')?.collect { it.toString()?.trim() }?.findAll { it } ?: []
+    List<Team> formatTeams(params) {
+        Team.findAllByIdInList((params.team?.split(',')?.collect { it.toString()?.toLong() }?.findAll {
+            it
+        } ?: []) + [null])
     }
 }

@@ -54,13 +54,13 @@ class Configuration {
         ]
     }
 
-    static List<Map> getCrossOverTeams() {
-        [
-                [name: 'ACQ.Consulting', team: '2997'],
-                [name: 'ACQ.MSConsulting', team: '3764', manager: '2089134'],
-                [name: 'ACQ.PlatinumEng', team: '3439', manager: '2089134']
-        ]
-    }
+//    static List<Map> getCrossOverTeams() {
+//        [
+//                [name: 'ACQ.Consulting', team: '2997'],
+//                [name: 'ACQ.MSConsulting', team: '3764', manager: '2089134'],
+//                [name: 'ACQ.PlatinumEng', team: '3439', manager: '2089134']
+//        ]
+//    }
 
     static List<Map> getStatusList() {
         [

@@ -28,7 +28,7 @@ class CrossOverSyncJob {
             endDate = new Date() + 1
         def startDate = endDate - 7
 
-        crossOverService.persist(startDate, endDate, Configuration.crossOverTeams.collect { it.name })
+        crossOverService.persist(startDate, endDate, Team.list())
 
         jobConfig = SyncJobConfig.findByName('RECENT_XO_LOGS')
         jobConfig.startDate = startDate
@@ -45,7 +45,7 @@ class CrossOverSyncJob {
             endDate = new Date() - 30
         startDate = endDate - 7
 
-        crossOverService.persist(startDate, endDate, Configuration.crossOverTeams.collect { it.name })
+        crossOverService.persist(startDate, endDate, Team.list())
 
         jobConfig = SyncJobConfig.findByName('OLD_XO_LOGS')
         jobConfig.startDate = startDate

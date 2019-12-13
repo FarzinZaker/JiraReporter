@@ -34,14 +34,14 @@ class IssueFixJob {
 //        use(TimeCategory) {
 //            lastFixDate = lastFixDate - 1.hour
 //        }
-        def downloadQueue = IssueDownloadItem.list().collect{it.issueId}?:[0l]
-        def users = JiraUser.findAllByTeamNameInList(Configuration.crossOverTeams.collect { it.name } ?: [null])
+        def downloadQueue = IssueDownloadItem.list().collect { it.issueId } ?: [0l]
+        def users = JiraUser.findAllByTeamInList(Team.list()) ?: [null]
         Issue.createCriteria().list {
 //            'in'('status', statusList)
             'in'('assignee', users)
 //            between('updated', startDate, endDate)
 //            lt('lastFix', lastFixDate)
-            not{
+            not {
                 'in'('id', downloadQueue)
             }
             or {

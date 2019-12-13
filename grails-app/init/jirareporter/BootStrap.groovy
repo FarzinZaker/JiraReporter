@@ -25,6 +25,24 @@ class BootStrap {
 
         if (!UserRole.findByUserAndRole(admin, adminRole))
             new UserRole(user: admin, role: adminRole).save()
+
+//        JiraUser.executeUpdate('update JiraUser set team = null')
+//        CrossOverLog.executeUpdate('update CrossOverLog set team = null')
+//        Configuration.crossOverTeams.each { xoTeam ->
+//            def team = Team.findByXoName(xoTeam.name)
+//            println team
+//
+//            CrossOverLog.findAllByTeamName(xoTeam.name).each{
+//                println it.team
+//                it.team = team
+//                it.save()
+//            }
+//            JiraUser.findAllByTeamName(xoTeam.name).each{
+//                println it.team
+//                it.team = team
+//                it.save(flush:true)
+//            }
+//        }
     }
     def destroy = {
     }
