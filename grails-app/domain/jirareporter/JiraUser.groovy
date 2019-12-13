@@ -11,6 +11,7 @@ class JiraUser {
     String timezone
     String avatar
     String teamName
+    Team team
 
     static mapping = {
         key column: 'jira_key'
@@ -22,6 +23,7 @@ class JiraUser {
         timezone nullable: true
         avatar nullable: true
         teamName nullable: true
+        team nullable: true
     }
 
     @Override

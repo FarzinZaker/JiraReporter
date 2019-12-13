@@ -38,8 +38,8 @@
             </ul>
         </li>
         <sec:ifAnyGranted roles="${[Roles.ADMIN].join(',')}">
-            <li disabled="disabled">
-                Teams
+            <li>
+                <a href="${createLink(controller:'team', action:'list')}">Teams</a>
             </li>
             <li>
                 Users

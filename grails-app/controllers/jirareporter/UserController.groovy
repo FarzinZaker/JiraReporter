@@ -37,7 +37,7 @@ class UserController {
         value.data = list.collect {
             [
                     id             : it.id,
-                    displayName      : it.displayName,
+                    displayName    : it.displayName,
                     username       : it.username?.replace('@', ' @ '),
                     enabled        : it.enabled,
                     accountExpired : it.accountExpired,
@@ -79,6 +79,18 @@ class UserController {
             }
         }
         render(result as JSON)
+    }
+
+    @Secured([Roles.ADMIN])
+    def delete() {
+        def models = JSON.parse(params.models).collect { it.toSpreadMap() }
+        models.each { model ->
+            def item = User.get(model.id)
+            UserRole.findAllByUser(item).each { it.delete() }
+            TeamManager.findAllByManager(item).each { it.delete() }
+            item.delete(flush: true)
+        }
+        render([] as JSON)
     }
 
     @Secured([Roles.ADMIN])
