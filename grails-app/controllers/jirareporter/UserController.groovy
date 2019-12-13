@@ -112,6 +112,25 @@ class UserController {
         render 1
     }
 
+    @Secured([Roles.ADMIN])
+    def teams() {
+        [teams: TeamManager.findAllByManager(User.get(params.id))?.collect { it.team }]
+    }
+
+    @Secured([Roles.ADMIN])
+    def saveTeams() {
+        def teams = Team.list().findAll { params."team_${it.id}" }
+        def user = User.get(params.id)
+        def teamManagers = TeamManager.findAllByManager(user)
+        teamManagers.findAll { !teams.collect { it.id }.contains(it.team.id) }.each { it.delete(flush: true) }
+        teams.findAll { team ->
+            !teamManagers.any {
+                it.team == team
+            }
+        }.each { team -> new TeamManager(manager: user, team: team).save(flush: true) }
+        render 1
+    }
+
     @Secured([Roles.ADMIN, Roles.MANAGER, Roles.JIRA_USER])
     def changePassword() {
         def user = User.findByUsername((springSecurityService.currentUser as User).username)

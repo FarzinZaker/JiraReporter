@@ -5,7 +5,7 @@
   Time: 4:48 PM
 --%>
 
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="jirareporter.Roles" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
     <meta name="layout" content="main"/>
@@ -81,7 +81,10 @@
                 {field: "accountLocked", title: "Account Locked", hidden: true, editor: accountLockedEditor},
                 {field: "passwordExpired", title: "Password Expired", hidden: true, editor: passwordExpiredEditor},
                 {command: ["edit", "destroy"], title: "&nbsp;", width: "230px"},
-                {command: {text: "Roles", click: manageRoles}, title: " ", width: "120px"}
+                {command: {text: "Roles", click: manageRoles}, title: " ", width: "120px"},
+                <g:if test="${params.id == Roles.MANAGER}">
+                {command: {text: "Teams", click: manageTeams}, title: " ", width: "120px"}
+                </g:if>
             ],
             editable: "popup",
             edit: function (e) {
@@ -134,6 +137,17 @@
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         wnd.refresh({
             url: '${createLink(action:'roles')}',
+            data: {id: dataItem.id}
+        });
+        wnd.center().open();
+    }
+
+    function manageTeams(e) {
+        e.preventDefault();
+
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        wnd.refresh({
+            url: '${createLink(action:'teams')}',
             data: {id: dataItem.id}
         });
         wnd.center().open();
