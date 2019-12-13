@@ -7,7 +7,7 @@
 <body>
 <div id="content" role="main">
     <div class="small-container">
-        <h1><g:message code='springSecurity.login.header'/></h1>
+        <h1>Login with your <b>Jira Credentials</b></h1>
         <g:if test='${flash.message}'>
             <div class="error">${flash.message}</div>
         </g:if>
