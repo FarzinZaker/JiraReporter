@@ -10,13 +10,22 @@ class ReportService {
     def worklogService
     def issueService
     def cacheService
+    def springSecurityService
 
     final String defaultProjectsList = Configuration.projects.collect { it.key }.join(',')
     final String defaultIssueTypeList = Configuration.issueTypes.collect { "\"${it}\"" }.join(',')
 
     List<Worklog> getWorklogs(Date from, Date to, List<Project> projects = [], List<IssueType> issueTypes = [], List<Priority> priorities = [], List<Component> componentList = [], List<Client> clientList = [], List<JiraUser> users = [], List<JiraUser> teamMembers = [], Boolean filterTeamMembers, List<String> worklogTypes = [], List<Status> statusList = []) {
 
+        def loggedInUser = springSecurityService.authentication.principal.username
+        def jiraUser = JiraUser.findByName(loggedInUser)
+
         Worklog.createCriteria().list {
+
+            if (![Roles.MANAGER, Roles.ADMIN].any { springSecurityService.authentication.authorities.contains(it) } && jiraUser) {
+                eq('author', jiraUser)
+            }
+
             gte('started', from)
             lte('started', to)
 

@@ -5,13 +5,22 @@ import grails.gorm.transactions.Transactional
 @Transactional
 class IssueReportService {
 
+    def springSecurityService
+
     List<Issue> getIssues(List<Issue> issues = [], List<Project> projects = [], List<IssueType> issueTypes = [], List<IssueType> priorities = [], List<Component> componentList = [], List<Client> clientList = [], List<JiraUser> users = [], List<JiraUser> teamMembers = [], Boolean filterTeamMembers, List<Status> statusList = []) {
+
+        def loggedInUser = springSecurityService.authentication.principal.username
+        def jiraUser = JiraUser.findByName(loggedInUser)
 
         Issue.createCriteria().list {
 
             isNotNull('originalEstimate')
             isNotNull('startDate')
             isNotNull('dueDate')
+
+            if (![Roles.MANAGER, Roles.ADMIN].any { springSecurityService.authentication.authorities.contains(it) } && jiraUser) {
+                eq('assignee', jiraUser)
+            }
 
             if (issues.size()) {
 //                or {
@@ -62,9 +71,9 @@ class IssueReportService {
             return []
         issues + findChildIssues(
                 (Issue.findAllByParentInList(issues) +
-                IssueLink.findAllByDeletedAndSecondIssueInListAndType(false, issues, 'is child of').firstIssue +
-                IssueLink.findAllByDeletedAndFirstIssueInListAndType(false, issues, 'is parent of').secondIssue)
-                .unique { it.id })
+                        IssueLink.findAllByDeletedAndSecondIssueInListAndType(false, issues, 'is child of').firstIssue +
+                        IssueLink.findAllByDeletedAndFirstIssueInListAndType(false, issues, 'is parent of').secondIssue)
+                        .unique { it.id })
 
     }
 }
