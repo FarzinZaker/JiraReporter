@@ -1,5 +1,7 @@
 package jirareporter
 
+import grails.util.Environment
+
 class IssueLinkUploadJob {
     static triggers = {
         simple repeatInterval: 5000l // execute job once in 5 seconds
@@ -10,6 +12,9 @@ class IssueLinkUploadJob {
     def issueLinkUploadService
 
     def execute() {
+
+        if(!Environment.isDevelopmentMode())
+            return
 
         //remove unnecessary links
         IssueLink.findAllByAddedAndDeleted(true, true).each { it.delete() }

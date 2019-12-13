@@ -15,6 +15,9 @@ class WorklogsSyncJob {
 
     def execute() {
 
+        if(!Environment.isDevelopmentMode())
+            return
+
 //        if (IssueDownloadItem.count() > 0) {
         def issueDownloadItems = IssueDownloadItem.findAllByIdGreaterThan(0, [max: 100])
 //            def threads = []
