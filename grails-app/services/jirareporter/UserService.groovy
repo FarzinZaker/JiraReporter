@@ -8,13 +8,25 @@ import org.codehaus.jettison.json.JSONObject
 @Transactional
 class UserService {
 
+    def springSecurityService
+
     List<JiraUser> search(String username) {
+        def user = User.findByUsername(springSecurityService.principal.username)
+        def users = [user.username]
+        if (springSecurityService.authentication.authorities.collect { it.role }.contains(Roles.MANAGER)) {
+            TeamManager.findAllByManager(user).collect { it.team }.each { team ->
+                JiraUser.findAllByTeam(team).each { jUser ->
+                    users << jUser.name
+                }
+            }
+        }
         def nameList = CrossOverLog.createCriteria().list {
             projections {
                 distinct('name')
             }
         }
         JiraUser.createCriteria().list {
+            'in'('name', users)
             'in'('displayName', nameList)
             or {
                 ilike('name', "%$username%")

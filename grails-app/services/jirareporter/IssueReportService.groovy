@@ -9,8 +9,15 @@ class IssueReportService {
 
     List<Issue> getIssues(List<Issue> issues = [], List<Project> projects = [], List<IssueType> issueTypes = [], List<IssueType> priorities = [], List<Component> componentList = [], List<Client> clientList = [], List<JiraUser> users = [], List<JiraUser> teamMembers = [], Boolean filterTeamMembers, List<Status> statusList = []) {
 
-        def loggedInUser = springSecurityService.authentication.principal.username
-        def jiraUser = JiraUser.findByName(loggedInUser)
+        def user = User.findByUsername(springSecurityService.principal.username)
+        def jiraUsers = [JiraUser.findByName(user.username)]
+        if (springSecurityService.authentication.authorities.collect { it.role }.contains(Roles.MANAGER)) {
+            TeamManager.findAllByManager(user).collect { it.team }.each { team ->
+                JiraUser.findAllByTeam(team).each { jUser ->
+                    jiraUsers << jUser
+                }
+            }
+        }
 
         Issue.createCriteria().list {
 
@@ -18,8 +25,10 @@ class IssueReportService {
             isNotNull('startDate')
             isNotNull('dueDate')
 
-            if (![Roles.MANAGER, Roles.ADMIN].any { springSecurityService.authentication.authorities.contains(it) } && jiraUser) {
-                eq('assignee', jiraUser)
+            if (![Roles.MANAGER, Roles.ADMIN].any {
+                springSecurityService.authentication.authorities.contains(it)
+            } && jiraUsers?.size()) {
+                'in'('assignee', jiraUsers)
             }
 
             if (issues.size()) {

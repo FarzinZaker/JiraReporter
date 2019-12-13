@@ -19,7 +19,7 @@ class PlannerController {
 
     def gantt() {
         if (params.findAll { it.value }.size() < 3) {
-            redirect(uri: "/planner/gantt?status=${['Draft', 'To Do', 'In Progress'].join(',')}&team=${Team.list().collect { it.id }.join(',')}")
+            redirect(uri: "/planner/gantt?status=${['Draft', 'To Do', 'In Progress'].join(',')}")
             return
         }
         def components = componentService.getAll(Configuration.projects.collect { it.key?.toString() })
@@ -30,7 +30,7 @@ class PlannerController {
     def issues() {
 
         if (params.findAll { it.value && !it.key?.toString()?.toLowerCase()?.startsWith('dhxr') }.size() < 3) {
-            redirect(uri: "/planner/issues?status=${['Draft', 'To Do', 'In Progress'].join(',')}&team=${Team.list().collect { it.id }.join(',')}")
+            redirect(uri: "/planner/issues?status=${['Draft', 'To Do', 'In Progress'].join(',')}")
             return
         }
 
@@ -48,8 +48,8 @@ class PlannerController {
                 filterService.formatComponents(params),
                 filterService.formatClients(params),
                 filterService.formatUsersList(params),
-                JiraUser.findAllByTeamInList(teams) ?: [null],
-                teams?.size > 0,
+                teams?.size() ? (JiraUser.findAllByTeamInList(teams) ?: [null]) : [null],
+                teams?.size() > 0,
                 filterService.formatStatus(params))
 
         def projects = []

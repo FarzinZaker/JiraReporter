@@ -17,13 +17,22 @@ class ReportService {
 
     List<Worklog> getWorklogs(Date from, Date to, List<Project> projects = [], List<IssueType> issueTypes = [], List<Priority> priorities = [], List<Component> componentList = [], List<Client> clientList = [], List<JiraUser> users = [], List<JiraUser> teamMembers = [], Boolean filterTeamMembers, List<String> worklogTypes = [], List<Status> statusList = []) {
 
-        def loggedInUser = springSecurityService.authentication.principal.username
-        def jiraUser = JiraUser.findByName(loggedInUser)
+        def user = User.findByUsername(springSecurityService.principal.username)
+        def jiraUsers = [JiraUser.findByName(user.username)]
+        if (springSecurityService.authentication.authorities.collect { it.role }.contains(Roles.MANAGER)) {
+            TeamManager.findAllByManager(user).collect { it.team }.each { team ->
+                JiraUser.findAllByTeam(team).each { jUser ->
+                    jiraUsers << jUser
+                }
+            }
+        }
 
         Worklog.createCriteria().list {
 
-            if (![Roles.MANAGER, Roles.ADMIN].any { springSecurityService.authentication.authorities.contains(it) } && jiraUser) {
-                eq('author', jiraUser)
+            if (![Roles.MANAGER, Roles.ADMIN].any {
+                springSecurityService.authentication.authorities.contains(it)
+            } && jiraUsers?.size()) {
+                'in'('author', jiraUsers)
             }
 
             gte('started', from)
