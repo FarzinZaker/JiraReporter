@@ -1,6 +1,6 @@
 <div class="sync-status">
-    Jira: <span id="upload-queue">0</span>
-    Planner: <span id="download-queue">0</span>
+    Upload: <span id="upload-queue">0</span>
+    Download: <span id="download-queue">0</span>
 </div>
 
 <script>

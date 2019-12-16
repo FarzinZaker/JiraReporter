@@ -14,7 +14,7 @@ class IssueFixService {
 
         if (!issue.originalEstimate || issue.originalEstimate?.trim() == '' || issue.originalEstimateSeconds < 1) {
             issue.originalEstimate = formatDuration(3600)
-            comments << ' * No Original Estimate'
+            comments << ' -- No Original Estimate'
         }
 
         if (!issue.remainingEstimate || issue.remainingEstimate?.trim() == '')
@@ -24,13 +24,13 @@ class IssueFixService {
         if (issue.created) {
             if (!issue.startDate) {
                 issue.startDate = issue.created
-                comments << ' * No Start Date'
+                comments << ' -- No Start Date'
             }
 
             if (!issue.dueDate)
                 use(TimeCategory) {
                     issue.dueDate = issue.startDate + (issue.originalEstimateSeconds ?: 3600).toInteger().seconds
-                    comments << ' * No Due Date'
+                    comments << ' -- No Due Date'
                 }
 
             def minDueDate = issue.startDate

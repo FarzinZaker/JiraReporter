@@ -37,8 +37,10 @@ class IssueUploadService {
                     it.dateCreated
                 } :
                 IssueUploadItem.findAllByIssueAndRetryCountLessThan(issue, 20).sort { it.dateCreated }
+        if (!list?.size())
+            return
 
-        def comments = list.collect { it.comment }.findAll { it }
+        def comments = list.collect { it.comment }.findAll { it }.unique { it }
         def comment = comments?.size() ? comments.join('\\\\') : null
 
         def finalData = [:]
@@ -84,7 +86,7 @@ class IssueUploadService {
 //        println(finalData as JSON)
         finalData = [fields: finalData]
         if (comment)
-            finalData.put('comment', [[add: [body: comment]]])
+            finalData.put('update', [comment: [[add: [body: comment]]]])
         try {
             def jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(creator?.jiraUsername ?: Configuration.username, creator?.jiraPassword ?: Configuration.password))
             jiraClient.put("${Configuration.serverURL}/rest/api/latest/issue/${issue.key}", finalData)
