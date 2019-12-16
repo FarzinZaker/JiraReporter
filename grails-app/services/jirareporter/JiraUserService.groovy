@@ -32,7 +32,7 @@ class JiraUserService {
             user.displayName = displayName.find()
 
             user.jiraUsername = username
-            user.jiraPassword = password
+            user.jiraPassword = AESCryption.encrypt(password)
             user.accountLocked = false
             user.accountExpired = false
             user.passwordExpired = false

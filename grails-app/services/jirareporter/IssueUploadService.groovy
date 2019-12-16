@@ -88,7 +88,7 @@ class IssueUploadService {
         if (comment)
             finalData.put('update', [comment: [[add: [body: comment]]]])
         try {
-            def jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(creator?.jiraUsername ?: Configuration.username, creator?.jiraPassword ?: Configuration.password))
+            def jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(creator?.jiraUsername ?: Configuration.username, creator?.jiraPassword ? AESCryption.decrypt(creator.jiraPassword) : Configuration.password))
             jiraClient.put("${Configuration.serverURL}/rest/api/latest/issue/${issue.key}", finalData)
 
             new IssueDownloadItem(issueKey: issue.key, source: 'Issue Updated').save(flush: true)
