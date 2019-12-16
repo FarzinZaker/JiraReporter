@@ -70,7 +70,7 @@ class IssueService {
         if (!issue.save(flush: true))
             throw new Exception("Error saving issue")
 
-        IssueDownloadItem.findAllByIssue(issue).each {
+        IssueDownloadItem.findAllByIssueKey(issue.key).each {
             it.delete()
         }
 //        IssueDownloadItem.executeUpdate("delete IssueDownloadItem where issue = :issue", [issue: issue])

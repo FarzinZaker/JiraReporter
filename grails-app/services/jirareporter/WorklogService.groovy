@@ -52,8 +52,9 @@ class WorklogService {
         worklog.timeSpent = obj.timeSpent
         worklog.timeSpentSeconds = obj.timeSpentSeconds
 
-        if (!worklog.save(flush: true))
-            throw new Exception("Error saving worklog")
+        if (worklog.isDirty() || !worklog.id)
+            if (!worklog.save(flush: true))
+                throw new Exception("Error saving worklog")
 
         worklog
     }

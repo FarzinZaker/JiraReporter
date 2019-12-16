@@ -53,7 +53,7 @@ class IssueDownloadService {
             def list = json.getJSONArray('worklogs')
             worklogService.parseList(list, issue)
 
-            IssueDownloadItem.findAllByIssue(issue).each {
+            IssueDownloadItem.findAllByIssueKey(issue.key).each {
                 try {
                     it.delete()
                 } catch (ex) {

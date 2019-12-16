@@ -7,13 +7,19 @@ import grails.util.Holders
 @Transactional
 class IssueUploadService {
 
-    def enqueue(Issue issue, String source) {
+    def springSecurityService
+
+    def enqueue(Issue issue, String source, String comment = null) {
         def list = []
+
+        def user = springSecurityService.loggedIn ? User.findByUsername(springSecurityService.principal.username) : null
+        if (!user?.jiraUsername || !user?.jiraPassword)
+            user = null
 
         issue.dirtyPropertyNames.each { property ->
             if (!IssueUploadItem.findByIssueAndProperty(issue, property)) {
                 list << property
-                def issueSyncItem = new IssueUploadItem(issue: issue, property: property, value: JiraIssueMapper.formatType(property, issue."${property}"), source: source)
+                def issueSyncItem = new IssueUploadItem(issue: issue, property: property, value: JiraIssueMapper.formatType(property, issue."${property}"), source: source, comment: comment, creator: user)
                 if (!issueSyncItem.save())
                     throw new Exception("Unable to save sync item: ${issueSyncItem.errorMessage}")
             }
@@ -25,8 +31,15 @@ class IssueUploadService {
     }
 
 
-    String update(Issue issue) {
-        def list = IssueUploadItem.findAllByIssueAndRetryCountLessThan(issue, 20).sort { it.dateCreated }
+    String update(Issue issue, User creator = null) {
+        def list = creator ?
+                IssueUploadItem.findAllByIssueAndCreatorAndRetryCountLessThan(issue, creator, 20).sort {
+                    it.dateCreated
+                } :
+                IssueUploadItem.findAllByIssueAndRetryCountLessThan(issue, 20).sort { it.dateCreated }
+
+        def comments = list.collect { it.comment }.findAll { it }
+        def comment = comments?.size() ? comments.join('\\\\') : null
 
         def finalData = [:]
         list.each { issueUploadItem ->
@@ -69,11 +82,14 @@ class IssueUploadService {
         }
 
 //        println(finalData as JSON)
+        finalData = [fields: finalData]
+        if (comment)
+            finalData.put('comment', [[add: [body: comment]]])
         try {
-            def jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(Configuration.username, Configuration.password))
-            jiraClient.put("${Configuration.serverURL}/rest/api/latest/issue/${issue.key}", [fields: finalData])
+            def jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(creator?.jiraUsername ?: Configuration.username, creator?.jiraPassword ?: Configuration.password))
+            jiraClient.put("${Configuration.serverURL}/rest/api/latest/issue/${issue.key}", finalData)
 
-            new IssueDownloadItem(issue: issue, source: 'Issue Updated').save(flush: true)
+            new IssueDownloadItem(issueKey: issue.key, source: 'Issue Updated').save(flush: true)
 
             IssueUploadItem.findAllByIssue(issue).each {
                 try {

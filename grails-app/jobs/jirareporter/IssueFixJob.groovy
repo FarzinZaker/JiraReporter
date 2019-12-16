@@ -34,7 +34,7 @@ class IssueFixJob {
 //        use(TimeCategory) {
 //            lastFixDate = lastFixDate - 1.hour
 //        }
-        def downloadQueue = IssueDownloadItem.list().collect { it.issueId } ?: [0l]
+        def downloadQueue = IssueDownloadItem.list().collect { it.issueKey } ?: [0l]
         def users = JiraUser.findAllByTeamInList(Team.list()) ?: [null]
         Issue.createCriteria().list {
 //            'in'('status', statusList)
@@ -42,7 +42,7 @@ class IssueFixJob {
 //            between('updated', startDate, endDate)
 //            lt('lastFix', lastFixDate)
             not {
-                'in'('id', downloadQueue)
+                'in'('key', downloadQueue)
             }
             or {
                 isNull('originalEstimate')

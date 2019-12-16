@@ -12,6 +12,7 @@ class PlannerController {
     def filterService
     def issueReportService
     def issueUploadService
+    def springSecurityService
 
     def index() {
         redirect(action: 'gantt')

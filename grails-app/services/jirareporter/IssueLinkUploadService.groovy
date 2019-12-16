@@ -24,8 +24,8 @@ class IssueLinkUploadService {
 
         def jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(Configuration.username, Configuration.password))
         jiraClient.post("${Configuration.serverURL}/rest/api/latest/issueLink", data)
-        new IssueDownloadItem(issue: link.firstIssue, source: 'Add Link').save()
-        new IssueDownloadItem(issue: link.secondIssue, source: 'Add Link').save()
+        new IssueDownloadItem(issueKey: link.firstIssue.key, source: 'Add Link').save()
+        new IssueDownloadItem(issueKey: link.secondIssue.key, source: 'Add Link').save()
         link.added = false
         link.save(flush: true)
     }
@@ -38,8 +38,8 @@ class IssueLinkUploadService {
             if (!ex.message.contains("No issue link with id '${link.key}' exists"))
                 throw ex
         }
-        new IssueDownloadItem(issue: link.firstIssue, source: 'Remove Link').save()
-        new IssueDownloadItem(issue: link.secondIssue, source: 'Remove Link').save()
+        new IssueDownloadItem(issueKey: link.firstIssue.key, source: 'Remove Link').save()
+        new IssueDownloadItem(issueKey: link.secondIssue.key, source: 'Remove Link').save()
         link.delete(flush: true)
     }
 }

@@ -15,26 +15,10 @@ class WorklogsSyncJob {
 
     def execute() {
 
-        if(!Environment.isDevelopmentMode())
+        if (!Environment.isDevelopmentMode())
             return
 
-//        if (IssueDownloadItem.count() > 0) {
-        def issueDownloadItems = IssueDownloadItem.findAllByIdGreaterThan(0, [max: 100])
-//            def threads = []
-        issueDownloadItems.each { issueDownloadItem ->
-//                threads << Thread.start {
-//                    try {
-//                        Issue.withNewTransaction {
-            issueDownloadService.download(issueDownloadItem.issue.key)
-            IssueDownloadItem.executeUpdate("delete IssueDownloadItem where issue = :issue", [issue: issueDownloadItem.issue])
-//                        }
-//                    } catch (ex) {
-//                        println ex.message
-//                    }
-//                }
-//            }
-//            threads.each { it.join() }
-        }
+        Date timer = new Date()
 
         //Today
         def endDate = new Date() + 1
@@ -45,6 +29,12 @@ class WorklogsSyncJob {
         } catch (Exception ex) {
             println ex.message
         }
+
+        println('TODAY:\t' + (new Date().time - timer.time))
+
+        timer = new Date()
+//        if (timer.hours < 1 || timer.hours > 6)
+//            return
 
         //Recent
         def jobConfig = SyncJobConfig.findByName('RECENT_ISSUES')
@@ -67,6 +57,9 @@ class WorklogsSyncJob {
             println ex.message
         }
 
+        println('RECENT:\t' + (new Date().time - timer.time))
+        timer = new Date()
+
         //Old
         jobConfig = SyncJobConfig.findByName('OLD_ISSUES')
         if (!jobConfig)
@@ -87,5 +80,7 @@ class WorklogsSyncJob {
         } catch (Exception ex) {
             println ex.message
         }
+
+        println('OLD:\t' + (new Date().time - timer.time))
     }
 }

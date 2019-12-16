@@ -2,7 +2,7 @@ package jirareporter
 
 class IssueDownloadItem {
 
-    Issue issue
+    String issueKey
     String source
     String errorMessage
     Date lastTry

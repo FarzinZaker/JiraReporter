@@ -31,7 +31,7 @@ class IssueLinkUploadJob {
 
         //update added link
         IssueLink.findAllByAddedAndDeletedAndKey(false, true, '-').each { link ->
-            new IssueDownloadItem(issue: link.firstIssue, source: 'Fill Empty Link Keys').save()
+            new IssueDownloadItem(issueKey: link.firstIssue.key, source: 'Fill Empty Link Keys').save()
         }
     }
 }

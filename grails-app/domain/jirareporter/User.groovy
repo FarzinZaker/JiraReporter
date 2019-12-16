@@ -13,6 +13,8 @@ class User implements Serializable {
 
     String username
     String password
+    String jiraUsername
+    String jiraPassword
     String displayName
     boolean enabled = true
     boolean accountExpired
@@ -27,6 +29,8 @@ class User implements Serializable {
         displayName nullable: true
         password nullable: false, blank: false, password: true
         username nullable: false, blank: false, unique: true
+        jiraUsername nullable: true
+        jiraPassword nullable: true
     }
 
     static mapping = {

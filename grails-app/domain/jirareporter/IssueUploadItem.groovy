@@ -5,6 +5,8 @@ class IssueUploadItem {
     Issue issue
     String property
     String value
+    String comment
+    User creator
     String source
     String errorMessage
     Integer retryCount = 0
@@ -16,6 +18,8 @@ class IssueUploadItem {
         errorMessage nullable: true
         lastTry nullable: true
         source nullable: true
+        comment nullable: true
+        creator nullable: true
     }
 
     static mapping = {

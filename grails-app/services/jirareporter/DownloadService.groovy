@@ -7,10 +7,6 @@ import org.grails.web.json.JSONArray
 @Transactional
 class DownloadService {
 
-    def cacheService
-    def issueService
-    def worklogService
-
     final String defaultProjectsList = Configuration.projects.collect { it.key }.join(',')
     final String defaultIssueTypeList = Configuration.issueTypes.collect { "\"${it}\"" }.join(',')
 
@@ -18,41 +14,12 @@ class DownloadService {
 
         def jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(Configuration.username, Configuration.password))
 
-        String worklogQyery = "project in (${defaultProjectsList}) AND (labels not in (Legacy) OR labels is EMPTY) AND issuetype in (${defaultIssueTypeList})"
+        String worklogQyery = "project in (${defaultProjectsList}) AND (labels not in (Legacy) OR labels is EMPTY) AND issuetype in (${defaultIssueTypeList}) AND assignee in (${JiraUser.findAllByTeamIsNotNull().collect { it.name }.join(',')})"
         worklogQyery = "${worklogQyery} AND ((worklogDate >= '${from.format('yyyy/MM/dd')}' AND worklogDate <= '${to.format('yyyy/MM/dd')}') OR (updated >= '${from.format('yyyy/MM/dd')}' AND updated <= '${to.format('yyyy/MM/dd')}'))"
 
-        def result = jiraClient.getURL("${Configuration.serverURL}/rest/api/latest/search?jql=" + URLEncoder.encode(worklogQyery, 'UTF-8'))
-        def tasks = [:]
+        def result = jiraClient.getURL("${Configuration.serverURL}/rest/api/latest/search?jql=" + URLEncoder.encode(worklogQyery, 'UTF-8') + '&maxResults=1000')
         result.issues?.myArrayList?.each { issue ->
-            tasks.put(issue.key, [
-                    url: issue.self
-            ])
-        }
-
-        tasks.each { task ->
-            def json = null
-            def url = task.value.url?.toString()
-
-            if (cacheService.has(task.value.url))
-                json = cacheService.retrieve(task.value.url)
-            else {
-                json = jiraClient.getURL(task.value.url)
-                cacheService.store(task.value.url, json)
-            }
-            def issue = issueService.parse(json)
-
-            issueService.parseLinks(JSONUtil.safeRead(json, 'fields.issuelinks'), issue)
-
-
-            if (cacheService.has(url + '/worklog'))
-                json = cacheService.retrieve(url + '/worklog')
-            else {
-                json = jiraClient.getURL(url + '/worklog')
-                cacheService.store(url + '/worklog', json)
-            }
-
-            def list = json.getJSONArray('worklogs')
-            worklogService.parseList(list, issue)
+            new IssueDownloadItem(issueKey: issue.key, source: 'Sync Service').save()
         }
     }
 }

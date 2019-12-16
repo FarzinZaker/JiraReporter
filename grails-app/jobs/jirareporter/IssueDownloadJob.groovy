@@ -17,22 +17,13 @@ class IssueDownloadJob {
         if (!Environment.isDevelopmentMode())
             return
 
-//        if (IssueDownloadItem.count() > 0) {
-//            def issueDownloadItems = IssueDownloadItem.findAllByIdGreaterThan(0, [max: 20])
-////            def threads = []
-//            issueDownloadItems.each { issueDownloadItem ->
-////                threads << Thread.start {
-////                    try {
-////                        Issue.withNewTransaction {
-//                            issueDownloadService.download(issueDownloadItem.issue.key)
-//                            IssueDownloadItem.executeUpdate("delete IssueDownloadItem where issue = :issue", [issue: issueDownloadItem.issue])
-////                        }
-////                    } catch (ex) {
-////                        println ex.message
-////                    }
-////                }
-//            }
-////            threads.each { it.join() }
-//        }
+        Date timer = new Date()
+        def issueDownloadItems = IssueDownloadItem.findAllByIdGreaterThan(0, [max: 1000])
+        issueDownloadItems.each { issueDownloadItem ->
+            issueDownloadService.download(issueDownloadItem.issueKey)
+            IssueDownloadItem.executeUpdate("delete IssueDownloadItem where issueKey = :issueKey", [issueKey: issueDownloadItem.issueKey])
+        }
+
+        println('QUEUE:\t' + (new Date().time - timer.time))
     }
 }

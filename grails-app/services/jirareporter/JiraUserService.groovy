@@ -31,6 +31,8 @@ class JiraUserService {
                 displayName = [displayName]
             user.displayName = displayName.find()
 
+            user.jiraUsername = username
+            user.jiraPassword = password
             user.accountLocked = false
             user.accountExpired = false
             user.passwordExpired = false
