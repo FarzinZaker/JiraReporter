@@ -29,7 +29,7 @@ class WorklogsSyncJob {
             println ex.message
         }
 
-        println('TODAY:\t' + (new Date().time - timer.time))
+//        println('TODAY:\t' + (new Date().time - timer.time))
 
         timer = new Date()
 //        if (timer.hours < 1 || timer.hours > 6)
@@ -56,7 +56,7 @@ class WorklogsSyncJob {
             println ex.message
         }
 
-        println('RECENT:\t' + (new Date().time - timer.time))
+//        println('RECENT:\t' + (new Date().time - timer.time))
         timer = new Date()
 
         //Old
@@ -80,6 +80,6 @@ class WorklogsSyncJob {
             println ex.message
         }
 
-        println('OLD:\t' + (new Date().time - timer.time))
+//        println('OLD:\t' + (new Date().time - timer.time))
     }
 }

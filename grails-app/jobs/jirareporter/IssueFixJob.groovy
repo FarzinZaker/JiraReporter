@@ -34,31 +34,37 @@ class IssueFixJob {
 //        use(TimeCategory) {
 //            lastFixDate = lastFixDate - 1.hour
 //        }
-        def downloadQueue = IssueDownloadItem.list().collect { it.issueKey } ?: [0l]
+        def downloadQueue = IssueDownloadItem.list().collect { it.issueKey } ?: ['-']
         def users = JiraUser.findAllByTeamInList(Team.list()) ?: [null]
-        Issue.createCriteria().list {
+        try {
+            def list = Issue.createCriteria().list {
 //            'in'('status', statusList)
-            'in'('assignee', users)
+                'in'('assignee', users)
 //            between('updated', startDate, endDate)
 //            lt('lastFix', lastFixDate)
-            not {
-                'in'('key', downloadQueue)
+                not {
+                    'in'('key', downloadQueue)
+                }
+                or {
+                    isNull('originalEstimate')
+                    eq('originalEstimate', '')
+                    lt('originalEstimateSeconds', 1l)
+                    isNull('remainingEstimate')
+                    eq('remainingEstimate', '')
+                    isNull('startDate')
+                    isNull('dueDate')
+                    ltProperty('dueDate', 'startDate')
+                    eqProperty('dueDate', 'startDate')
+                }
+                maxResults(20)
             }
-            or {
-                isNull('originalEstimate')
-                eq('originalEstimate', '')
-                lt('originalEstimateSeconds', 1l)
-                isNull('remainingEstimate')
-                eq('remainingEstimate', '')
-                isNull('startDate')
-                isNull('dueDate')
-                ltProperty('dueDate', 'startDate')
-                eqProperty('dueDate', 'startDate')
-            }
-            maxResults(20)
-        }?.each { Issue issue ->
-            issueFixService.fix(issue)
+            list?.each { Issue issue ->
+                issueFixService.fix(issue)
 //            println issue.key
+            }
+        } catch (ex) {
+            println ex
+            throw ex
         }
 
 //        jobConfig = SyncJobConfig.findByName('FIXED_ISSUES')

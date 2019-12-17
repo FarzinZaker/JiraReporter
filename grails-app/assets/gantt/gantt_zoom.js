@@ -165,5 +165,6 @@ var scaleConfigs = [
 ];
 
 function showToday(){
+    showTodayMarker();
     gantt.showDate(new Date());
 }

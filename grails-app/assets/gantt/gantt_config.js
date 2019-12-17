@@ -3,9 +3,9 @@ gantt.config.grid_resize = true;
 gantt.config.fit_tasks = true;
 gantt.config.sort = true;
 
-gantt.config.auto_scheduling = false;
-gantt.config.auto_scheduling_strict = false;
-gantt.config.auto_scheduling_compatibility = false;
+gantt.config.auto_scheduling = true;
+gantt.config.auto_scheduling_strict = true;
+gantt.config.auto_scheduling_compatibility = true;
 gantt.config.keyboard_navigation_cells = true;
 
 
@@ -346,6 +346,7 @@ gantt.config.layout = {
         },
         {resizer: true, width: 1},
         {
+            height: 170,
             config: resourceConfig,
             cols: [
                 {view: "resourceGrid", group: "grids", width: 435, scrollY: "resourceVScroll"},

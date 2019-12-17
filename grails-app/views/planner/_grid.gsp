@@ -11,7 +11,7 @@
     var readonly = true;
     gantt.config.drag_links = false;
     gantt.config.drag_move = false;
-    gantt.config.drag_project = false;
+    gantt.config.drag_project = false;e
     gantt.config.drag_resize = false;
     gantt.config.drag_timeline = false;
     gantt.config.click_drag = false;

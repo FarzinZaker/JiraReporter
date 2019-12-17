@@ -9,7 +9,7 @@ class IssueUploadService {
 
     def springSecurityService
 
-    def enqueue(Issue issue, String source, String comment = null) {
+    def enqueue(Issue issue, String source, Boolean save = false, String comment = null) {
         def list = []
 
         def user = springSecurityService.loggedIn ? User.findByUsername(springSecurityService.principal.username) : null
@@ -19,15 +19,29 @@ class IssueUploadService {
         issue.dirtyPropertyNames.each { property ->
             if (!IssueUploadItem.findByIssueAndProperty(issue, property)) {
                 list << property
-                def issueSyncItem = new IssueUploadItem(issue: issue, property: property, value: JiraIssueMapper.formatType(property, issue."${property}"), source: source, comment: comment, creator: user)
-                if (!issueSyncItem.save())
-                    throw new Exception("Unable to save sync item: ${issueSyncItem.errorMessage}")
+                def saved = false
+                while (!saved) {
+                    try {
+                        def issueSyncItem = new IssueUploadItem(issue: issue, property: property, value: JiraIssueMapper.formatType(property, issue."${property}"), source: source, comment: comment, creator: user)
+                        if (!issueSyncItem.save(flush: true))
+                            throw new Exception("Unable to save sync item: ${issueSyncItem.errorMessage}")
+                        saved = true
+                    } catch (ex) {
+                        println ex.message
+                        Thread.sleep(2000)
+                    }
+                }
             }
         }
 
 //        println issue.dirtyPropertyNames
 
-        issue.discard()
+        if (!save)
+            issue.discard()
+        else if (!issue.save(flush: true))
+            throw new Exception("Unable to persist Issue changes.")
+//        else
+//            println 'DONE'
     }
 
 
@@ -88,10 +102,11 @@ class IssueUploadService {
         if (comment)
             finalData.put('update', [comment: [[add: [body: comment]]]])
         try {
+            def notifyUsers = false//creator ? true : false
             def jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(creator?.jiraUsername ?: Configuration.username, creator?.jiraPassword ? AESCryption.decrypt(creator.jiraPassword) : Configuration.password))
-            jiraClient.put("${Configuration.serverURL}/rest/api/latest/issue/${issue.key}", finalData)
+            jiraClient.put("${Configuration.serverURL}/rest/api/latest/issue/${issue.key}?notifyUsers=${notifyUsers}", finalData)
 
-            new IssueDownloadItem(issueKey: issue.key, source: 'Issue Updated').save(flush: true)
+//            new IssueDownloadItem(issueKey: issue.key, source: 'Issue Updated').save(flush: true)
 
             IssueUploadItem.findAllByIssue(issue).each {
                 try {

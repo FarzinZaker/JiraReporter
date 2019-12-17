@@ -231,8 +231,23 @@ class PlannerController {
         issue.originalEstimate = issueData.originalEstimate
         issue.priority = Priority.get(issueData.priority)
 
-        issueUploadService.enqueue(issue, 'Planner')
+        issueUploadService.enqueue(issue, 'Planner', true)
 
+        render 1
+    }
+
+    def addToDownloadQueue() {
+        def saved = false
+        while (!saved) {
+            try {
+                if (!new IssueDownloadItem(issueKey: params.id, source: 'MANUAL').save(flush: true))
+                    throw new Exception("Unable to add new key to the download queue")
+                saved = true
+            } catch (ex) {
+                println ex.message
+                Thread.sleep(2000)
+            }
+        }
         render 1
     }
 }
