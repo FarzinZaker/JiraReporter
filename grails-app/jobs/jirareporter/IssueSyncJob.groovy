@@ -4,7 +4,7 @@ import grails.util.Environment
 
 class IssueSyncJob {
     static triggers = {
-        simple repeatInterval: 60 * 1000l // execute job once in 5 seconds
+        simple repeatInterval: 5 * 60 * 1000l // execute job once in 5 seconds
     }
 
     static concurrent = false

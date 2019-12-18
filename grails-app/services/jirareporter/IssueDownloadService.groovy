@@ -32,7 +32,7 @@ class IssueDownloadService {
 
                 def updated = JiraIssueMapper.getFieldValue(issue, 'updated')
                 def savedIssue = Issue.findByKey(issue.key)
-                if (updated > savedIssue.lastSync)
+                if (!savedIssue || updated > savedIssue.lastSync)
                     downloadItem = new IssueDownloadItem(issueKey: issue.key, source: 'Sync Service').save()
             }
             if (downloadItem && !downloadItem.save(flush: true))
