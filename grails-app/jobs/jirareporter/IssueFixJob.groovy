@@ -34,6 +34,10 @@ class IssueFixJob {
 //        use(TimeCategory) {
 //            lastFixDate = lastFixDate - 1.hour
 //        }
+        def minSyncDate = new Date()
+        use(TimeCategory) {
+            minSyncDate = minSyncDate - 2.hours
+        }
         def downloadQueue = IssueDownloadItem.list().collect { it.issueKey } ?: ['-']
         def users = JiraUser.findAllByTeamInList(Team.list()) ?: [null]
         try {
@@ -42,6 +46,7 @@ class IssueFixJob {
                 'in'('assignee', users)
 //            between('updated', startDate, endDate)
 //            lt('lastFix', lastFixDate)
+                gte('lastSync', minSyncDate)
                 not {
                     'in'('key', downloadQueue)
                 }

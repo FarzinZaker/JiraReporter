@@ -1,16 +1,15 @@
 package jirareporter
 
-
 import grails.util.Environment
 
-class WorklogsSyncJob {
+class IssueSyncJob {
     static triggers = {
-        simple repeatInterval: 5 * 60 * 1000l // execute job once in 5 seconds
+        simple repeatInterval: 60 * 1000l // execute job once in 5 seconds
     }
 
     static concurrent = false
 
-    def worklogDownloadService
+    def issueDownloadService
 
     def execute() {
 
@@ -24,7 +23,7 @@ class WorklogsSyncJob {
         def startDate = endDate - 2
 
         try {
-            worklogDownloadService.getWorklogs(startDate, endDate)
+            issueDownloadService.queueIssues(startDate, endDate)
         } catch (Exception ex) {
             println ex.message
         }
@@ -36,9 +35,9 @@ class WorklogsSyncJob {
 //            return
 
         //Recent
-        def jobConfig = SyncJobConfig.findByName('RECENT_WORKLOGS')
+        def jobConfig = SyncJobConfig.findByName('RECENT_ISSUES')
         if (!jobConfig)
-            jobConfig = new SyncJobConfig(name: 'RECENT_WORKLOGS').save(flush: true)
+            jobConfig = new SyncJobConfig(name: 'RECENT_ISSUES').save(flush: true)
 
         endDate = jobConfig.startDate ?: (new Date() + 1)
         if (endDate < new Date() - 30)
@@ -46,9 +45,9 @@ class WorklogsSyncJob {
         startDate = endDate - 1
 
         try {
-            worklogDownloadService.getWorklogs(startDate, endDate)
+            issueDownloadService.queueIssues(startDate, endDate)
 
-            jobConfig = SyncJobConfig.findByName('RECENT_WORKLOGS')
+            jobConfig = SyncJobConfig.findByName('RECENT_ISSUES')
             jobConfig.startDate = startDate
             jobConfig.endDate = endDate
             jobConfig.save(flush: true)
@@ -60,9 +59,9 @@ class WorklogsSyncJob {
         timer = new Date()
 
         //Old
-        jobConfig = SyncJobConfig.findByName('OLD_WORKLOGS')
+        jobConfig = SyncJobConfig.findByName('OLD_ISSUES')
         if (!jobConfig)
-            jobConfig = new SyncJobConfig(name: 'OLD_WORKLOGS').save(flush: true)
+            jobConfig = new SyncJobConfig(name: 'OLD_ISSUES').save(flush: true)
 
         endDate = jobConfig.startDate ?: (new Date() - 30)
         if (endDate < new Date() - 335)
@@ -70,9 +69,9 @@ class WorklogsSyncJob {
         startDate = endDate - 1
 
         try {
-            worklogDownloadService.getWorklogs(startDate, endDate)
+            issueDownloadService.queueIssues(startDate, endDate)
 
-            jobConfig = SyncJobConfig.findByName('OLD_WORKLOGS')
+            jobConfig = SyncJobConfig.findByName('OLD_ISSUES')
             jobConfig.startDate = startDate
             jobConfig.endDate = endDate
             jobConfig.save(flush: true)

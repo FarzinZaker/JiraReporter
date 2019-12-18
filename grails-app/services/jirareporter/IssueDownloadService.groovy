@@ -7,11 +7,47 @@ class IssueDownloadService {
 
     def cacheService
     def issueService
-    def worklogService
+
+    final String defaultProjectsList = Configuration.projects.collect { it.key }.join(',')
+    final String defaultIssueTypeList = Configuration.issueTypes.collect { "\"${it}\"" }.join(',')
+
+    void queueIssues(Date from, Date to) {
+
+        def jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(Configuration.username, Configuration.password))
+
+        String worklogQyery = "project in (${defaultProjectsList}) AND (labels not in (Legacy) OR labels is EMPTY) AND issuetype in (${defaultIssueTypeList}) AND assignee in (${JiraUser.findAllByTeamIsNotNull().collect { it.name }.join(',')})"
+        worklogQyery = "${worklogQyery} AND updated >= '${from.format('yyyy/MM/dd')}' AND updated <= '${to.format('yyyy/MM/dd')}' order by updated"
+
+
+        def startAt = 0
+        def maxResults = 100
+        while (true) {
+            def result = jiraClient.getURL("${Configuration.serverURL}/rest/api/latest/search?jql=${URLEncoder.encode(worklogQyery, 'UTF-8')}&startAt=$startAt&maxResults=$maxResults")
+
+            if (result.total == 0 || !result.issues?.length())
+                return
+
+            def downloadItem
+            result.issues?.myArrayList?.each { issue ->
+
+                def updated = JiraIssueMapper.getFieldValue(issue, 'updated')
+                def savedIssue = Issue.findByKey(issue.key)
+                if (updated > savedIssue.lastSync)
+                    downloadItem = new IssueDownloadItem(issueKey: issue.key, source: 'Sync Service').save()
+            }
+            if (downloadItem && !downloadItem.save(flush: true))
+                throw new Exception('Unable to save Download Item')
+
+            if (result.issues?.length() < maxResults)
+                return
+
+            startAt += maxResults
+        }
+    }
 
     def download(String issueKey) {
 
-        if(!issueKey){
+        if (!issueKey) {
             println "Issue key is NULL"
             return
         }
@@ -41,17 +77,6 @@ class IssueDownloadService {
             def issue = issueService.parse(json)
 
             issueService.parseLinks(JSONUtil.safeRead(json, 'fields.issuelinks'), issue)
-
-
-            if (cacheService.has(url + '/worklog'))
-                json = cacheService.retrieve(url + '/worklog')
-            else {
-                json = jiraClient.getURL(url + '/worklog')
-                cacheService.store(url + '/worklog', json)
-            }
-
-            def list = json.getJSONArray('worklogs')
-            worklogService.parseList(list, issue)
 
             IssueDownloadItem.findAllByIssueKey(issue.key).each {
                 try {

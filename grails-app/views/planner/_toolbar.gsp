@@ -100,6 +100,7 @@
                             dataType: 'json',
                             type: 'get',
                             success: function (data, textStatus, jQxhr) {
+                                $('#syncKey').val('');
                                 kendo.alert('We added ' + issueKey + ' to the download queue.');
                             },
                             error: function (jqXhr, textStatus, errorThrown) {
