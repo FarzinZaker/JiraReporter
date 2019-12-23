@@ -11,9 +11,10 @@
     <input type="button" onclick="reloadPlanner()" value="FILTER"/>
 </form>
 <script language="JavaScript" type="text/javascript">
-    function reloadPlanner() {
+    function reloadPlanner(notToggleFilterPanel) {
         $('#toolbar').slideUp();
-        toggleFilterPanel();
+        if (!notToggleFilterPanel)
+            toggleFilterPanel();
         gantt.clearAll();
         gantt.load('${createLink(controller: 'planner', action: 'issues')}?' + $('#filterForm').serialize(), function () {
             resourcesStore.parse(filterResources());

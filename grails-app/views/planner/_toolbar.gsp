@@ -9,6 +9,12 @@
         $("#toolbar").kendoToolBar({
             items: [
                 {
+                    type: "button", icon: "refresh", click: function () {
+                        reloadPlanner(true);
+                    }
+                },
+                {type: "separator"},
+                {
                     type: "button", icon: "undo", click: function () {
                         gantt.performAction('undo');
                     }
