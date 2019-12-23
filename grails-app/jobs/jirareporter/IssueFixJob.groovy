@@ -47,6 +47,7 @@ class IssueFixJob {
 //            between('updated', startDate, endDate)
 //            lt('lastFix', lastFixDate)
                 gte('lastSync', minSyncDate)
+                isNull('lastFix')
                 not {
                     'in'('key', downloadQueue)
                 }

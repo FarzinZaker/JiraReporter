@@ -11,12 +11,12 @@ class IssueDownloadService {
     final String defaultProjectsList = Configuration.projects.collect { it.key }.join(',')
     final String defaultIssueTypeList = Configuration.issueTypes.collect { "\"${it}\"" }.join(',')
 
-    void queueIssues(Date from, Date to) {
+    void queueIssues(Date from) {
 
         def jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(Configuration.username, Configuration.password))
 
         String worklogQyery = "project in (${defaultProjectsList}) AND (labels not in (Legacy) OR labels is EMPTY) AND issuetype in (${defaultIssueTypeList}) AND assignee in (${JiraUser.findAllByTeamIsNotNull().collect { it.name }.join(',')})"
-        worklogQyery = "${worklogQyery} AND updated >= '${from.format('yyyy/MM/dd')}' AND updated <= '${to.format('yyyy/MM/dd')}' order by updated"
+        worklogQyery = "${worklogQyery} AND updated >= '${from.format('yyyy/MM/dd hh:mm')}' order by updated"
 
 
         def startAt = 0

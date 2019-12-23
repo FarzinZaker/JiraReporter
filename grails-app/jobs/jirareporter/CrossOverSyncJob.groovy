@@ -5,7 +5,7 @@ import grails.util.Environment
 class CrossOverSyncJob {
 
     static triggers = {
-        simple repeatInterval: 5000l // execute job once in 5 seconds
+        simple repeatInterval: 10 * 60 * 1000l // execute job once in 5 seconds
     }
 
     static concurrent = false
@@ -15,7 +15,7 @@ class CrossOverSyncJob {
 
     def execute() {
 
-        if(!Environment.isDevelopmentMode())
+        if (!Environment.isDevelopmentMode())
             return
 
         //Recent
