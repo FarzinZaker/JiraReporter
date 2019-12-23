@@ -16,7 +16,7 @@ class IssueDownloadService {
         def jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(Configuration.username, Configuration.password))
 
         String worklogQyery = "project in (${defaultProjectsList}) AND (labels not in (Legacy) OR labels is EMPTY) AND issuetype in (${defaultIssueTypeList}) AND assignee in (${JiraUser.findAllByTeamIsNotNull().collect { it.name }.join(',')})"
-        worklogQyery = "${worklogQyery} AND updated >= '${from.format('yyyy/MM/dd hh:mm')}' order by updated"
+        worklogQyery = "${worklogQyery} AND updated >= '${from.format('yyyy/MM/dd HH:mm')}' order by updated"
 
 
         def startAt = 0
