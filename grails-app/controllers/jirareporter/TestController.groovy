@@ -6,12 +6,12 @@ import grails.plugin.springsecurity.annotation.Secured
 @Secured([Roles.ADMIN])
 class TestController {
 
-    def jiraUserService
+    def recurringTaskService
 
     def index() {
 
-        render (jiraUserService.authenticate('fzaker', 'Retan!!22') as JSON)
-//
-//        render 'DONE'
+        def setting = RecurringTaskSetting.findByEnabled(true)
+        recurringTaskService.execute(setting)
+        render 'DONE'
     }
 }

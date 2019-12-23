@@ -1,4 +1,4 @@
-<%@ page import="jirareporter.Roles; jirareporter.User" %>
+<%@ page import="jirareporter.JiraUser; jirareporter.Roles; jirareporter.User" %>
 <sec:ifLoggedIn>
     <ul id="menu">
         <li>
@@ -39,7 +39,7 @@
         </li>
         <sec:ifAnyGranted roles="${[Roles.ADMIN].join(',')}">
             <li>
-                <a href="${createLink(controller:'team', action:'list')}">Teams</a>
+                <a href="${createLink(controller: 'team', action: 'list')}">Teams</a>
             </li>
             <li>
                 Users
@@ -57,6 +57,13 @@
         <li>
             ${User.findByUsername(sec.username()?.toString()) ?: sec.username()}
             <ul>
+                <g:set var="jiraUser"
+                       value="${JiraUser.findByName(sec.username()?.toString()) ?: JiraUser.findByDisplayName(sec.username()?.toString())}"/>
+                <g:if test="${jiraUser}">
+                    <li>
+                        <a href="${createLink(controller: 'recurringTaskSetting', action: 'edit')}">Recurring Task Settings</a>
+                    </li>
+                </g:if>
                 <sec:ifAnyGranted roles="${[Roles.ADMIN].join(',')}">
                     <li>
                         <a href="${createLink(controller: 'user', action: 'changePassword')}">Change Password</a>

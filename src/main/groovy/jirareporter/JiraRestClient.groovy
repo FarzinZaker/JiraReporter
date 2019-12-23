@@ -189,7 +189,7 @@ class JiraRestClient {
         })
     }
 
-    def post(String issueUri, Map data) {
+    JSONObject post(String issueUri, Map data) {
         final URI roleUri = UriBuilder
                 .fromUri(new URI(issueUri))
                 .build()
@@ -199,7 +199,7 @@ class JiraRestClient {
             public JSONObject call() throws Exception {
                 final WebResource.Builder webResource = client.resource(roleUri)
                         .type(MediaType.APPLICATION_JSON_TYPE)
-                webResource.post((data as JSON).toString())
+                webResource.post(JSONObject.class, (data as JSON).toString())
             }
         })
     }

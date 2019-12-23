@@ -38,8 +38,13 @@ class WorklogDownloadService {
                     if (cacheService.has(url + '/worklog'))
                         json = cacheService.retrieve(url + '/worklog')
                     else {
-                        json = jiraClient.getURL(url + '/worklog')
-                        cacheService.store(url + '/worklog', json)
+                        try {
+                            json = jiraClient.getURL(url + '/worklog')
+                            cacheService.store(url + '/worklog', json)
+                        } catch (Exception ex) {
+                            println ex.message
+                            println(url + '/worklog')
+                        }
                     }
 
                     def list = json.getJSONArray('worklogs')

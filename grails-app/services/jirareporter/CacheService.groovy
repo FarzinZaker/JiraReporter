@@ -12,17 +12,18 @@ class CacheService {
     def store(String key, Object value) {
         def expiry = new Date()
         use(TimeCategory) {
-            expiry = expiry + 1.hour
+            expiry = expiry + 1.minutes
         }
         data[key] = [expiry: expiry, value: value]
     }
 
     Boolean has(String key) {
+        return false
         data.containsKey(key) && data[key].expiry > new Date()
     }
 
     Object retrieve(String key) {
-        if (!has(key))
+//        if (!has(key))
             return null
 
         data[key].value

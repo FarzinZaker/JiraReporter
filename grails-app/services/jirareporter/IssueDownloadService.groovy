@@ -56,7 +56,16 @@ class IssueDownloadService {
 
         String worklogQyery = "key = ${issueKey}"
 
-        def result = jiraClient.getURL("${Configuration.serverURL}/rest/api/latest/search?jql=" + URLEncoder.encode(worklogQyery, 'UTF-8'))
+        def result = null
+        try {
+            result = jiraClient.getURL("${Configuration.serverURL}/rest/api/latest/search?jql=" + URLEncoder.encode(worklogQyery, 'UTF-8'))
+        } catch (Exception ex) {
+            if (ex.message.contains("An issue with key '${issueKey}' does not exist for field 'key'")) {
+                Issue.findByKey(issueKey)?.delete(flush: true)
+                return
+            } else
+                throw ex
+        }
         def tasks = [:]
         result.issues?.myArrayList?.each { issue ->
             tasks.put(issue.key, [

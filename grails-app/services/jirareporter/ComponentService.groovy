@@ -6,7 +6,7 @@ import org.codehaus.jettison.json.JSONObject
 
 @Transactional
 class ComponentService {
-    
+
     List<Component> getAll(List<String> projects) {
 
         Component.findAllByProjectInList(Project.findAllByKeyInList(projects))
@@ -39,5 +39,11 @@ class ComponentService {
         }
         component
 
+    }
+
+    List<Map> updateData(Set<Component> components) {
+        components.collect {
+            [id: it.url.split('/').last()]
+        }
     }
 }

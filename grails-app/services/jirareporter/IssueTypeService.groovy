@@ -12,7 +12,7 @@ class IssueTypeService {
 
         def name = JSONUtil.safeRead(obj, "name")
         def issueType = IssueType.findByName(name)
-        if(!issueType) {
+        if (!issueType) {
             issueType = new IssueType(
                     url: JSONUtil.safeRead(obj, "self"),
                     name: name,
@@ -25,5 +25,9 @@ class IssueTypeService {
                 throw new Exception("Error Saving Issue Type")
         }
         issueType
+    }
+
+    Map updateData(Issue issue) {
+        [issuetype: [name: issue.issueType.name]]
     }
 }

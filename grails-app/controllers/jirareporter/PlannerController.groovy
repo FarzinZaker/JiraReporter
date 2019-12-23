@@ -64,7 +64,7 @@ class PlannerController {
             def originalEstimateSeconds = issue.originalEstimateSeconds
             if (!originalEstimateSeconds) {
                 if (issue.originalEstimate && issue.originalEstimate.trim() != '') {
-                    originalEstimateSeconds = getDurationSeconds(issue.originalEstimate)
+                    originalEstimateSeconds = DurationUtil.getDurationSeconds(issue.originalEstimate)
                 } else
                     originalEstimateSeconds = 3600
             }
@@ -186,25 +186,6 @@ class PlannerController {
         ] as JSON)
     }
 
-    private getDurationSeconds(String duration) {
-        if (!duration)
-            return 0
-
-        def seconds = 0
-        def parts = duration.split(' ').collect { it.trim() }.findAll { it && !it == '' }
-        parts.each { dur ->
-            if (dur.endsWith('w'))
-                seconds += dur.replace('w', '').toInteger() * 60 * 60 * 8 * 5
-            else if (dur.endsWith('d'))
-                seconds += dur.replace('d', '').toInteger() * 60 * 60 * 8
-            else if (dur.endsWith('h'))
-                seconds += dur.replace('h', '').toInteger() * 60 * 60
-            else
-                seconds += dur.replace('m', '').toInteger() * 60 * 60
-            seconds
-        }
-    }
-
     def deleteLink() {
 //        println params
         def firstIssue = Issue.findByKey(params.source)
@@ -239,7 +220,7 @@ class PlannerController {
         issue.priority = Priority.get(issueData.priority)
         issue.assignee = JiraUser.get(issueData.owner_id)
 
-        issueUploadService.enqueue(issue, 'Planner', true)
+        issueUploadService.enqueue(issue, 'false', true)
 
         render 1
     }

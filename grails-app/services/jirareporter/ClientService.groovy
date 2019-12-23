@@ -20,4 +20,8 @@ class ClientService {
         }
         client
     }
+
+    List<String> updateData(Client client) {
+        [client.name]
+    }
 }

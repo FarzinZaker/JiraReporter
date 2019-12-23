@@ -26,4 +26,8 @@ class ProjectService {
         }
         project
     }
+
+    Map updateData(Issue issue) {
+        [project: [key: issue.project.key]]
+    }
 }

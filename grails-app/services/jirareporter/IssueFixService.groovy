@@ -13,12 +13,12 @@ class IssueFixService {
         def comments = []
 
         if (!issue.originalEstimate || issue.originalEstimate?.trim() == '' || issue.originalEstimateSeconds < 1) {
-            issue.originalEstimate = formatDuration(3600)
+            issue.originalEstimate = DurationUtil.formatDuration(3600)
             comments << ' -- No Original Estimate'
         }
 
         if (!issue.remainingEstimate || issue.remainingEstimate?.trim() == '')
-            issue.remainingEstimate = formatDuration((issue.originalEstimateSeconds ?: 3600) - (issue.timeSpentSeconds ?: 0))
+            issue.remainingEstimate = DurationUtil.formatDuration((issue.originalEstimateSeconds ?: 3600) - (issue.timeSpentSeconds ?: 0))
 
         IssueDownloadItem downloadItem
         if (issue.created) {
@@ -44,13 +44,13 @@ class IssueFixService {
             downloadItem = new IssueDownloadItem(issueKey: issue.key, source: 'Fix Issues')
         }
 
-        if(issue.isDirty()) {
+        if (issue.isDirty()) {
             def comment = comments.size() ? "Fixed the following issues: \\\\${comments.join('\\\\')}" : null
             issueUploadService.enqueue(issue, 'Fix Issues', false, comment)
         }
 
         issue.lastFix = new Date()
-        issue.save(flush:true)
+        issue.save(flush: true)
 
         if (downloadItem)
             IssueDownloadItem.withNewTransaction {
@@ -66,44 +66,4 @@ class IssueFixService {
 //        issue.lastFix = new Date()
 //        issue.save()
     }
-
-
-    String formatDuration(Long time) {
-        def secs = time
-        def mins = 0
-        def hours = 0
-        def days = 0
-
-        mins = ((secs - (secs % 60)) / 60).toInteger()
-        secs = (secs % 60).toInteger()
-
-        hours = ((mins - (mins % 60)) / 60).toInteger()
-        mins = (mins % 60).toInteger()
-
-        days = ((hours - (hours % 8)) / 8).toInteger()
-        hours = (hours % 8).toInteger()
-
-        def timeSpent = ''
-        if (days > 0) {
-            if (timeSpent != '')
-                timeSpent += ' '
-            timeSpent += days + 'd'
-        }
-        if (hours > 0) {
-            if (timeSpent != '')
-                timeSpent += ' '
-            timeSpent += hours + 'h'
-        }
-        if (mins > 0) {
-            if (timeSpent != '')
-                timeSpent += ' '
-            timeSpent += mins + 'm'
-        }
-
-        if (timeSpent == '')
-            timeSpent = '0'
-
-        return timeSpent
-    }
-
 }

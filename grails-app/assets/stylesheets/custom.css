@@ -951,7 +951,7 @@ input[type=submit], input[type=button] {
     margin-bottom: 5px;
 }
 
-.meta-dates{
+.meta-dates {
     font-size: 12px;
     font-weight: normal;
     line-height: 16px;
@@ -1052,6 +1052,12 @@ input[type=submit], input[type=button] {
     background: #1976D2 !important;
 }
 
+
+.bar-task.gantt_critical_task .gantt_task_progress {
+    background: #C62828 !important;
+    color: #FFCDD2;
+}
+
 .link {
     color: #2196F3 !important;
     text-decoration: underline !important;
@@ -1096,7 +1102,7 @@ input[type=submit], input[type=button] {
 }
 
 .gantt_critical_task {
-    background-color: #e63030 !important;
+    background-color: #E53935 !important;
     border-color: #9d3a3a !important;
 }
 
@@ -1180,4 +1186,42 @@ input[type=submit], input[type=button] {
 
 .manual-dialog form {
     padding-right: 12px;
+}
+
+.check-box-row {
+    border-bottom: 1px solid #CFD8DC;
+    /*height: 30px;*/
+}
+
+.check-box-row .k-edit-field {
+    margin-top: 10px;
+    float: left;
+    padding-left: 30px;
+    width: auto;
+}
+
+.check-box-row .k-edit-label {
+    max-width: 200px;
+}
+
+.check-box-row p label, .check-box-row div label {
+    font-weight: normal !important;
+    display: block;
+    float: left;
+}
+
+.check-box-row .selectize-control {
+    float: left;
+    margin-top: -5px;
+}
+
+.check-box-row p .k-textbox {
+    display: inline-block;
+    width: 100px !important;
+    max-width: 100px !important;
+    min-width: 100px !important;
+}
+
+.clearfix {
+    clear: both;
 }
