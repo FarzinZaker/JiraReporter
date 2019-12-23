@@ -20,14 +20,14 @@ class UserService {
                 }
             }
         }
-        def nameList = CrossOverLog.createCriteria().list {
-            projections {
-                distinct('name')
-            }
-        }
+//        def nameList = CrossOverLog.createCriteria().list {
+//            projections {
+//                distinct('name')
+//            }
+//        }
         JiraUser.createCriteria().list {
             'in'('name', users)
-            'in'('displayName', nameList)
+//            'in'('displayName', nameList)
             or {
                 ilike('name', "%$username%")
                 ilike('displayName', "%$username%")

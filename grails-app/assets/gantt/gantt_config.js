@@ -421,11 +421,14 @@ gantt.templates.quick_info_date = function (start, end, task) {
     if (!task.taskType || task.taskType === 'project' || task.taskType === 'client') {
         return "<span>" + gantt.templates.tooltip_date_format(start) + '</span> - <span>' + gantt.templates.tooltip_date_format(end) + '</span>';
     }
-    return "<span>" + gantt.templates.tooltip_date_format(start) + '</span> - <span>' + gantt.templates.tooltip_date_format(end) + '</span><br/>' +
-    'Last Sync: <span>' + (task.lastSync ? task.lastSync : '-') + '</span><br/>' +
-    "<div class='estimates'><span>Original Estimate:</span> " + task.originalEstimate + "<br/>" +
-    "<span>Remaining Estimate:</span> " + task.remainingEstimate ? task.remainingEstimate : '-' + "<br/>" +
-    "<span>Time Spent:</span> " + task.timeSpent ? task.timeSpent : '-' + "</div>";
+    var content = "<span>" + gantt.templates.tooltip_date_format(start) + "</span> - <span>" + gantt.templates.tooltip_date_format(end) + "</span><br/>" +
+        "<div class='estimates'><span>Original Estimate:</span> " + task.originalEstimate + "<br/>" +
+        "<span>Remaining Estimate:</span> " + (task.remainingEstimate ? task.remainingEstimate : '-') + "<br/>" +
+        "<span>Time Spent:</span> " + (task.timeSpent ? task.timeSpent : '-') + "</div>" +
+        "<div class='meta-dates'>Sync: <span>" + (task.lastSync ? task.lastSync : '-') + '</span><br/>' +
+        "Update: <span>" + (task.updated ? task.updated : '-') + '</span></div>';
+    console.log(content);
+    return content;
 };
 
 gantt.templates.quick_info_content = function (start, end, task) {

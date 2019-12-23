@@ -951,6 +951,16 @@ input[type=submit], input[type=button] {
     margin-bottom: 5px;
 }
 
+.meta-dates{
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 16px;
+    margin-top: 15px;
+    /*background-color: #ECEFF1;*/
+    padding: 7px;
+    margin-bottom: 5px;
+}
+
 .gantt_cal_qi_controls .gantt_menu_icon {
     display: none;
     text-align: center;

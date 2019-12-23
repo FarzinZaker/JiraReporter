@@ -114,6 +114,7 @@ class PlannerController {
                     ] : null,
                     start_date       : issue.startDate ? formatter.format(issue.startDate) : null,
                     end_date         : issue.dueDate ? formatter.format(issue.dueDate) : null,
+                    updated          : issue.updated ? formatter.format(issue.updated) : null,
                     lastSync         : issue.lastSync ? formatter.format(issue.lastSync) : null,
 //                    dueDate          : issue.dueDate ? formatter.format(dueDate) : null,
 //                    duration         : durationDays,
@@ -150,7 +151,9 @@ class PlannerController {
                     taskType: 'project'
             ]
 
-            project.clients.sort { it.name ?: 'zzz' }.each { client ->
+            project.clients.findAll { client ->
+                data.any { it.parent == 'p' + project.id + 'c' + (client?.id ?: 0) }
+            }.sort { it.name ?: 'zzz' }.each { client ->
                 data << [
                         id      : 'p' + project.id + 'c' + (client?.id ?: 0),
                         text    : client?.name ?: 'Missing',
