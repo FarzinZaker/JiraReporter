@@ -67,6 +67,9 @@ var endDateEditor = {
 var durationEditor = {type: "originalEstimateEditor", map_to: "auto"};
 var predecessorsEditor = {type: "predecessor", map_to: "auto", formatter: linksFormatter};
 var priorityEditor = {type: "select", map_to: "priority", options: gantt.serverList("priority")};
+var assigneeEditor = {
+    type: "select", map_to: "owner_id", options: managedUsers
+};
 
 
 gantt.config.editor_types.originalEstimateEditor = {
@@ -124,7 +127,7 @@ gantt.config.columns = [
     },
     // {name: "start_date", align: "center", width: 80, resize: true},
     {
-        name: "owner", align: "left", width: 100, label: "Assignee", template: function (task) {
+        name: "owner", align: "left", width: 100, label: "Assignee", editor: assigneeEditor, template: function (task) {
             if (!task.taskType || task.taskType === 'project' || task.taskType === 'client') {
                 return "";
             }
@@ -427,7 +430,6 @@ gantt.templates.quick_info_date = function (start, end, task) {
         "<span>Time Spent:</span> " + (task.timeSpent ? task.timeSpent : '-') + "</div>" +
         "<div class='meta-dates'>Sync: <span>" + (task.lastSync ? task.lastSync : '-') + '</span><br/>' +
         "Update: <span>" + (task.updated ? task.updated : '-') + '</span></div>';
-    console.log(content);
     return content;
 };
 

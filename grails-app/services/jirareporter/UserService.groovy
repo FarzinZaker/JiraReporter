@@ -35,6 +35,20 @@ class UserService {
         }
     }
 
+    List<JiraUser> managedUsers() {
+        def user = User.findByUsername(springSecurityService.principal.username)
+        def users = JiraUser.findAllByName(user.username)
+        if (springSecurityService.authentication.authorities.collect { it.role }.contains(Roles.MANAGER)) {
+            TeamManager.findAllByManager(user).collect { it.team }.each { team ->
+                JiraUser.findAllByTeam(team).each { jUser ->
+                    users << jUser
+                }
+            }
+        }
+
+        users
+    }
+
     List<JiraUser> parseList(JSONArray list) {
         def issues = []
         for (def i = 0; i < list.length(); i++) {
@@ -67,5 +81,9 @@ class UserService {
                 throw new Exception("Error saving user")
         }
         user
+    }
+
+    Map updateData(Issue issue) {
+        [assignee: [name: issue.assignee.name]]
     }
 }

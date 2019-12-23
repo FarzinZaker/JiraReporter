@@ -34,7 +34,7 @@ class IssueUploadService {
             }
         }
 
-//        println issue.dirtyPropertyNames
+        println issue.dirtyPropertyNames
 
         if (!save)
             issue.discard()

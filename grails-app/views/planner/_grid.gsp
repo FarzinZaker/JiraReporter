@@ -11,7 +11,7 @@
     var readonly = true;
     gantt.config.drag_links = false;
     gantt.config.drag_move = false;
-    gantt.config.drag_project = false;e
+    gantt.config.drag_project = false;
     gantt.config.drag_resize = false;
     gantt.config.drag_timeline = false;
     gantt.config.click_drag = false;
@@ -36,11 +36,15 @@
     <g:each in="${Priority.list()}" var="priority">
     priorityIcons.p${priority.id} = '${priority.icon}';
     </g:each>
-</script>
-<asset:javascript src="gantt_fullscreen.js"/>
-<asset:javascript src="gantt_helper.js"/>
-<asset:javascript src="gantt_config.js"/>
-<script language="JavaScript">
+
+
+    gantt.attachEvent("onBeforeTaskUpdate", function (id, task) {
+        var newOwnerId = parseInt(task.owner_id);
+        if (newOwnerId !== task.owner.resource_id) {
+            task.owner.resource_id = newOwnerId
+        }
+    });
+
     gantt.attachEvent("onAfterTaskUpdate", function (id, task) {
 
         // console.log(task.owner.value);
@@ -100,28 +104,44 @@
             }
         });
     });
-</script>
-<script>
 
-    gantt.init("gantt_here");
-    reloadPlanner();
-    %{--gantt.load("${createLink(action: 'issues')}", function () {--}%
-    %{--    resourcesStore.parse(filterResources());--}%
-    %{--    gantt.refreshData();--}%
-    %{--    showToday();--}%
-    %{--    gantt.sort('start_date', false);--}%
-    %{--});--}%
+    var managedUsers = [
+        <g:each in="${managedUsers}" var="user">
+        {
+            key: ${user.id},
+            label: "${user.displayName}",
+            name: "${user.displayName}"
+        },
+        </g:each>
+    ];
+
 
     var resources = [
         <g:each in="${Team.list()}" var="team" status="i">
         {id: ${10000000 + i}, text: "${team.name}", parent: null},
         <g:each in="${JiraUser.findAllByTeam(team)}" var="user">
-        {id: ${user.id}, text: "${user.displayName}", parent: ${10000000 + i}, avatar: '${user.avatar}'},
+        {
+            id: ${user.id},
+            text: "${user.displayName}",
+            parent: ${10000000 + i},
+            avatar: '${user.avatar}',
+            key: ${user.id},
+            label: "${user.displayName}",
+            name: "${user.displayName}"
+        },
         </g:each>
         </g:each>
         {id: ${20000000}, text: "Other Teams", parent: null},
         <g:each in="${JiraUser.findAllByTeamIsNull()}" var="user">
-        {id: ${user.id}, text: "${user.displayName}", parent: ${20000000}, avatar: '${user.avatar}'},
+        {
+            id: ${user.id},
+            text: "${user.displayName}",
+            parent: ${20000000},
+            avatar: '${user.avatar}',
+            key: ${user.id},
+            label: "${user.displayName}",
+            name: "${user.displayName}"
+        },
         </g:each>
     ];
 
@@ -157,17 +177,28 @@
         result = $.grep(resources, function (r) {
             return idList.includes(r.id);
         });
-        // console.log(result);
+        console.log(result);
         return result;
     }
 
     gantt.locale.labels.column_priority = gantt.locale.labels.section_priority = "Priority";
 
-    %{--gantt.serverList("priority", [--}%
-    %{--    <g:each in="${Priority.list().sort{it.id}}" var="priority">--}%
-    %{--    {key: ${priority.id}, label: "${priority.name}"},--}%
-    %{--    </g:each>--}%
-    %{--]);--}%
+</script>
+
+<asset:javascript src="gantt_fullscreen.js"/>
+<asset:javascript src="gantt_helper.js"/>
+<asset:javascript src="gantt_config.js"/>
+
+<script>
+
+    gantt.init("gantt_here");
+    reloadPlanner();
+    %{--gantt.load("${createLink(action: 'issues')}", function () {--}%
+    %{--    resourcesStore.parse(filterResources());--}%
+    %{--    gantt.refreshData();--}%
+    %{--    showToday();--}%
+    %{--    gantt.sort('start_date', false);--}%
+    %{--});--}%
 </script>
 
 <asset:javascript src="gantt_tooltip.js"/>

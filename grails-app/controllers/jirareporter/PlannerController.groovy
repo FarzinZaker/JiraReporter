@@ -13,6 +13,7 @@ class PlannerController {
     def issueReportService
     def issueUploadService
     def springSecurityService
+    def userService
 
     def index() {
         redirect(action: 'gantt')
@@ -25,7 +26,7 @@ class PlannerController {
         }
         def components = componentService.getAll(Configuration.projects.collect { it.key?.toString() })
         def clients = Client.list()
-        [components: components, clients: clients]
+        [components: components, clients: clients, managedUsers: userService.managedUsers()]
     }
 
     def issues() {
@@ -112,6 +113,9 @@ class PlannerController {
                             resource_id: issue.assignee.id,
                             value      : Math.round(estimateHours / durationDays).toInteger()
                     ] : null,
+                    owner_id         : issue.assignee?.id ?: 0,
+                    estimateHours    : estimateHours,
+                    durationDays     : durationDays,
                     start_date       : issue.startDate ? formatter.format(issue.startDate) : null,
                     end_date         : issue.dueDate ? formatter.format(issue.dueDate) : null,
                     updated          : issue.updated ? formatter.format(issue.updated) : null,
@@ -233,6 +237,7 @@ class PlannerController {
         issue.dueDate = formatter.parse(issueData.end_date).clearTime()
         issue.originalEstimate = issueData.originalEstimate
         issue.priority = Priority.get(issueData.priority)
+        issue.assignee = JiraUser.get(issueData.owner_id)
 
         issueUploadService.enqueue(issue, 'Planner', true)
 
