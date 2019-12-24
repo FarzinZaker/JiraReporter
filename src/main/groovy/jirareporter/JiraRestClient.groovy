@@ -189,7 +189,22 @@ class JiraRestClient {
         })
     }
 
-    JSONObject post(String issueUri, Map data) {
+    void post(String issueUri, Map data) {
+        final URI roleUri = UriBuilder
+                .fromUri(new URI(issueUri))
+                .build()
+
+        invoke(new Callable<JSONObject>() {
+            @Override
+            public JSONObject call() throws Exception {
+                final WebResource.Builder webResource = client.resource(roleUri)
+                        .type(MediaType.APPLICATION_JSON_TYPE)
+                webResource.post((data as JSON).toString())
+            }
+        })
+    }
+
+    JSONObject postWithResult(String issueUri, Map data) {
         final URI roleUri = UriBuilder
                 .fromUri(new URI(issueUri))
                 .build()
