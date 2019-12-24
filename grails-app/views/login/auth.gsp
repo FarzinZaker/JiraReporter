@@ -24,7 +24,7 @@
                 <input type="password" class="text_ k-textbox" name="${passwordParameter ?: 'password'}" id="password"/>
             </p>
 
-            <p id="remember_me_holder">
+            <p id="remember_me_holder" style="display: none;">
                 <label for="remember_me"><g:message code='springSecurity.login.remember.me.label'/></label>
                 <input type="checkbox" class="chk" name="${rememberMeParameter ?: 'remember-me'}" id="remember_me"
                        <g:if test='${hasCookie}'>checked="checked"</g:if>/>

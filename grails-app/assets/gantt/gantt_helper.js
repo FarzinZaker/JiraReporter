@@ -85,7 +85,7 @@ function validateDuration(duration) {
     }
 }
 
-let workingDaysBetweenDates = (startDate, endDate) => {
+function workingDaysBetweenDates(startDate, endDate){
     /* Two working days and an sunday (not working day) */
     // var holidays = ['2016-05-03', '2016-05-05', '2016-05-07'];
     // var startDate = d0;
