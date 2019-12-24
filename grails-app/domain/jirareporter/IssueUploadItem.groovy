@@ -6,6 +6,7 @@ class IssueUploadItem {
     String property
     String value
     String comment
+    Date time
     User creator
     String source
     String errorMessage
@@ -20,6 +21,7 @@ class IssueUploadItem {
         source nullable: true
         comment nullable: true
         creator nullable: true
+        time nullable: true
     }
 
     static mapping = {

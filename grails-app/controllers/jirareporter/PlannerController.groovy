@@ -103,6 +103,7 @@ class PlannerController {
             data << [
                     id               : issue.key,
                     key              : issue.key,
+                    projectKey       : issue.project?.key,
                     text             : issue.summary,
                     description      : markdown.renderHtml(text: issue.description),
                     type             : isParent ? 'project' : 'task',
@@ -210,8 +211,10 @@ class PlannerController {
     }
 
     def updateIssue() {
-
-        def issueData = JSON.parse(params.issue)
+        def data = JSON.parse(params.data)
+        def time = Date.parse("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", data.time)
+        println time
+        def issueData = data.task
         def formatter = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'")
         def issue = Issue.findByKey(issueData.key)
         issue.startDate = formatter.parse(issueData.start_date).clearTime()
@@ -220,7 +223,7 @@ class PlannerController {
         issue.priority = Priority.get(issueData.priority)
         issue.assignee = JiraUser.get(issueData.owner_id)
 
-        issueUploadService.enqueue(issue, 'false', true)
+        issueUploadService.enqueue(issue, 'User', time, true)
 
         render 1
     }

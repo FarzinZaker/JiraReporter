@@ -16,12 +16,16 @@ class IssueUploadJob {
         if (!Environment.isDevelopmentMode())
             return
 
-        def issueUploadItems = IssueUploadItem.findAllByRetryCountLessThan(20, [max: 100])
+        def issueUploadItems = IssueUploadItem.createCriteria().list {
+            lt('retryCount', 20)
+            order('time')
+            maxResults(100)
+        }
 //        def threads = []
-        issueUploadItems.each { issueUploadItem ->
+        issueUploadItems.each { IssueUploadItem issueUploadItem ->
 //            threads << Thread.start {
 //                Issue.withNewTransaction {
-                    issueUploadService.update(issueUploadItem.issue, issueUploadItem.creator)
+            issueUploadService.update(issueUploadItem.issue, issueUploadItem.time, issueUploadItem.creator)
 //                }
 //            }
         }

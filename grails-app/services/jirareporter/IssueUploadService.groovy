@@ -11,7 +11,7 @@ class IssueUploadService {
     def componentService
     def clientService
 
-    def enqueue(Issue issue, String source, Boolean save = false, String comment = null) {
+    def enqueue(Issue issue, String source, Date time = new Date(), Boolean save = false, String comment = null) {
         def list = []
 
         def user = springSecurityService.loggedIn ? User.findByUsername(springSecurityService.principal.username) : null
@@ -24,7 +24,7 @@ class IssueUploadService {
                 def saved = false
                 while (!saved) {
                     try {
-                        def issueSyncItem = new IssueUploadItem(issue: issue, property: property, value: JiraIssueMapper.formatType(property, issue."${property}"), source: source, comment: comment, creator: user)
+                        def issueSyncItem = new IssueUploadItem(issue: issue, property: property, value: JiraIssueMapper.formatType(property, issue."${property}"), source: source, comment: comment, creator: user, time: time)
                         if (!issueSyncItem.save(flush: true))
                             throw new Exception("Unable to save sync item: ${issueSyncItem.errorMessage}")
                         saved = true
@@ -46,12 +46,10 @@ class IssueUploadService {
 //            println 'DONE'
     }
 
-    String update(Issue issue, User creator = null) {
-        def list = creator ?
-                IssueUploadItem.findAllByIssueAndCreatorAndRetryCountLessThan(issue, creator, 20).sort {
-                    it.dateCreated
-                } :
-                IssueUploadItem.findAllByIssueAndRetryCountLessThan(issue, 20).sort { it.dateCreated }
+    String update(Issue issue, Date time, User creator = null) {
+        def list = IssueUploadItem.findAllByIssueAndTimeAndRetryCountLessThan(issue, time, 20).sort {
+                    it.time
+                }
         if (!list?.size())
             return
 
@@ -118,7 +116,7 @@ class IssueUploadService {
                 }
             }
 
-            IssueUploadItem.findAllByIssue(issue).each {
+            IssueUploadItem.findAllByIssueAndTime(issue, time).each {
                 try {
                     it.delete(flush: true)
                 } catch (ex) {

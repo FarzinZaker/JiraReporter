@@ -50,7 +50,7 @@ class RecurringTaskService {
         use(TimeCategory) {
             startDate = startDate + 1.day
         }
-        issue.startDate = startDate
+//        issue.startDate = startDate
 
         //find dueDate
         newMonth = month
@@ -125,7 +125,7 @@ class RecurringTaskService {
         use(TimeCategory) {
             startDate = startDate + 1.day
         }
-        issue.startDate = startDate
+//        issue.startDate = startDate
 
         //find dueDate
         newWeek = week
