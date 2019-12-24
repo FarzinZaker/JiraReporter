@@ -48,7 +48,7 @@
     gantt.attachEvent("onAfterTaskUpdate", function (id, task) {
 
         // console.log(task.owner.value);
-        var end_date = new Date();
+        var end_date = new Date(task.end_date.getTime());
         end_date.setDate(task.end_date.getDate() - 1);
         var diffDays = workingDaysBetweenDates(task.start_date, end_date);
         var estimateHours = getDurationSeconds(task.originalEstimate) / 3600;
@@ -60,13 +60,13 @@
             gantt.updateTask(id);
             // console.log(getTask(id).owner.value);
         } else {
-            console.log('UPDATE TASK:');
-            console.log(task);
+            // console.log('UPDATE TASK:');
+            task.updateTime = new Date();
             $.ajax({
                 url: '${createLink(action: 'updateIssue')}',
                 dataType: 'json',
                 type: 'post',
-                data: {issue: JSON.stringify(task)},
+                data: {data: JSON.stringify({task: task, time: new Date()})},
                 success: function (data, textStatus, jQxhr) {
                 },
                 error: function (jqXhr, textStatus, errorThrown) {
