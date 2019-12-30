@@ -19,7 +19,7 @@ class RecurringTaskSettingController {
 
     def save() {
 
-        println params
+//        println params
 
         def user = JiraUser.get(params.user)
         Project.list().each { project ->

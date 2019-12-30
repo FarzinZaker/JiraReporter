@@ -188,7 +188,7 @@ class PlannerController {
     def updateIssue() {
         def data = JSON.parse(params.data)
         def time = Date.parse("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", data.time)
-        println time
+//        println time
         def issueData = data.task
         def formatter = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'")
         def issue = Issue.findByKey(issueData.key)
@@ -221,7 +221,7 @@ class PlannerController {
     def createIssue() {
 
         def creator = springSecurityService.currentUser as User
-        println params
+//        println params
         def issue = new Issue()
         issue.project = filterService.formatProjects(params).find()
         issue.issueType = filterService.formatIssueTypes(params).find()

@@ -68,7 +68,7 @@ class UserController {
             item.accountLocked = model.containsKey('accountLocked') && model.accountLocked
             item.passwordExpired = model.containsKey('passwordExpired') && model.passwordExpired
 
-            println params
+//            println params
 
             result << item.save(flush: true)
 
