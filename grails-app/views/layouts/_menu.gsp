@@ -1,6 +1,6 @@
 <%@ page import="jirareporter.JiraUser; jirareporter.Roles; jirareporter.User" %>
 <sec:ifLoggedIn>
-    <ul id="menu">
+    <ul id="menu" style="display: none;">
         <li>
             Reports
             <ul>
@@ -77,7 +77,7 @@
     </ul>
     <script>
         $(document).ready(function () {
-            $("#menu").kendoMenu();
+            $("#menu").show().kendoMenu();
         });
     </script>
 </sec:ifLoggedIn>
