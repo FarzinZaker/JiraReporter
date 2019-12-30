@@ -101,7 +101,7 @@ gantt.config.editor_types.originalEstimateEditor = {
         var task = gantt.getTask(id);
         task.originalEstimate = reformatDuration(node.querySelector('input[name="' + column.name + '"]').value);
         gantt.updateTask(id);
-        console.log(task);
+        //console.log(task);
     },
     focus: function (node) {
     }

@@ -48,7 +48,7 @@
     gantt.attachEvent("onAfterTaskUpdate", function (id, task) {
 
         var end_date = new Date(task.end_date.getTime());
-        end_date.setDate(task.end_date.getDate() - 1);
+        // end_date.setDate(task.end_date.getDate() - 1);
         var diffDays = workingDaysBetweenDates(task.start_date, end_date);
         var estimateHours = getDurationSeconds(task.originalEstimate) / 3600;
         var newValue = Math.round(estimateHours * 10 / diffDays) / 10;
