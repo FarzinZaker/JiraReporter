@@ -47,20 +47,16 @@
 
     gantt.attachEvent("onAfterTaskUpdate", function (id, task) {
 
-        // console.log(task.owner.value);
         var end_date = new Date(task.end_date.getTime());
         end_date.setDate(task.end_date.getDate() - 1);
         var diffDays = workingDaysBetweenDates(task.start_date, end_date);
         var estimateHours = getDurationSeconds(task.originalEstimate) / 3600;
-        // console.log(diffDays);
         var newValue = Math.round(estimateHours * 10 / diffDays) / 10;
         var oldOwnerValue = task.owner.value;
         if (oldOwnerValue !== newValue) {
             gantt.getTask(id).owner.value = newValue;
             gantt.updateTask(id);
-            // console.log(getTask(id).owner.value);
         } else {
-            // console.log('UPDATE TASK:');
             task.updateTime = new Date();
             $.ajax({
                 url: '${createLink(action: 'updateIssue')}',
@@ -158,7 +154,6 @@
             $.each($.grep(resources, function (r) {
                 return r.id >= 10000000;
             }), function (i, r) {
-                // console.log(r);
                 if (id.parent === r.id)
                     idList.push(r.id);
             });
@@ -177,7 +172,6 @@
         result = $.grep(resources, function (r) {
             return idList.includes(r.id);
         });
-        console.log(result);
         return result;
     }
 

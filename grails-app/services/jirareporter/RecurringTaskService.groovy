@@ -29,7 +29,7 @@ class RecurringTaskService {
         def now = new Date()
         Calendar cal = Calendar.getInstance()
         cal.setFirstDayOfWeek(Calendar.MONDAY)
-//        cal.setTime(now)
+        cal.setTime(now)
         def month = new SimpleDateFormat("MMMM").format(cal.getTime())
         def monthNumber = new SimpleDateFormat("MM").format(cal.getTime()).toInteger()
         def year = new SimpleDateFormat("yyyy").format(cal.getTime()).toInteger()
@@ -50,7 +50,7 @@ class RecurringTaskService {
         use(TimeCategory) {
             startDate = startDate + 1.day
         }
-//        issue.startDate = startDate
+        issue.startDate = startDate
 
         //find dueDate
         newMonth = month
@@ -125,7 +125,7 @@ class RecurringTaskService {
         use(TimeCategory) {
             startDate = startDate + 1.day
         }
-//        issue.startDate = startDate
+        issue.startDate = startDate
 
         //find dueDate
         newWeek = week

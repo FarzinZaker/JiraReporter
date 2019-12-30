@@ -70,9 +70,9 @@ class IssueService {
         if (!issue.save(flush: true))
             throw new Exception("Error saving issue")
 
-        IssueDownloadItem.findAllByIssueKey(issue.key).each {
-            it.delete()
-        }
+//        IssueDownloadItem.findAllByIssueKey(issue.key).each {
+//            it.delete()
+//        }
 //        IssueDownloadItem.executeUpdate("delete IssueDownloadItem where issue = :issue", [issue: issue])
 
         issue
@@ -136,6 +136,7 @@ class IssueService {
         def issue = Issue.findByKey(key)
         Worklog.executeUpdate("delete Worklog where task = :issue", [issue: issue])
         IssueUploadItem.executeUpdate("delete IssueUploadItem where issue = :issue and retryCount = 20", [issue: issue])
+        IssueUploadItem.executeUpdate("delete IssueLink where firstIssue = :issue or secondIssue = :issue", [issue: issue])
         Issue.findAllByParent(issue).each {
             delete(it.key)
         }

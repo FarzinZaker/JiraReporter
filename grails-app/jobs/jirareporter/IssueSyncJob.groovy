@@ -38,6 +38,7 @@ class IssueSyncJob {
             jobConfig.save(flush: true)
         } catch (Exception ex) {
             println ex.message
+            throw ex
         }
     }
 }

@@ -10,6 +10,8 @@ class IssueUploadService {
     def springSecurityService
     def componentService
     def clientService
+    def issueDownloadService
+    def issueLinkTypeService
 
     def enqueue(Issue issue, String source, Date time = new Date(), Boolean save = false, String comment = null) {
         def list = []
@@ -29,14 +31,14 @@ class IssueUploadService {
                             throw new Exception("Unable to save sync item: ${issueSyncItem.errorMessage}")
                         saved = true
                     } catch (ex) {
-                        println ex.message
+//                        println ex.message
                         Thread.sleep(2000)
                     }
                 }
             }
         }
 
-        println issue.dirtyPropertyNames
+//        println issue.dirtyPropertyNames
 
         if (!save)
             issue.discard()
@@ -48,8 +50,8 @@ class IssueUploadService {
 
     String update(Issue issue, Date time, User creator = null) {
         def list = IssueUploadItem.findAllByIssueAndTimeAndRetryCountLessThan(issue, time, 20).sort {
-                    it.time
-                }
+            it.time
+        }
         if (!list?.size())
             return
 
@@ -132,7 +134,7 @@ class IssueUploadService {
                 it.retryCount++
                 it.save(flush: true)
             }
-            println ex.message
+//            println ex.message
 //            throw ex
         }
     }
@@ -157,12 +159,12 @@ class IssueUploadService {
             def jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(Configuration.username, Configuration.password))
             jiraClient.put("${Configuration.serverURL}/rest/api/latest/issue/$issueKey", [fields: data])
         } catch (Exception ex) {
-//            println ex.message
+            println ex.message
             throw ex
         }
     }
 
-    String create(Issue issue, Client client, Set<Component> components, List<String> labels = [], String parent = null, User creator = null) {
+    String create(Issue issue, Client client, Set<Component> components, List<String> labels = [], String parent = null, User creator = null, Boolean download = false) {
         def list = [:]
         issue.properties.each { property ->
             if (!property.key.endsWith('Id') && property.value)
@@ -201,17 +203,25 @@ class IssueUploadService {
             }
         }
 
+        if (!issue.assignee)
+            finalData.put('assignee', [name: ''])
+
         finalData.put('components', componentService.updateData(components))
         finalData.put('customfield_26105', clientService.updateData(client))
         if (labels?.size())
             finalData.put('labels', labels)
 
-        if (parent)
-            finalData.put('parent', [key: parent])
+        def parentLinkedIssue = null
+        if (parent) {
+            def parentIssue = Issue.findByKey(parent)
+            if (parentIssue && !parentIssue.issueType.subtask && issue.issueType.subtask)
+                finalData.put('parent', [key: parent])
+            else parentLinkedIssue = parentIssue
+        }
 
 
         finalData = [fields: finalData]
-        println(finalData as JSON)
+//        println(finalData as JSON)
         try {
             def notifyUsers = false//creator ? true : false
             def jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(creator?.jiraUsername ?: Configuration.username, creator?.jiraPassword ? AESCryption.decrypt(creator.jiraPassword) : Configuration.password))
@@ -219,15 +229,38 @@ class IssueUploadService {
             def key = result.key
 
             def saved = false
-            while (!saved) {
-                try {
-                    if (!new IssueDownloadItem(issueKey: key, source: 'Issue Created').save(flush: true))
-                        throw new Exception('Unable to queue issue for download')
-                    saved = true
-                } catch (Exception ignore) {
-                    println "retrying to queue issue for download"
-                }
+            if (parentLinkedIssue) {
+                def data = [
+                        type        : [
+                                name: issueLinkTypeService.getIssueLinkTypeName('is child of')
+                        ],
+                        inwardIssue : [
+                                key: key
+                        ],
+                        outwardIssue: [
+                                key: parent
+                        ]
+                ]
+
+
+                jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(Configuration.username, Configuration.password))
+                jiraClient.post("${Configuration.serverURL}/rest/api/latest/issueLink", data)
+                new IssueDownloadItem(issueKey: parent, source: 'Add Link').save()
             }
+
+            issueDownloadService.download(key)
+//            while (!saved) {
+//                try {
+//                    if (!download)
+//                        if (!new IssueDownloadItem(issueKey: key, source: 'Issue Created').save(flush: true))
+//                            throw new Exception('Unable to queue issue for download')
+//                        else
+//                            issueDownloadService.download(key)
+//                    saved = true
+//                } catch (Exception ignore) {
+//                    println "retrying to queue issue for download"
+//                }
+//            }
 
             return key
         } catch (Exception ex) {

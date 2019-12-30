@@ -244,6 +244,9 @@ gantt.config.columns = [
             }
             return labels.join(", ")
         }
+    },
+    {
+        name: "add"
     }
 ];
 
@@ -322,13 +325,40 @@ gantt.templates.resource_cell_value = function (start_date, end_date, resource, 
 };
 
 gantt.locale.labels.section_resources = "Owners";
+gantt.showLightbox = showEditor;
 gantt.config.lightbox.sections = [
-    {name: "description", height: 38, map_to: "text", type: "textarea", focus: true},
     {
-        name: "resources", type: "resources", map_to: "owner", options: gantt.serverList("people"), default_value: 8
+        name: "text", label: 'Summary', height: 38, map_to: "text", type: "textarea", focus: true
     },
-
-    {name: "time", type: "duration", map_to: "auto"}
+    {
+        name: 'owner', label: 'Assignee', height: 38, type: "select", map_to: "owner_id", options: managedUsers
+    },
+    {
+        name: "originalEstimate",
+        label: 'Original Estimate',
+        height: 38,
+        map_to: "originalEstimate",
+        type: "textarea",
+        focus: true
+    },
+    {
+        name: "time", height: 72, map_to: "auto", type: "time"
+    },
+    {
+        name: 'priority',
+        label: 'Priority',
+        height: 38,
+        type: "select",
+        map_to: "priority",
+        options: gantt.serverList("priority")
+    },
+    {
+        name: 'originalEstimateEditor',
+        label: 'Original Estimate',
+        height: 38,
+        type: "originalEstimateEditor",
+        map_to: "auto"
+    }
 ];
 
 gantt.config.resource_store = "resource";
@@ -481,7 +511,8 @@ gantt.config.order_branch = false;
 
 
 gantt.attachEvent("onBeforeLightbox", function (id) {
-    return false;
+    var task = gantt.getTask(id);
+    return task.$new;
 });
 
 var inlineEditors = gantt.ext.inlineEditors;

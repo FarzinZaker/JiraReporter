@@ -406,7 +406,7 @@ th {
     margin-bottom: -8px;
 }
 
-.field input[type=text] {
+.field input[type=text], .field textarea {
     background: none;
     border: none;
     box-shadow: none;
@@ -414,15 +414,20 @@ th {
     border-radius: 0;
     display: block;
     width: 100%;
+    box-sizing: border-box;
 }
 
-input[type=submit], input[type=button] {
-    background: #673AB7;
-    border: none;
-    min-width: 80px;
-    color: white;
-    font-weight: bold;
+.field textarea {
+    padding: 7px;
 }
+
+/* input[type=submit], input[type=button] {*/
+/*    background: #673AB7;*/
+/*    border: none;*/
+/*    min-width: 80px;*/
+/*    color: white;*/
+/*    font-weight: bold;*/
+/*}*/
 
 .selectize-input {
     background: none !important;
@@ -1224,4 +1229,70 @@ input[type=submit], input[type=button] {
 
 .clearfix {
     clear: both;
+}
+
+.gantt_cal_light {
+    height: auto !important;
+}
+
+.gantt_cal_light select {
+    padding: 7px !important;
+}
+
+.gantt_cal_larea {
+    padding-bottom: 10px;
+    box-sizing: content-box;
+}
+
+.gantt_cal_light_wide.gantt_cal_light .gantt_section_time {
+    text-align: left !important;
+    height: auto !important;
+}
+
+.gantt_cal_light_wide.gantt_cal_light label {
+    white-space: nowrap;
+}
+
+.k-window .field label {
+    margin-bottom: 7px;
+}
+
+.k-window .field input {
+    line-height: 28px;
+    margin-top: 12px;
+}
+
+.selectize-input {
+    white-space: normal;
+}
+
+.k-window .selectize-input, .k-window input[type=text], .k-window textarea {
+    background: #ECEFF1 !important;
+}
+
+.k-window table td {
+    border-width: 0;
+}
+
+.k-window .toolbar {
+    background-color: #f4f4f4;
+    padding: 10px 20px;
+    margin: 0 -15px -40px;
+}
+
+.toolbar .k-button, .toolbar .k-button:hover, .toolbar .k-button:active {
+    background: #B0BEC5;
+}
+
+.toolbar .k-button.k-primary, .toolbar .k-button.k-primary:hover, .toolbar .k-button.k-primary:active {
+    background: #3f51b5;
+}
+
+.k-window .toolbar .right {
+    float: right;
+}
+
+.k-window .toolbar .left {
+    float: left;
+
 }

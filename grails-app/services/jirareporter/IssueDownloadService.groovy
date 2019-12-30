@@ -63,8 +63,10 @@ class IssueDownloadService {
             if (ex.message.contains("An issue with key '${issueKey}' does not exist for field 'key'")) {
                 issueService.delete(issueKey)
                 return
-            } else
+            } else {
+                println ex.message
                 throw ex
+            }
         }
         def tasks = [:]
         result.issues?.myArrayList?.each { issue ->
@@ -86,15 +88,6 @@ class IssueDownloadService {
             def issue = issueService.parse(json)
 
             issueService.parseLinks(JSONUtil.safeRead(json, 'fields.issuelinks'), issue)
-
-            IssueDownloadItem.findAllByIssueKey(issue.key).each {
-                try {
-                    it.delete()
-                } catch (ex) {
-                    println ex
-                    println it
-                }
-            }
         }
     }
 

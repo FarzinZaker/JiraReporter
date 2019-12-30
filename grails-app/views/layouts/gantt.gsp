@@ -18,6 +18,9 @@
     <asset:stylesheet src="styles/kendo.common-material.min.css"/>
     <asset:stylesheet src="styles/kendo.material.min.css"/>
 
+    <asset:stylesheet src="css/bootstrap-datepicker.min.css"/>
+    <asset:javascript src="js/bootstrap-datepicker.min.js"/>
+
     <script src="https://cdn.dhtmlx.com/edge/dhtmlx.js?v=6.3.0"></script>
     <link rel="stylesheet" href="https://cdn.dhtmlx.com/edge/skins/terrace/dhtmlx.css?v=6.3.0">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css?v=6.3.1">

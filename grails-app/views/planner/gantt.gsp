@@ -25,6 +25,7 @@
             </td>
 
             <td class="body-column">
+                <g:render template="editor"/>
                 <g:render template="grid"/>
             </td>
         </tr>

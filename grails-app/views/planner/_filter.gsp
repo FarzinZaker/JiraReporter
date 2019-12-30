@@ -8,7 +8,7 @@
     <g:render template="/filter/client"/>
     <g:render template="/filter/team"/>
     <g:render template="/filter/user"/>
-    <input type="button" onclick="reloadPlanner()" value="FILTER"/>
+    <input type="button" onclick="reloadPlanner()" value="FILTER" class="k-button k-primary"/>
 </form>
 <script language="JavaScript" type="text/javascript">
     function reloadPlanner(notToggleFilterPanel) {

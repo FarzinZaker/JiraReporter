@@ -13,7 +13,7 @@
             create: false,
             options: [
                 <g:each in="${Configuration.issueTypes}" var="issueType">
-                {value: '${issueType}'},
+                {value: '<format:html value="${issueType}"/>'},
                 </g:each>
             ]
         });

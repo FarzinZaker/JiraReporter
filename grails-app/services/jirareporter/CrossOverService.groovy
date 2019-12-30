@@ -34,7 +34,7 @@ class CrossOverService {
         data
     }
 
-    void persist(Date from, Date to, List<Team> teams) {
+    void persist(Date from, Date to, List<Team> teams, Boolean setTeam = false) {
         def crossOverData = [:]
         teams?.each { crossOverTeam ->
             if (!crossOverData.containsKey(crossOverTeam))
@@ -51,7 +51,8 @@ class CrossOverService {
 
                 def jiraUser = JiraUser.findByDisplayName(developer)
                 if (jiraUser) {
-                    jiraUser.team = crossOverTeam
+                    if (setTeam)
+                        jiraUser.team = crossOverTeam
                     jiraUser.save()
                 }
             }

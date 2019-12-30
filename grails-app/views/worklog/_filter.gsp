@@ -9,5 +9,5 @@
     <g:render template="/filter/team"/>
     <g:render template="/filter/user"/>
     <g:render template="/filter/billable"/>
-    <g:submitButton name="submit" value="FILTER"/>
+    <g:submitButton name="submit" value="FILTER" class="k-button k-primary"/>
 </g:form>
