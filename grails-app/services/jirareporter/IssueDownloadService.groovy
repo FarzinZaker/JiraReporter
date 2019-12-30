@@ -61,7 +61,7 @@ class IssueDownloadService {
             result = jiraClient.getURL("${Configuration.serverURL}/rest/api/latest/search?jql=" + URLEncoder.encode(worklogQyery, 'UTF-8'))
         } catch (Exception ex) {
             if (ex.message.contains("An issue with key '${issueKey}' does not exist for field 'key'")) {
-                Issue.findByKey(issueKey)?.delete(flush: true)
+                issueService.delete(issueKey)
                 return
             } else
                 throw ex
@@ -96,5 +96,58 @@ class IssueDownloadService {
                 }
             }
         }
+    }
+
+    def removeDeleted(List<String> issueKeys) {
+
+        if (!issueKeys?.size()) {
+            println "Issue keys is Empty"
+            return
+        }
+
+        def jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(Configuration.username, Configuration.password))
+
+        String worklogQyery = "key in (${issueKeys.join(',')})"
+
+        def result = null
+        try {
+            result = jiraClient.getURL("${Configuration.serverURL}/rest/api/latest/search?jql=" + URLEncoder.encode(worklogQyery, 'UTF-8') + '&maxResults=1000')
+        } catch (Exception ex) {
+            issueKeys.each { issueKey ->
+                if (ex.message.contains("An issue with key '${issueKey}' does not exist for field 'key'")) {
+                    issueService.delete(issueKey)
+                    println "Issue is deleted: ${issueKey}"
+                }
+            }
+            return
+        }
+
+        issueKeys.each { issueKey ->
+            if (!result.issues?.myArrayList?.any { issue ->
+                issue.key == issueKey
+            }) {
+                issueService.delete(issueKey)
+                println "Issue is moved: ${issueKey}"
+            }
+        }
+
+        result.issues?.myArrayList?.each { issue ->
+            if (!issueKeys?.any { issueKey ->
+                issue.key == issueKey \
+
+            }) {
+                def saved = false
+                while (!saved) {
+                    try {
+                        if (!new IssueDownloadItem(issueKey: issue.key, source: 'Issue Moved').save(flush: true))
+                            throw new Exception('Unable to queue issue for download')
+                        saved = true
+                    } catch (Exception ignore) {
+                        println "retrying to queue issue for download"
+                    }
+                }
+            }
+        }
+
     }
 }

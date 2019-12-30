@@ -131,4 +131,14 @@ class IssueService {
         }
         link
     }
+
+    void delete(String key) {
+        def issue = Issue.findByKey(key)
+        Worklog.executeUpdate("delete Worklog where task = :issue", [issue: issue])
+        IssueUploadItem.executeUpdate("delete IssueUploadItem where issue = :issue and retryCount = 20", [issue: issue])
+        Issue.findAllByParent(issue).each {
+            delete(it.key)
+        }
+        issue.delete()
+    }
 }

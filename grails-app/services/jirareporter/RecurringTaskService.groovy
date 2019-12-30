@@ -29,10 +29,10 @@ class RecurringTaskService {
         def now = new Date()
         Calendar cal = Calendar.getInstance()
         cal.setFirstDayOfWeek(Calendar.MONDAY)
-        cal.setTime(now)
+//        cal.setTime(now)
         def month = new SimpleDateFormat("MMMM").format(cal.getTime())
         def monthNumber = new SimpleDateFormat("MM").format(cal.getTime()).toInteger()
-        def year = new SimpleDateFormat("YYYY").format(cal.getTime()).toInteger()
+        def year = new SimpleDateFormat("yyyy").format(cal.getTime()).toInteger()
 
         def recurringTask = RecurringTask.findBySettingAndYearAndMonthAndWeekIsNull(setting, year, monthNumber)
         if (recurringTask)
@@ -105,7 +105,7 @@ class RecurringTaskService {
         cal.setTime(now)
         def month = new SimpleDateFormat("MMMM").format(cal.getTime())
         def monthNumber = new SimpleDateFormat("MM").format(cal.getTime()).toInteger()
-        def year = new SimpleDateFormat("YYYY").format(cal.getTime()).toInteger()
+        def year = new SimpleDateFormat("yyyy").format(cal.getTime()).toInteger()
         def week = cal.get(Calendar.WEEK_OF_MONTH)
 
         def recurringTask = RecurringTask.findBySettingAndYearAndMonthAndWeek(setting, year, monthNumber, week)
