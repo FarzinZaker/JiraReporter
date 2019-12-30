@@ -96,6 +96,7 @@
                         var issueKey = $('#syncKey').val();
                         if (!issueKey || issueKey.trim() === '') {
                             kendo.alert('Please enter the Issue Key.');
+                            $('.k-alert .k-window-title.k-dialog-title').text('Planner');
                             return;
                         }
 
@@ -108,6 +109,7 @@
                             success: function (data, textStatus, jQxhr) {
                                 $('#syncKey').val('');
                                 kendo.alert('We added ' + issueKey + ' to the download queue.');
+                                $('.k-alert .k-window-title.k-dialog-title').text('Planner');
                             },
                             error: function (jqXhr, textStatus, errorThrown) {
                                 console.log(errorThrown);

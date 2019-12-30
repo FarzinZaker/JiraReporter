@@ -214,7 +214,7 @@ class IssueUploadService {
         def parentLinkedIssue = null
         if (parent) {
             def parentIssue = Issue.findByKey(parent)
-            if (parentIssue && !parentIssue.issueType.subtask && issue.issueType.subtask)
+            if (!parentIssue || (!parentIssue.issueType.subtask && issue.issueType.subtask))
                 finalData.put('parent', [key: parent])
             else parentLinkedIssue = parentIssue
         }

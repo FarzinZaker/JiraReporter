@@ -3,6 +3,7 @@ package jirareporter
 import com.atlassian.jira.rest.client.RestClientException
 import grails.converters.JSON
 import grails.plugin.springsecurity.annotation.Secured
+import groovy.time.TimeCategory
 
 import java.text.SimpleDateFormat
 
@@ -74,6 +75,45 @@ class PlannerController {
                         target: link.secondIssue?.id,
                         type  : '0'
                 ]
+            }
+        }
+
+        data.each { issue ->
+            def children = data.findAll { it.parent == issue.id }
+            if (children.size()) {
+                def originalEstimateSeconds = children.collect {
+                    DurationUtil.getDurationSeconds(it.originalEstimate)
+                }.sum()
+                def remainingEstimateSeconds = children.collect {
+                    DurationUtil.getDurationSeconds(it.remainingEstimate)
+                }.sum()
+                def timeSpentSeconds = children.collect {
+                    DurationUtil.getDurationSeconds(it.timeSpent)
+                }.sum()
+
+                def estimateMinutes = Math.ceil((originalEstimateSeconds ?: 1) / 60).toInteger()
+                def estimateHours = Math.ceil(estimateMinutes / 60)
+
+                def startDate = children.collect { it.startDate }.min()
+                def dueDate = children.collect { it.dueDate }.max()
+
+                def durationDays = 1
+                if (startDate && dueDate)
+                    use(TimeCategory) {
+                        durationDays = (dueDate - startDate).days
+                        if (durationDays < 1) {
+                            durationDays = 1
+                            dueDate = dueDate + 1.day
+                        }
+                    }
+
+                issue.originalEstimate = DurationUtil.formatDuration(originalEstimateSeconds)
+                issue.remainingEstimate = DurationUtil.formatDuration(remainingEstimateSeconds)
+                issue.timeSpent = DurationUtil.formatDuration(timeSpentSeconds)
+                issue.estimateHours = estimateHours
+
+                if (issue.owner)
+                    issue.owner.value = Math.round(estimateHours / durationDays).toInteger()
             }
         }
 
