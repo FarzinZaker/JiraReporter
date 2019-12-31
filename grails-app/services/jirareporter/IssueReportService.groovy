@@ -72,7 +72,7 @@ class IssueReportService {
                     'in'('id', clientList.collect { it.id })
                 }
             }
-        } as List<Issue>
+        }.unique { it.key } as List<Issue>
     }
 
     List<Issue> findChildIssues(List<Issue> issues) {

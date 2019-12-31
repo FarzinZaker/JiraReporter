@@ -1294,5 +1294,8 @@ th {
 
 .k-window .toolbar .left {
     float: left;
+}
 
+.datepicker-dropdown {
+    width: 250px;
 }

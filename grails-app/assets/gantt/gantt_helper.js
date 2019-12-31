@@ -142,3 +142,5 @@ function workingDaysBetweenDates(startDate, endDate){
 //     return new Date(parts[0], parts[1]-1, parts[2]); // months are 0-based
 // }
 
+window.onbeforeunload = function() { return "You are leaving this page. Do you want to proceed?"; };
+
