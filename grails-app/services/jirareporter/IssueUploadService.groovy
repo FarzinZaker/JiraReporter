@@ -21,7 +21,7 @@ class IssueUploadService {
             user = null
 
         issue.dirtyPropertyNames.each { property ->
-            if (!IssueUploadItem.findByIssueAndProperty(issue, property)) {
+            if (!IssueUploadItem.findByIssueAndPropertyAndRetryCountLessThan(issue, property, 20)) {
                 list << property
                 def saved = false
                 while (!saved) {
@@ -31,7 +31,7 @@ class IssueUploadService {
                             throw new Exception("Unable to save sync item: ${issueSyncItem.errorMessage}")
                         saved = true
                     } catch (ex) {
-//                        println ex.message
+                        println ex.message
                         Thread.sleep(2000)
                     }
                 }
@@ -103,7 +103,7 @@ class IssueUploadService {
         if (comment)
             finalData.put('update', [comment: [[add: [body: comment]]]])
         try {
-            def notifyUsers = false//creator ? true : false
+            def notifyUsers = creator ? true : false
             def jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(creator?.jiraUsername ?: Configuration.username, creator?.jiraPassword ? AESCryption.decrypt(creator.jiraPassword) : Configuration.password))
             jiraClient.put("${Configuration.serverURL}/rest/api/latest/issue/${issue.key}?notifyUsers=${notifyUsers}", finalData)
 
@@ -223,7 +223,7 @@ class IssueUploadService {
         finalData = [fields: finalData]
 //        println(finalData as JSON)
         try {
-            def notifyUsers = false//creator ? true : false
+            def notifyUsers = creator ? true : false
             def jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(creator?.jiraUsername ?: Configuration.username, creator?.jiraPassword ? AESCryption.decrypt(creator.jiraPassword) : Configuration.password))
             def result = jiraClient.postWithResult("${Configuration.serverURL}/rest/api/latest/issue/?notifyUsers=${notifyUsers}", finalData)
             def key = result.key
