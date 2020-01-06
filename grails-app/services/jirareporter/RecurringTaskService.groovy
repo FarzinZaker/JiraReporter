@@ -158,7 +158,7 @@ class RecurringTaskService {
         issue.originalEstimate = totalEstimate
         issue.remainingEstimate = totalEstimate
 
-        def title = "$month $year, Week ${week}: (${dateFormat.format(startDate)} - ${dateFormat.format(dueDate)})"
+        def title = "$month $year, Week ${week}: (${dateFormat.format(startDate)} - ${dateFormat.format(realDueDate)})"
         issue.summary = title
 
         issue.issueType = IssueType.findByName('Sub-task')
