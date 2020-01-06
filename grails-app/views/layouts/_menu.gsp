@@ -2,7 +2,7 @@
 <sec:ifLoggedIn>
     <ul id="menu" style="display: none;">
         <li>
-            Reports
+            Worklogs
             <ul>
                 <li>
                     <a href="${createLink(controller: 'worklog', action: 'report')}#summary">Summary</a>
@@ -17,7 +17,7 @@
                     <a href="${createLink(controller: 'worklog', action: 'report')}#accomplishments">Tasks</a>
                 </li>
                 <li>
-                    <a href="${createLink(controller: 'worklog', action: 'report')}#details">Worklogs</a>
+                    <a href="${createLink(controller: 'worklog', action: 'report')}#details">Details</a>
                 </li>
             </ul>
         </li>
@@ -26,6 +26,9 @@
             <ul>
                 <li>
                     <a href="${createLink(controller: 'planner', action: 'gantt')}">Gantt Chart</a>
+                </li>
+                <li>
+                    <a href="${createLink(controller: 'resource', action: 'allocation')}">Resource Allocation</a>
                 </li>
             </ul>
         </li>

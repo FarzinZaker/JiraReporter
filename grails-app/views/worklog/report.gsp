@@ -40,7 +40,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="details-tab" data-toggle="tab" href="#details" role="tab"
-                           aria-controls="details" aria-selected="false">Worklogs</a>
+                           aria-controls="details" aria-selected="false">Details</a>
                     </li>
                 </ul>
 

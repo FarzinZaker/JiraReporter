@@ -4,15 +4,15 @@ import grails.converters.JSON
 import grails.plugin.springsecurity.annotation.Secured
 
 @Secured([Roles.ADMIN, Roles.MANAGER, Roles.JIRA_USER])
-class ValidationController {
+class ResourceController {
 
     def issueReportService
     def filterService
     def componentService
 
-    def estimate() {
+    def allocation() {
         if (params.findAll { it.value }.size() < 3) {
-            redirect(uri: "/validation/estimate?status=${['Draft', 'To Do', 'In Progress'].join(',')}")
+            redirect(uri: "/resource/allocation?status=${['Draft', 'To Do', 'In Progress'].join(',')}")
             return
         }
 
@@ -21,9 +21,9 @@ class ValidationController {
         [components: components, clients: clients]
     }
 
-    def estimateJson() {
+    def allocationJson() {
         if (params.findAll { it.value && !it.key?.toString()?.toLowerCase()?.startsWith('dhxr') }.size() < 3) {
-            redirect(uri: "/validation/estimateJson?status=${['Draft', 'To Do', 'In Progress'].join(',')}")
+            redirect(uri: "/resource/allocationJson?status=${['Draft', 'To Do', 'In Progress'].join(',')}")
             return
         }
 
@@ -38,17 +38,20 @@ class ValidationController {
                 filterService.formatUsersList(params),
                 teams?.size() ? (JiraUser.findAllByTeamInList(teams) ?: [null]) : [null],
                 teams?.size > 0,
-                filterService.formatStatus(params)).findAll {
-            !it.originalEstimate || it.originalEstimate?.trim() == ''
-        }
+                filterService.formatStatus(params))
 
         def data = issues.collect {
             [
-                    key     : it.key,
-                    summary : it.summary,
-                    assignee: it.assignee?.displayName,
-                    userIcon: it.assignee?.avatar,
-                    taskIcon: it.issueType.icon
+                    project                 : it.project?.name ?: '-',
+                    client                  : it.clients?.find()?.name ?: '-',
+                    assignee                : it.assignee?.displayName ?: '-',
+                    userIcon                : it.assignee?.avatar,
+                    originalEstimateSeconds : it.originalEstimateSeconds ?: 0,
+                    remainingEstimateSeconds: it.remainingEstimateSeconds ?: 0,
+                    timeSpentSeconds        : it.timeSpentSeconds ?: 0,
+                    key                     : it.key,
+                    summary                 : it.summary,
+                    taskIcon                : it.issueType.icon
             ]
         }
         def total = data.size()

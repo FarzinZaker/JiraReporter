@@ -17,7 +17,11 @@ class RecurringTaskJob {
             return
 
         RecurringTaskSetting.findAllByEnabled(true).each { setting ->
-            recurringTaskService.execute(setting)
+            try {
+                recurringTaskService.execute(setting)
+            } catch (ex) {
+                println ex.message
+            }
         }
     }
 }

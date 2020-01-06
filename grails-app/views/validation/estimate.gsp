@@ -71,7 +71,7 @@
             // pageable: true,
             columns: [
                 {
-                    field: "summary", title: "Summary", template: '<img src="#: tastIcon #" /> #: summary #'
+                    field: "summary", title: "Summary", template: '<img src="#: taskIcon #" /> #: summary #'
                 },
                 {
                     field: "key",

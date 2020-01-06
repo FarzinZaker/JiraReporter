@@ -31,6 +31,9 @@
         </tr>
     </table>
 </div>
+<script>
+    window.onbeforeunload = function() { return "You are leaving this page. Do you want to proceed?"; };
+</script>
 
 </body>
 </html>
