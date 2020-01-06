@@ -2,7 +2,8 @@ package jirareporter
 
 class IssueUploadItem {
 
-    Issue issue
+    String issueKey
+//    Issue issue
     String property
     String value
     String comment
@@ -16,6 +17,7 @@ class IssueUploadItem {
     Date lastUpdated
 
     static constraints = {
+        issueKey nullable: true
         errorMessage nullable: true
         lastTry nullable: true
         source nullable: true

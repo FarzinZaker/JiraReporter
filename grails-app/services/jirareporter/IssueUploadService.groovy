@@ -21,12 +21,12 @@ class IssueUploadService {
             user = null
 
         issue.dirtyPropertyNames.each { property ->
-            if (!IssueUploadItem.findByIssueAndPropertyAndRetryCountLessThan(issue, property, 20)) {
+            if (!IssueUploadItem.findByIssueKeyAndPropertyAndRetryCountLessThan(issue.key, property, 20)) {
                 list << property
                 def saved = false
                 while (!saved) {
                     try {
-                        def issueSyncItem = new IssueUploadItem(issue: issue, property: property, value: JiraIssueMapper.formatType(property, issue."${property}"), source: source, comment: comment, creator: user, time: time)
+                        def issueSyncItem = new IssueUploadItem(issueKey: issue.key, property: property, value: JiraIssueMapper.formatType(property, issue."${property}"), source: source, comment: comment, creator: user, time: time)
                         if (!issueSyncItem.save(flush: true))
                             throw new Exception("Unable to save sync item: ${issueSyncItem.errorMessage}")
                         saved = true
@@ -48,12 +48,14 @@ class IssueUploadService {
 //            println 'DONE'
     }
 
-    String update(Issue issue, Date time, User creator = null) {
-        def list = IssueUploadItem.findAllByIssueAndTimeAndRetryCountLessThan(issue, time, 20).sort {
+    String update(String issueKey, Date time, User creator = null) {
+        def list = IssueUploadItem.findAllByIssueKeyAndTimeAndRetryCountLessThan(issueKey, time, 20).sort {
             it.time
         }
         if (!list?.size())
             return
+
+        def issue = Issue.findByKey(issueKey)
 
         def comments = list.collect { it.comment }.findAll { it }.unique { it }
         def comment = comments?.size() ? comments.join('\\\\') : null
@@ -118,7 +120,7 @@ class IssueUploadService {
                 }
             }
 
-            IssueUploadItem.findAllByIssueAndTime(issue, time).each {
+            IssueUploadItem.findAllByIssueKeyAndTime(issueKey, time).each {
                 try {
                     it.delete(flush: true)
                 } catch (ex) {

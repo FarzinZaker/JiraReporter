@@ -27,7 +27,7 @@ class WorklogsSyncJob {
             worklogDownloadService.getWorklogs(startDate, endDate)
         } catch (Exception ex) {
             println ex.message
-            throw ex
+//            throw ex
         }
 
 //        println('TODAY:\t' + (new Date().time - timer.time))
@@ -55,7 +55,7 @@ class WorklogsSyncJob {
             jobConfig.save(flush: true)
         } catch (Exception ex) {
             println ex.message
-            throw ex
+//            throw ex
         }
 
 //        println('RECENT:\t' + (new Date().time - timer.time))
@@ -80,7 +80,7 @@ class WorklogsSyncJob {
             jobConfig.save(flush: true)
         } catch (Exception ex) {
             println ex.message
-            throw ex
+//            throw ex
         }
 
 //        println('OLD:\t' + (new Date().time - timer.time))

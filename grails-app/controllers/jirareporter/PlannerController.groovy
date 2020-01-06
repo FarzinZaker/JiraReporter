@@ -155,7 +155,7 @@ class PlannerController {
                 upload  : IssueUploadItem.createCriteria().list {
                     lt('retryCount', 20)
                     projections {
-                        property('issue')
+                        property('issueKey')
                     }
                 }.unique().size(),
                 download: IssueDownloadItem.count()
@@ -198,7 +198,7 @@ class PlannerController {
         issue.priority = Priority.get(issueData.priority)
         issue.assignee = JiraUser.get(issueData.owner_id)
 
-        issueUploadService.enqueue(issue, 'User', time, true)
+        issueUploadService.enqueue(issue, 'User', time, false)
 
         render 1
     }
@@ -290,7 +290,7 @@ class PlannerController {
         }
 
         [
-                id               : issue.id,
+                id               : issue.id?.toString(),
                 key              : issue.key,
                 projectKey       : issue.project?.key,
                 projectName      : issue.project?.name,
@@ -316,7 +316,7 @@ class PlannerController {
 //                    dueDate          : issue.dueDate ? formatter.format(dueDate) : null,
 //                    duration         : durationDays,
                 progress         : (issue.timeSpentSeconds ?: 0) / ((issue.timeSpentSeconds ?: 0) + (issue.remainingEstimateSeconds ?: 1)),
-                parent           : parent,
+                parent           : parent?.toString(),
                 open             : true,
                 priority         : issue.priority.id,
                 priorityName     : issue.priority.name,

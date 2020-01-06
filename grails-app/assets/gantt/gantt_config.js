@@ -526,7 +526,7 @@ inlineEditors.attachEvent("onBeforeEditStart", function (state) {
 });
 
 gantt.attachEvent("onBeforeLinkAdd", function (id, link) {
-
+    console.log(link);
     if (link.source.startsWith('p') || link.target.startsWith('p'))
         return false;
     return true;

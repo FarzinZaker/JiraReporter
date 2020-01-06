@@ -25,7 +25,7 @@ class IssueUploadJob {
         issueUploadItems.each { IssueUploadItem issueUploadItem ->
 //            threads << Thread.start {
 //                Issue.withNewTransaction {
-            issueUploadService.update(issueUploadItem.issue, issueUploadItem.time, issueUploadItem.creator)
+            issueUploadService.update(issueUploadItem.issueKey, issueUploadItem.time, issueUploadItem.creator)
 //                }
 //            }
         }

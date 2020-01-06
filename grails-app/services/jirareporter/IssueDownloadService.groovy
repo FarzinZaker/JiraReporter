@@ -68,6 +68,14 @@ class IssueDownloadService {
                 throw ex
             }
         }
+
+        if (!result.issues?.myArrayList?.any { issue ->
+            issue.key == issueKey
+        }) {
+            issueService.delete(issueKey)
+            println "Issue is moved: ${issueKey}"
+        }
+
         def tasks = [:]
         result.issues?.myArrayList?.each { issue ->
             tasks.put(issue.key, [
