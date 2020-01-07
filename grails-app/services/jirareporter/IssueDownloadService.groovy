@@ -9,13 +9,12 @@ class IssueDownloadService {
     def issueService
 
     final String defaultProjectsList = Configuration.projects.collect { it.key }.join(',')
-    final String defaultIssueTypeList = Configuration.issueTypes.collect { "\"${it}\"" }.join(',')
 
     void queueIssues(Date from) {
 
         def jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(Configuration.username, Configuration.password))
 
-        String worklogQyery = "project in (${defaultProjectsList}) AND (labels not in (Legacy) OR labels is EMPTY) AND issuetype in (${defaultIssueTypeList}) AND assignee in (${JiraUser.findAllByTeamIsNotNull().collect { it.name }.join(',')})"
+        String worklogQyery = "project in (${defaultProjectsList}) AND (labels not in (Legacy) OR labels is EMPTY)"
         worklogQyery = "${worklogQyery} AND updated >= '${from.format('yyyy/MM/dd HH:mm')}' order by updated"
 
 
@@ -134,7 +133,7 @@ class IssueDownloadService {
 
         result.issues?.myArrayList?.each { issue ->
             if (!issueKeys?.any { issueKey ->
-                issue.key == issueKey \
+                issue.key == issueKey
 
             }) {
                 def saved = false

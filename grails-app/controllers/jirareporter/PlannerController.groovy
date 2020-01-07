@@ -255,7 +255,7 @@ class PlannerController {
     private Map getIssueRequiredFields(Issue issue, List<Issue> issues = [], def idList = [0l]) {
 
         def formatter = new SimpleDateFormat('dd-MM-yyyy hh:mm:ss')
-        def completed = Configuration.statusList['Verification'].contains(issue.status.name) || Configuration.statusList['Closed'].contains(issue.status.name)
+        def completed = Configuration.statusList.find{it.name == 'Verification'}.details.contains(issue.status.name) || Configuration.statusList.find{it.name == 'Closed'}.details.contains(issue.status.name)
 
         def originalEstimateSeconds = issue.originalEstimateSeconds
         if (!originalEstimateSeconds) {

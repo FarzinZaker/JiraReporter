@@ -134,6 +134,8 @@ class IssueService {
 
     void delete(String key) {
         def issue = Issue.findByKey(key)
+        if (!issue)
+            return
         Worklog.executeUpdate("delete Worklog where task = :issue", [issue: issue])
         IssueUploadItem.executeUpdate("delete IssueUploadItem where issueKey = :issueKey and retryCount = 20", [issueKey: key])
         IssueUploadItem.executeUpdate("delete IssueLink where firstIssue = :issue or secondIssue = :issue", [issue: issue])
