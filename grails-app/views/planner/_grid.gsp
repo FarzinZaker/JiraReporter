@@ -47,6 +47,12 @@
 
     gantt.attachEvent("onAfterTaskUpdate", function (id, task) {
 
+        var startDate = start_date = new Date(Date.UTC(task.start_date.getFullYear(), task.start_date.getMonth(), task.start_date.getDate(), 0, 0, 0));
+        var endDate = new Date(Date.UTC(task.end_date.getFullYear(), task.end_date.getMonth(), task.end_date.getDate(), 0, 0, 0));
+
+        // console.log(startDate)
+        // console.log(endDate)
+
         var end_date = new Date(task.end_date.getTime());
         // end_date.setDate(task.end_date.getDate() - 1);
         var diffDays = workingDaysBetweenDates(task.start_date, end_date);
@@ -62,7 +68,7 @@
                 url: '${createLink(action: 'updateIssue')}',
                 dataType: 'json',
                 type: 'post',
-                data: {data: JSON.stringify({task: task, time: new Date()})},
+                data: {data: JSON.stringify({task: task, startDate: startDate, endDate: endDate, time: new Date()})},
                 success: function (data, textStatus, jQxhr) {
                 },
                 error: function (jqXhr, textStatus, errorThrown) {

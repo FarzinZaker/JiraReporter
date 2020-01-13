@@ -103,7 +103,7 @@ class CrossOverService {
                 if (!result.containsKey(record.name))
                     result.put(record.name, [:])
                 record.stats.each { JSONObject stat ->
-                    def statDate = Date.parse("yyyy-MM-dd'T'hh:mm:ss.000'Z'", stat.date)
+                    def statDate = Date.parse("yyyy-MM-dd'T'HH:mm:ss.000'Z'", stat.date)
                     if (statDate >= from && statDate <= to) {
                         if (!result[record.name].containsKey(statDate))
                             result[record.name].put(statDate, stat.hours)

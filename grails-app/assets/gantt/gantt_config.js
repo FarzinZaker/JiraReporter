@@ -8,6 +8,8 @@ gantt.config.auto_scheduling_strict = false;
 gantt.config.auto_scheduling_compatibility = true;
 gantt.config.keyboard_navigation_cells = true;
 
+gantt.config.server_utc = false;
+
 
 var formatter = gantt.ext.formatters.durationFormatter({
     enter: "day",

@@ -32,9 +32,9 @@ class WorklogService {
                     author: userService.parse(obj.author),
                     updateAuthor: userService.parse(obj.updateAuthor),
                     comment: JSONUtil.safeRead(obj, 'comment'),
-                    created: Date.parse("yyyy-MM-dd'T'hh:mm:ss.000+0000", obj.created),
-                    updated: Date.parse("yyyy-MM-dd'T'hh:mm:ss.000+0000", obj.updated),
-                    started: Date.parse("yyyy-MM-dd'T'hh:mm:ss.000+0000", obj.started),
+                    created: Date.parse("yyyy-MM-dd'T'HH:mm:ss.000+0000", obj.created),
+                    updated: Date.parse("yyyy-MM-dd'T'HH:mm:ss.000+0000", obj.updated),
+                    started: Date.parse("yyyy-MM-dd'T'HH:mm:ss.000+0000", obj.started),
                     timeSpent: obj.timeSpent,
                     timeSpentSeconds: obj.timeSpentSeconds,
                     jiraId: obj.id,
@@ -47,8 +47,8 @@ class WorklogService {
         worklog.author = userService.parse(obj.author)
         worklog.updateAuthor = userService.parse(obj.updateAuthor)
         worklog.comment = JSONUtil.safeRead(obj, 'comment')
-        worklog.updated = Date.parse("yyyy-MM-dd'T'hh:mm:ss.000+0000", obj.updated)
-        worklog.started = Date.parse("yyyy-MM-dd'T'hh:mm:ss.000+0000", obj.started)
+        worklog.updated = Date.parse("yyyy-MM-dd'T'HH:mm:ss.000+0000", obj.updated)
+        worklog.started = Date.parse("yyyy-MM-dd'T'HH:mm:ss.000+0000", obj.started)
         worklog.timeSpent = obj.timeSpent
         worklog.timeSpentSeconds = obj.timeSpentSeconds
 

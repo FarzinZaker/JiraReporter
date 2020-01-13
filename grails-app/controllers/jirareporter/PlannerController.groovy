@@ -190,10 +190,10 @@ class PlannerController {
         def time = Date.parse("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", data.time)
 //        println time
         def issueData = data.task
-        def formatter = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'")
+        def formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
         def issue = Issue.findByKey(issueData.key)
-        issue.startDate = formatter.parse(issueData.start_date).clearTime()
-        issue.dueDate = formatter.parse(issueData.end_date).clearTime()
+        issue.startDate = formatter.parse(data.startDate).clearTime()
+        issue.dueDate = formatter.parse(data.endDate).clearTime()
         issue.originalEstimate = issueData.originalEstimate
         issue.priority = Priority.get(issueData.priority)
         issue.assignee = JiraUser.get(issueData.owner_id)
@@ -230,8 +230,8 @@ class PlannerController {
         issue.description = params.description?.trim()
         issue.assignee = filterService.formatUsersList(params).find()
         issue.originalEstimate = params.originalEstimate?.trim()
-//        if (params.startDate?.trim())
-//            issue.startDate = Date.parse('MM/dd/yyyy', params.startDate?.trim())
+        if (params.startDate?.trim())
+            issue.startDate = Date.parse('MM/dd/yyyy', params.startDate?.trim())
         if (params.dueDate?.trim())
             issue.dueDate = Date.parse('MM/dd/yyyy', params.dueDate?.trim())
 
@@ -256,7 +256,7 @@ class PlannerController {
 
     private Map getIssueRequiredFields(Issue issue, List<Issue> issues = [], def idList = [0l]) {
 
-        def formatter = new SimpleDateFormat('dd-MM-yyyy hh:mm:ss')
+        def formatter = new SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss.SSS'Z'")
         def completed = Configuration.statusList.find{it.name == 'Verification'}.details.contains(issue.status.name) || Configuration.statusList.find{it.name == 'Closed'}.details.contains(issue.status.name)
 
         def originalEstimateSeconds = issue.originalEstimateSeconds
