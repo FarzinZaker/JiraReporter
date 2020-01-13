@@ -1,4 +1,4 @@
-<%@ page import="jirareporter.Configuration" %>
+<%@ page import="jirareporter.IssueType; jirareporter.Configuration" %>
 <div class="field">
     <label for="issueType">Issue Type:</label>
     <input id="issueType" name="issueType" type="text" value="${params.issueType}">
@@ -12,7 +12,11 @@
             searchField: 'value',
             create: false,
             options: [
-                <g:each in="${Configuration.issueTypes}" var="issueType">
+                <g:each in="${IssueType.createCriteria().list {
+            projections {
+                property('name')
+            }
+        }.sort()}" var="issueType">
                 {value: '<format:html value="${issueType}"/>'},
                 </g:each>
             ]

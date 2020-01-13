@@ -224,50 +224,61 @@ class IssueUploadService {
 
         finalData = [fields: finalData]
 //        println(finalData as JSON)
+        def key
         try {
             def notifyUsers = creator ? true : false
             def jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(creator?.jiraUsername ?: Configuration.username, creator?.jiraPassword ? AESCryption.decrypt(creator.jiraPassword) : Configuration.password))
             def result = jiraClient.postWithResult("${Configuration.serverURL}/rest/api/latest/issue/?notifyUsers=${notifyUsers}", finalData)
-            def key = result.key
-
-            def saved = false
-            if (parentLinkedIssue) {
-                def data = [
-                        type        : [
-                                name: issueLinkTypeService.getIssueLinkTypeName('is child of')
-                        ],
-                        inwardIssue : [
-                                key: key
-                        ],
-                        outwardIssue: [
-                                key: parent
-                        ]
-                ]
-
-
-                jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(Configuration.username, Configuration.password))
-                jiraClient.post("${Configuration.serverURL}/rest/api/latest/issueLink", data)
-                new IssueDownloadItem(issueKey: parent, source: 'Add Link').save()
-            }
-
-            issueDownloadService.download(key)
-//            while (!saved) {
-//                try {
-//                    if (!download)
-//                        if (!new IssueDownloadItem(issueKey: key, source: 'Issue Created').save(flush: true))
-//                            throw new Exception('Unable to queue issue for download')
-//                        else
-//                            issueDownloadService.download(key)
-//                    saved = true
-//                } catch (Exception ignore) {
-//                    println "retrying to queue issue for download"
-//                }
-//            }
-
-            return key
+            key = result.key
         } catch (Exception ex) {
             println ex.message
             throw ex
         }
+        println "Issue Created: $key"
+        def saved = false
+        def retries = 0
+        if (parentLinkedIssue) {
+            def data = [
+                    type        : [
+                            name: issueLinkTypeService.getIssueLinkTypeName('is child of')
+                    ],
+                    inwardIssue : [
+                            key: key
+                    ],
+                    outwardIssue: [
+                            key: parent
+                    ]
+            ]
+
+            jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(Configuration.username, Configuration.password))
+            jiraClient.post("${Configuration.serverURL}/rest/api/latest/issueLink", data)
+
+            println "Linked to parent Issue"
+
+
+            saved = false
+            retries = 0
+            while (!saved && retries++ <= 5) {
+                try {
+                    issueDownloadService.download(parent)
+                    println 'downloaded parent issue'
+                    saved = true
+                } catch (exception) {
+                    throw exception
+                }
+            }
+        }
+
+        while (!saved && retries++ <= 5) {
+            try {
+                issueDownloadService.download(key)
+                println 'downloaded issue'
+                saved = true
+            } catch (exception) {
+                throw exception
+            }
+        }
+
+        return key
     }
 }

@@ -1,4 +1,4 @@
-<%@ page import="jirareporter.Priority; jirareporter.Configuration" %>
+<%@ page import="jirareporter.IssueType; jirareporter.Priority; jirareporter.Configuration" %>
 <div id="editorWindow">
     <div class="error" id="editError" style="display: none;">
 
@@ -185,7 +185,12 @@
                 maxItems: 1,
                 create: false,
                 options: [
-                    <g:each in="${Configuration.issueTypes.findAll{!it.contains('Sub-')}}" var="issueType">
+                    <g:each in="${IssueType.createCriteria().list {
+                    ilike('name', 'Sub%')
+            projections {
+                property('name')
+            }
+        }.sort().findAll{!it.contains('Sub-')}}" var="issueType">
                     {value: '<format:html value="${issueType}"/>'},
                     </g:each>
                 ]
@@ -199,7 +204,11 @@
                 maxItems: 1,
                 create: false,
                 options: [
-                    <g:each in="${Configuration.issueTypes}" var="issueType">
+                    <g:each in="${IssueType.createCriteria().list {
+            projections {
+                property('name')
+            }
+        }.sort()}" var="issueType">
                     {value: '<format:html value="${issueType}"/>'},
                     </g:each>
                 ]
