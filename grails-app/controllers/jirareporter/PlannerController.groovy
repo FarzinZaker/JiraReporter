@@ -245,8 +245,10 @@ class PlannerController {
             render([succeed: true, key: key] as JSON)
         } catch (RestClientException ex) {
             def exceptionFilter = 'com.sun.jersey.api.client.UniformInterfaceException'
+            throw ex
             render([succeed: false, error: ex.message.replace(exceptionFilter, 'Jira Connection Issue')] as JSON)
         } catch (ex) {
+            throw ex
             def exceptionFilter = 'com.sun.jersey.api.client.UniformInterfaceException'
             render([succeed: false, error: ex.message.replace(exceptionFilter, 'Jira Connection Issue')] as JSON)
         }
