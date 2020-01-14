@@ -250,7 +250,7 @@ class IssueUploadService {
                     ]
             ]
 
-            jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(Configuration.username, Configuration.password))
+            def jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(Configuration.username, Configuration.password))
             jiraClient.post("${Configuration.serverURL}/rest/api/latest/issueLink", data)
 
             println "Linked to parent Issue"
