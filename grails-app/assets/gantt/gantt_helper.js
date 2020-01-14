@@ -99,7 +99,7 @@ function workingDaysBetweenDates(startDate, endDate){
 // Calculate days between dates
     var millisecondsPerDay = 86400 * 1000; // Day in milliseconds
     startDate.setHours(0, 0, 0, 1);  // Start just after midnight
-    endDate.setHours(23, 59, 59, 999);  // End just before midnight
+    endDate.setHours(0, 0, 0, 1);  // End just before midnight
     var diff = endDate - startDate;  // Milliseconds between datetime objects
     var days = Math.ceil(diff / millisecondsPerDay);
 
