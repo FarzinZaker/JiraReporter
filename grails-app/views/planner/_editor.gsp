@@ -175,7 +175,6 @@
                 </g:each>
             ]
         });
-        $('#edit_issueType').selectize()[0].selectize.destroy();
         if (noSubTasks)
             $('#edit_issueType').selectize({
                 plugins: ['remove_button'],
@@ -186,7 +185,6 @@
                 create: false,
                 options: [
                     <g:each in="${IssueType.createCriteria().list {
-                    ilike('name', 'Sub%')
             projections {
                 property('name')
             }
