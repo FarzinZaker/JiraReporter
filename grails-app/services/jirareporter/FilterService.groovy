@@ -73,4 +73,8 @@ class FilterService {
         else
             []
     }
+
+    Boolean formatUnassigned(params) {
+        params.unassigned ? true : false
+    }
 }

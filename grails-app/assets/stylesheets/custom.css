@@ -387,6 +387,21 @@ h2.tableHeader {
     width: 300px;
 }
 
+.filterPanel .switch-label{
+    display: inline-block;
+    margin-top: 5px;
+    margin-bottom: 15px;
+}
+
+.filterPanel .k-switch{
+    float: right;
+    margin-top: 10px;
+}
+
+.gantt_message_area.dhtmlx_message_area{
+    display: none;
+}
+
 th {
     background: none;
 }

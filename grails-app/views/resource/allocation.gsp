@@ -35,7 +35,9 @@
         <div style="float: right">Page #: pageNum # of #: totalPages #</div>
         Resource Allocation
     </div>
+
     <div class="watermark">Aclate</div>
+
     <div class="footer">
         Page #: pageNum # of #: totalPages #
     </div>
@@ -51,8 +53,9 @@
         return returnArray;
     }
 
+    var grid;
     $(document).ready(function () {
-        $("#grid").kendoGrid({
+        grid = $("#grid").kendoGrid({
             dataSource: {
                 transport: {
                     read: {
@@ -70,6 +73,7 @@
                             project: {type: "string"},
                             client: {type: "string"},
                             assignee: {type: "string"},
+                            type: {type: "string"},
                             originalEstimateSeconds: {type: "number"},
                             remainingEstimateSeconds: {type: "number"},
                             timeSpentSeconds: {type: "number"},
@@ -81,24 +85,28 @@
                 // pageSize: 7,
                 group: [{
                     field: "project", aggregates: [
+                        {field: "key", aggregate: "count"},
                         {field: "originalEstimateSeconds", aggregate: "sum"},
                         {field: "remainingEstimateSeconds", aggregate: "sum"},
                         {field: "timeSpentSeconds", aggregate: "sum"}
                     ]
                 }, {
                     field: "client", aggregates: [
+                        {field: "key", aggregate: "count"},
                         {field: "originalEstimateSeconds", aggregate: "sum"},
                         {field: "remainingEstimateSeconds", aggregate: "sum"},
                         {field: "timeSpentSeconds", aggregate: "sum"}
                     ]
                 }, {
                     field: "assignee", aggregates: [
+                        {field: "key", aggregate: "count"},
                         {field: "originalEstimateSeconds", aggregate: "sum"},
                         {field: "remainingEstimateSeconds", aggregate: "sum"},
                         {field: "timeSpentSeconds", aggregate: "sum"}
                     ]
                 }],
                 aggregate: [
+                    {field: "key", aggregate: "count"},
                     {field: "originalEstimateSeconds", aggregate: "sum"},
                     {field: "remainingEstimateSeconds", aggregate: "sum"},
                     {field: "timeSpentSeconds", aggregate: "sum"}
@@ -108,7 +116,19 @@
             scrollable: false,
             groupable: true,
             // pageable: true,
-            toolbar: ["excel"],
+            toolbar: [
+                "excel",
+                {
+                    name: "collapse",
+                    text: "Collapse All",
+                    iconClass: 'k-icon k-i-plus'
+                },
+                {
+                    name: "expand",
+                    text: "Expand All",
+                    iconClass: 'k-icon k-i-minus'
+                }
+            ],
             excel: {
                 fileName: "Resource Allocation.xlsx",
                 proxyURL: "https://demos.telerik.com/kendo-ui/service/export",
@@ -118,7 +138,7 @@
                 allPages: true,
                 avoidLinks: true,
                 paperSize: "A4",
-                margin: { top: "2cm", left: "1cm", right: "1cm", bottom: "1cm" },
+                margin: {top: "2cm", left: "1cm", right: "1cm", bottom: "1cm"},
                 landscape: true,
                 repeatHeaders: true,
                 template: $("#page-template").html(),
@@ -132,6 +152,7 @@
                     field: "key",
                     title: "Key",
                     template: "<a href='https://jira.devfactory.com/browse/#: key #' target='_blank' class='link'>#: key #</a>",
+                    aggregates: ["count"], groupHeaderColumnTemplate: "#=count#"
                 },
                 {
                     field: "assignee",
@@ -139,12 +160,15 @@
                     template: '<img class="gantt-avatar" src="#: userIcon #" /> #:assignee#'
                 },
                 {
-                    field: "client",
-                    title: "Client",
-                    template: "#: client #"
+                    field: "project", title: "Project", template: '#: project != null ? project : "-" #'
                 },
                 {
-                    field: "project", title: "Project", template: '#: project #'
+                    field: "client",
+                    title: "Client",
+                    template: "#: client != null ? client : '-' #"
+                },
+                {
+                    field: "type", title: "Type", template: '#: type != null ? type : "-" #'
                 },
                 {
                     field: "originalEstimateSeconds",
@@ -181,6 +205,16 @@
                         grid.collapseGroup(this);
                 });
             }
+        });
+
+        grid.find(".k-grid-toolbar").on("click", ".k-grid-collapse", function (e) {
+            e.preventDefault();
+            $('.k-i-collapse').click();
+        });
+
+        grid.find(".k-grid-toolbar").on("click", ".k-grid-expand", function (e) {
+            e.preventDefault();
+            $('.k-i-expand').click();
         });
     });
 </script>

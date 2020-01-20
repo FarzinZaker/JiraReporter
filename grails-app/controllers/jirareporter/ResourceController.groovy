@@ -12,7 +12,7 @@ class ResourceController {
 
     def allocation() {
         if (params.findAll { it.value }.size() < 3) {
-            redirect(uri: "/resource/allocation?status=${['Draft', 'To Do', 'In Progress'].join(',')}")
+            redirect(uri: "/resource/allocation?status=${['To Do', 'In Progress'].join(',')}")
             return
         }
 
@@ -23,7 +23,7 @@ class ResourceController {
 
     def allocationJson() {
         if (params.findAll { it.value && !it.key?.toString()?.toLowerCase()?.startsWith('dhxr') }.size() < 3) {
-            redirect(uri: "/resource/allocationJson?status=${['Draft', 'To Do', 'In Progress'].join(',')}")
+            redirect(uri: "/resource/allocationJson?status=${['To Do', 'In Progress'].join(',')}")
             return
         }
 
@@ -38,13 +38,15 @@ class ResourceController {
                 filterService.formatUsersList(params),
                 teams?.size() ? (JiraUser.findAllByTeamInList(teams) ?: [null]) : [null],
                 teams?.size > 0,
-                filterService.formatStatus(params))
+                filterService.formatStatus(params),
+                filterService.formatUnassigned(params))
 
         def data = issues.collect {
             [
                     project                 : it.project?.name ?: '-',
                     client                  : it.clients?.find()?.name ?: '-',
                     assignee                : it.assignee?.displayName ?: '-',
+                    type                    : it.issueType?.name ?: '-',
                     userIcon                : it.assignee?.avatar,
                     originalEstimateSeconds : it.originalEstimateSeconds ?: 0,
                     remainingEstimateSeconds: it.remainingEstimateSeconds ?: 0,

@@ -12,7 +12,7 @@ class ValidationController {
 
     def estimate() {
         if (params.findAll { it.value }.size() < 3) {
-            redirect(uri: "/validation/estimate?status=${['Draft', 'To Do', 'In Progress'].join(',')}")
+            redirect(uri: "/validation/estimate?status=${['To Do', 'In Progress'].join(',')}")
             return
         }
 
@@ -23,7 +23,7 @@ class ValidationController {
 
     def estimateJson() {
         if (params.findAll { it.value && !it.key?.toString()?.toLowerCase()?.startsWith('dhxr') }.size() < 3) {
-            redirect(uri: "/validation/estimateJson?status=${['Draft', 'To Do', 'In Progress'].join(',')}")
+            redirect(uri: "/validation/estimateJson?status=${['To Do', 'In Progress'].join(',')}")
             return
         }
 
@@ -38,7 +38,8 @@ class ValidationController {
                 filterService.formatUsersList(params),
                 teams?.size() ? (JiraUser.findAllByTeamInList(teams) ?: [null]) : [null],
                 teams?.size > 0,
-                filterService.formatStatus(params)).findAll {
+                filterService.formatStatus(params),
+                filterService.formatUnassigned(params)).findAll {
             !it.originalEstimate || it.originalEstimate?.trim() == ''
         }
 

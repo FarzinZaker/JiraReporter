@@ -51,7 +51,8 @@ class Configuration {
 
     static List<Map> getStatusList() {
         [
-                [name: 'Draft', details: [
+                [name: 'Backlog', details: [
+                        'Backlog',
                         'Draft',
                         'Problem Registered',
                         'Professional Services Review'

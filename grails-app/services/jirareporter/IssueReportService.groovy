@@ -7,7 +7,7 @@ class IssueReportService {
 
     def springSecurityService
 
-    List<Issue> getIssues(List<Issue> issues = [], List<Project> projects = [], List<IssueType> issueTypes = [], List<IssueType> priorities = [], List<Component> componentList = [], List<Client> clientList = [], List<JiraUser> users = [], List<JiraUser> teamMembers = [], Boolean filterTeamMembers, List<Status> statusList = []) {
+    List<Issue> getIssues(List<Issue> issues = [], List<Project> projects = [], List<IssueType> issueTypes = [], List<IssueType> priorities = [], List<Component> componentList = [], List<Client> clientList = [], List<JiraUser> users = [], List<JiraUser> teamMembers = [], Boolean filterTeamMembers, List<Status> statusList = [], Boolean unassignedIssues = false) {
 
         def user = User.findByUsername(springSecurityService.principal.username)
         def jiraUsers = [JiraUser.findByName(user.username)]
@@ -21,14 +21,21 @@ class IssueReportService {
 
         Issue.createCriteria().list {
 
-            isNotNull('originalEstimate')
-            isNotNull('startDate')
-            isNotNull('dueDate')
+//            isNotNull('originalEstimate')
+//            isNotNull('startDate')
+//            isNotNull('dueDate')
 
             if (![Roles.MANAGER, Roles.ADMIN].any {
                 springSecurityService.authentication.authorities.contains(it)
             } && jiraUsers?.size()) {
-                'in'('assignee', jiraUsers)
+                if (unassignedIssues) {
+                    or {
+                        'in'('assignee', jiraUsers)
+                        isNull('assignee')
+                    }
+                } else {
+                    'in'('assignee', jiraUsers)
+                }
             }
 
             if (issues.size()) {
@@ -43,11 +50,25 @@ class IssueReportService {
             }
 
             if (users.size()) {
-                'in'('assignee', users)
+                if (unassignedIssues) {
+                    or {
+                        'in'('assignee', users)
+                        isNull('assignee')
+                    }
+                } else {
+                    'in'('assignee', users)
+                }
             }
 
             if (filterTeamMembers) {
-                'in'('assignee', teamMembers + [null])
+                if (unassignedIssues) {
+                    or {
+                        'in'('assignee', teamMembers + [null])
+                        isNull('assignee')
+                    }
+                } else {
+                    'in'('assignee', teamMembers + [null])
+                }
             }
 
             if (issueTypes.size()) {

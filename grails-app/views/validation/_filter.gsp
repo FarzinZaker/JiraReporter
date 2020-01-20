@@ -7,6 +7,7 @@
     <g:render template="/filter/client"/>
     <g:render template="/filter/team"/>
     <g:render template="/filter/user"/>
+    <g:render template="/filter/unassigned"/>
     <input type="button" onclick="reloadGrid()" value="FILTER" class="k-button k-primary"/>
 </form>
 <script language="JavaScript" type="text/javascript">

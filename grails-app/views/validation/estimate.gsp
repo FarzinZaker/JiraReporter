@@ -82,7 +82,7 @@
                 {
                     field: "assignee",
                     title: "Assignee",
-                    template: '<img class="gantt-avatar" src="#: userIcon #" /> #:assignee#'
+                    template: '<img class="gantt-avatar" src="#: userIcon #" style="display: #:assignee != null ? "inline" : "none" #;" /> #:assignee != null ? assignee : "Unassigned" #'
                 }
                 // {field: "assignee", title: "Assignee", aggregates: ["count"], groupHeaderColumnTemplate: "Tasks: #=count#"}
             ],

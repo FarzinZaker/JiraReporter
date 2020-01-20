@@ -29,7 +29,7 @@ class IssueFixJob {
 //        }
 //        def startDate = endDate - 2
 
-//        def statusList = filterService.formatStatus([status: ['Draft', 'To Do', 'In Progress'].join(',')])
+//        def statusList = filterService.formatStatus([status: ['Backlog', 'To Do', 'In Progress'].join(',')])
 //        def lastFixDate = new Date()
 //        use(TimeCategory) {
 //            lastFixDate = lastFixDate - 1.hour
