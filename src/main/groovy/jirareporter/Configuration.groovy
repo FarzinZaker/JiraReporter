@@ -7,7 +7,7 @@ class Configuration {
     }
 
     static String getUsername() {
-        ''
+        'jplanner'
     }
 
     static String getPassword() {
@@ -15,7 +15,7 @@ class Configuration {
     }
 
     static String getCrossOverUsername() {
-        ''
+        'farzin.zaker@aclate.com'
     }
 
     static String getCrossOverPassowrd() {
