@@ -357,7 +357,7 @@ class PlannerController {
         def user = springSecurityService.currentUser as User
 
         def list = JSON.parse(params.columns) as JSONArray
-        GanttColumn.findAllByNameNotInList(list.collect { it.name }).each {
+        GanttColumn.findAllByUserAndNameNotInList(user, list.collect { it.name }).each {
             it.visible = false
             it.save(flush: true)
         }
