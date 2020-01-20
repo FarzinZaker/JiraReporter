@@ -4,6 +4,7 @@ import com.atlassian.jira.rest.client.RestClientException
 import grails.converters.JSON
 import grails.plugin.springsecurity.annotation.Secured
 import groovy.time.TimeCategory
+import org.grails.web.json.JSONArray
 
 import java.text.SimpleDateFormat
 
@@ -26,9 +27,27 @@ class PlannerController {
             redirect(uri: "/planner/gantt?status=${['Draft', 'To Do', 'In Progress'].join(',')}")
             return
         }
+
+        def user = springSecurityService.currentUser as User
+        if (GanttColumn.countByUser(user) < 13) {
+            new GanttColumn(name: 'wbs', user: user, width: 60, displayOrder: 1, visible: true).save(flush: true)
+            new GanttColumn(name: 'text', user: user, width: 250, displayOrder: 2, visible: true).save(flush: true)
+            new GanttColumn(name: 'key', user: user, width: 100, displayOrder: 3, visible: true).save(flush: true)
+            new GanttColumn(name: 'owner', user: user, width: 100, displayOrder: 4, visible: true).save(flush: true)
+            new GanttColumn(name: 'status', user: user, width: 80, displayOrder: 5, visible: true).save(flush: true)
+            new GanttColumn(name: 'start_date', user: user, width: 80, displayOrder: 6, visible: true).save(flush: true)
+            new GanttColumn(name: 'end_date', user: user, width: 80, displayOrder: 7, visible: true).save(flush: true)
+            new GanttColumn(name: 'originalEstimate', user: user, width: 70, displayOrder: 8, visible: true).save(flush: true)
+            new GanttColumn(name: 'remainingEstimate', user: user, width: 70, displayOrder: 9, visible: false).save(flush: true)
+            new GanttColumn(name: 'timeSpent', user: user, width: 70, displayOrder: 10, visible: false).save(flush: true)
+            new GanttColumn(name: 'priority', user: user, width: 32, displayOrder: 11, visible: true).save(flush: true)
+            new GanttColumn(name: 'predecessors', user: user, width: 100, displayOrder: 12, visible: true).save(flush: true)
+            new GanttColumn(name: 'add', user: user, width: 32, displayOrder: 13, visible: true).save(flush: true)
+        }
+
         def components = componentService.getAll(Configuration.projects.collect { it.key?.toString() })
         def clients = Client.list()
-        [components: components, clients: clients, managedUsers: userService.managedUsers()]
+        [components: components, clients: clients, managedUsers: userService.managedUsers(), user: user]
     }
 
     def issues() {
@@ -257,7 +276,7 @@ class PlannerController {
     private Map getIssueRequiredFields(Issue issue, List<Issue> issues = [], def idList = [0l]) {
 
         def formatter = new SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss.SSS'Z'")
-        def completed = Configuration.statusList.find{it.name == 'Verification'}.details.contains(issue.status.name) || Configuration.statusList.find{it.name == 'Closed'}.details.contains(issue.status.name)
+        def completed = Configuration.statusList.find { it.name == 'Verification' }.details.contains(issue.status.name) || Configuration.statusList.find { it.name == 'Closed' }.details.contains(issue.status.name)
 
         def originalEstimateSeconds = issue.originalEstimateSeconds
         if (!originalEstimateSeconds) {
@@ -330,5 +349,30 @@ class PlannerController {
                 timeSpent        : issue.timeSpent,
                 overdue          : !completed && issue.dueDate && issue.dueDate < new Date()
         ]
+    }
+
+    def saveColumns() {
+        int counter = 1
+        def user = springSecurityService.currentUser as User
+
+        def list = JSON.parse(params.columns) as JSONArray
+        GanttColumn.findAllByNameNotInList(list.collect { it.name }).each {
+            it.visible = false
+            it.save(flush: true)
+        }
+        list.each {
+            def column = GanttColumn.findByUserAndName(user, it.name)
+            if (!column)
+                column = new GanttColumn(user: user, name: it.name)
+            column.displayOrder = counter++
+            column.width = it.width
+            column.visible = true
+            try {
+                column.save(flush: true)
+            } catch (ignored) {
+            }
+        }
+
+        render 1
     }
 }

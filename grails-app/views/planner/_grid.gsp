@@ -1,4 +1,4 @@
-<%@ page import="jirareporter.Team; jirareporter.Roles; jirareporter.Priority; jirareporter.JiraUser; jirareporter.Configuration" %>
+<%@ page import="jirareporter.GanttColumn; jirareporter.Team; jirareporter.Roles; jirareporter.Priority; jirareporter.JiraUser; jirareporter.Configuration" %>
 
 <g:render template="toolbar"/>
 
@@ -107,6 +107,20 @@
         });
     });
 
+    gantt.attachEvent("onGanttRender", function () {
+        $.ajax({
+            url: '${createLink(action: 'saveColumns')}',
+            dataType: 'json',
+            type: 'post',
+            data: {columns: JSON.stringify(gantt.getGridColumns())},
+            success: function (data, textStatus, jQxhr) {
+            },
+            error: function (jqXhr, textStatus, errorThrown) {
+                console.log(errorThrown);
+            }
+        });
+    });
+
     var managedUsers = [
         <g:each in="${managedUsers}" var="user">
         {
@@ -190,6 +204,189 @@
 <asset:javascript src="gantt_config.js"/>
 
 <script>
+
+    gantt.config.columns = [
+        <g:set var="column" value="${GanttColumn.findByUserAndName(user, 'wbs')}"/>
+        {name: "wbs", label: "#", width: 60, align: "left", hide: ${!column?.visible}, template: gantt.getWBSCode},
+        <g:set var="column" value="${GanttColumn.findByUserAndName(user, 'text')}"/>
+        {
+            name: "text", width: 250, tree: true, label: "Summary", resize: true, template: function (task) {
+                if (!task.taskType || task.taskType === 'project' || task.taskType === 'client')
+                    return '<b>' + task.text + '</b>';
+                else
+                    return '<img src="' + task.issueTypeIcon + '" /> ' + task.text;
+            }
+        },
+        <g:set var="column" value="${GanttColumn.findByUserAndName(user, 'key')}"/>
+        {
+            name: "key", width: 100, label: "Key", resize: true, hide: ${!column?.visible}, template: function (task) {
+                if (!task.taskType || task.taskType === 'project' || task.taskType === 'client')
+                    return '';
+                else
+                    return '<a class="gantt-task-link" href="https://jira.devfactory.com/browse/' + task.key + '" target="_blank"> ' + task.key + '</a>';
+            }
+        },
+        <g:set var="column" value="${GanttColumn.findByUserAndName(user, 'owner')}"/>
+        {
+            name: "owner",
+            align: "left",
+            width: 100,
+            label: "Assignee",
+            editor: assigneeEditor,
+            hide: ${!column?.visible},
+            template: function (task) {
+                if (!task.taskType || task.taskType === 'project' || task.taskType === 'client') {
+                    return "";
+                }
+
+                var store = gantt.getDatastore("resource");
+                var assignments = task[gantt.config.resource_property] || [];
+
+                // if (!assignments || !assignments.length) {
+                //     return "Unassigned";
+                // }
+
+                if (assignments.length == 1) {
+                    return store.getItem(assignments[0].resource_id).text;
+                }
+
+                var result = "";
+                // assignments.forEach(function (assignment) {
+                var owner = store.getItem(assignments.resource_id);
+                if (!owner) {
+                    return "Unassigned";
+                }
+                // result += "<div class='owner-label' title='" + owner.text + "'>" + owner.text.substr(0, 1) + "</div>";
+
+                result += '<img class="gantt-avatar" src="' + owner.avatar + '" /> ' + owner.text.split(' ')[0];
+
+                // });
+
+                return result;
+            },
+            resize: true
+        },
+        <g:set var="column" value="${GanttColumn.findByUserAndName(user, 'status')}"/>
+        {
+            name: "status",
+            width: 80,
+            label: "Status",
+            resize: true,
+            hide: ${!column?.visible},
+            template: function (task) {
+                if (!task.taskType || task.taskType === 'project' || task.taskType === 'client') {
+                    return "";
+                }
+                return task.status.name;
+            }
+        },
+        <g:set var="column" value="${GanttColumn.findByUserAndName(user, 'start_date')}"/>
+        {
+            name: "start_date",
+            width: 80,
+            label: "Start Date",
+            resize: true,
+            hide: ${!column?.visible},
+            editor: startDateEditor,
+            template: function (task) {
+                if (!task.taskType || task.taskType === 'project' || task.taskType === 'client') {
+                    return "";
+                }
+                return task.start_date ? task.start_date : '';
+            }
+        },
+        <g:set var="column" value="${GanttColumn.findByUserAndName(user, 'end_date')}"/>
+        {
+            name: "end_date",
+            width: 80,
+            label: "Due Date",
+            resize: true,
+            hide: ${!column?.visible},
+            editor: endDateEditor,
+            template: function (task) {
+                if (!task.taskType || task.taskType === 'project' || task.taskType === 'client') {
+                    return "";
+                }
+                return task.end_date ? task.end_date : '-';
+            }
+        },
+        <g:set var="column" value="${GanttColumn.findByUserAndName(user, 'originalEstimate')}"/>
+        {
+            name: "originalEstimate",
+            width: 70,
+            label: "Est.",
+            resize: true,
+            hide: ${!column?.visible},
+            editor: durationEditor,
+            template: function (task) {
+                if (!task.taskType || task.taskType === 'project' || task.taskType === 'client') {
+                    return "";
+                }
+                return task.originalEstimate;
+            }
+        },
+        <g:set var="column" value="${GanttColumn.findByUserAndName(user, 'remainingEstimate')}"/>
+        {
+            name: "remainingEstimate",
+            width: 90,
+            label: "Rem. Est.",
+            resize: true,
+            hide: ${!column?.visible},
+            template: function (task) {
+                if (!task.taskType || task.taskType === 'project' || task.taskType === 'client') {
+                    return "";
+                }
+                return task.remainingEstimate;
+            }
+        },
+        <g:set var="column" value="${GanttColumn.findByUserAndName(user, 'timeSpent')}"/>
+        {
+            name: "timeSpent",
+            width: 90,
+            label: "Time Spent",
+            resize: true,
+            hide: ${!column?.visible},
+            template: function (task) {
+                if (!task.taskType || task.taskType === 'project' || task.taskType === 'client') {
+                    return "";
+                }
+                return task.timeSpent;
+            }
+        },
+        <g:set var="column" value="${GanttColumn.findByUserAndName(user, 'priority')}"/>
+        {
+            name: "priority",
+            width: 32,
+            label: "P",
+            resize: true,
+            hide: ${!column?.visible},
+            editor: priorityEditor,
+            template: function (task) {
+                if (!task.taskType || task.taskType === 'project' || task.taskType === 'client') {
+                    return "";
+                }
+                // return task.priority;
+                return '<img class="priority-icon" src="' + priorityIcons['p' + task.priority] + '"/>';
+            }
+        },
+        <g:set var="column" value="${GanttColumn.findByUserAndName(user, 'predecessors')}"/>
+        {
+            name: "predecessors", label: "Pred.", width: 100, align: "center", hide: ${!column?.visible},
+            editor: predecessorsEditor, resize: true, template: function (task) {
+                var links = task.$target;
+                var labels = [];
+                for (var i = 0; i < links.length; i++) {
+                    var link = gantt.getLink(links[i]);
+                    labels.push(linksFormatter.format(link));
+                }
+                return labels.join(", ")
+            }
+        },
+        <g:set var="column" value="${GanttColumn.findByUserAndName(user, 'add')}"/>
+        {
+            name: "add", hide: ${!column?.visible}
+        }
+    ];
 
     gantt.init("gantt_here");
     reloadPlanner();
