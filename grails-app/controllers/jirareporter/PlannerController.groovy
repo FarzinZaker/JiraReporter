@@ -353,24 +353,26 @@ class PlannerController {
     }
 
     def saveColumns() {
-        int counter = 1
-        def user = springSecurityService.currentUser as User
 
-        def list = JSON.parse(params.columns) as JSONArray
-        GanttColumn.findAllByUserAndNameNotInList(user, list.collect { it.name }).each {
-            it.visible = false
-            it.save(flush: true)
-        }
-        list.each {
-            def column = GanttColumn.findByUserAndName(user, it.name)
-            if (!column)
-                column = new GanttColumn(user: user, name: it.name)
-            column.displayOrder = counter++
-            column.width = it.width
-            column.visible = true
-            try {
-                column.save(flush: true)
-            } catch (ignored) {
+        if (params.columns) {
+            int counter = 1
+            def user = springSecurityService.currentUser as User
+            def list = JSON.parse(params.columns) as JSONArray
+            GanttColumn.findAllByUserAndNameNotInList(user, list.collect { it.name }).each {
+                it.visible = false
+                it.save(flush: true)
+            }
+            list.each {
+                def column = GanttColumn.findByUserAndName(user, it.name)
+                if (!column)
+                    column = new GanttColumn(user: user, name: it.name)
+                column.displayOrder = counter++
+                column.width = it.width
+                column.visible = true
+                try {
+                    column.save(flush: true)
+                } catch (ignored) {
+                }
             }
         }
 
