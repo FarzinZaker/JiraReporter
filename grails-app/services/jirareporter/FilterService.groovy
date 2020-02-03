@@ -60,8 +60,8 @@ class FilterService {
     List<Status> formatStatus(params) {
         def list = []
         params.status?.split(',')?.collect { it.toString()?.trim() }?.findAll { it }?.each { st ->
-            list.addAll(Configuration.statusList.find { it.name == st }.details)
-        }
+            list.addAll(Configuration.statusList.find { it.name == st }?.details)
+        }.findAll { it }
         Status.findAllByNameInList(list + ['-'])
     }
 
