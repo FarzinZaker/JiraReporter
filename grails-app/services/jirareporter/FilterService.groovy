@@ -74,6 +74,14 @@ class FilterService {
             []
     }
 
+    Date formatFromDate(params) {
+        params.from ? new Date(params.from).clearTime() : null
+    }
+
+    Date formatToDate(params) {
+        params.to ? (new Date(params.to) + 1).clearTime() : null
+    }
+
     Boolean formatUnassigned(params) {
         params.unassigned ? true : false
     }

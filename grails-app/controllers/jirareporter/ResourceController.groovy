@@ -29,6 +29,8 @@ class ResourceController {
 
         def teams = filterService.formatTeams(params)
         def issues = issueReportService.getIssues(
+                filterService.formatFromDate(params),
+                filterService.formatToDate(params),
                 filterService.formatIssueList(params),
                 filterService.formatProjects(params),
                 filterService.formatIssueTypes(params),

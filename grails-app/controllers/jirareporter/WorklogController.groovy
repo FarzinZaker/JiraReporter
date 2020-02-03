@@ -24,8 +24,8 @@ class WorklogController {
         if (!params.to)
             return redirect(action: 'report', params: params + [to: new Date().format('MM/dd/yyyy')])
 
-        Date from = new Date(params.from).clearTime()
-        Date to = (new Date(params.to) + 1).clearTime()
+        Date from = filterService.formatFromDate(params)
+        Date to = filterService.formatToDate(params)
         use(TimeCategory) {
             to = to - 1.second
         }

@@ -1,5 +1,6 @@
 <form id="filterForm" class="filterPanel">
     <g:render template="/filter/load"/>
+    <g:render template="/filter/time"/>
     <g:render template="/filter/issue"/>
     <g:render template="/filter/project"/>
     <g:render template="/filter/issueType"/>

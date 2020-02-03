@@ -7,7 +7,7 @@ class IssueReportService {
 
     def springSecurityService
 
-    List<Issue> getIssues(List<Issue> issues = [], List<Project> projects = [], List<IssueType> issueTypes = [], List<IssueType> priorities = [], List<Component> componentList = [], List<Client> clientList = [], List<JiraUser> users = [], List<JiraUser> teamMembers = [], Boolean filterTeamMembers, List<Status> statusList = [], Boolean unassignedIssues = false) {
+    List<Issue> getIssues(Date from, Date to, List<Issue> issues = [], List<Project> projects = [], List<IssueType> issueTypes = [], List<IssueType> priorities = [], List<Component> componentList = [], List<Client> clientList = [], List<JiraUser> users = [], List<JiraUser> teamMembers = [], Boolean filterTeamMembers, List<Status> statusList = [], Boolean unassignedIssues = false) {
 
         def user = User.findByUsername(springSecurityService.principal.username)
         def jiraUsers = [JiraUser.findByName(user.username)]
@@ -24,6 +24,20 @@ class IssueReportService {
 //            isNotNull('originalEstimate')
 //            isNotNull('startDate')
 //            isNotNull('dueDate')
+
+            if (from) {
+                or {
+                    gte('startDate', from)
+                    gte('dueDate', from)
+                }
+            }
+
+            if (to) {
+                or {
+                    lte('startDate', to)
+                    lte('dueDate', to)
+                }
+            }
 
             if (![Roles.MANAGER, Roles.ADMIN].any {
                 springSecurityService.authentication.authorities.contains(it)
