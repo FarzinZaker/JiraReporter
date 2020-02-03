@@ -1,4 +1,5 @@
-<g:form controller="worklog" action="report" class="filterPanel">
+<form id="filterForm" action="${createLink(controller: 'worklog', action: 'report')}" class="filterPanel">
+    <g:render template="/filter/load"/>
     <g:render template="/filter/time"/>
     <g:render template="/filter/project"/>
     <g:render template="/filter/issueType"/>
@@ -10,4 +11,5 @@
     <g:render template="/filter/user"/>
     <g:render template="/filter/billable"/>
     <g:submitButton name="submit" value="FILTER" class="k-button k-primary"/>
-</g:form>
+    <g:render template="/filter/save"/>
+</form>

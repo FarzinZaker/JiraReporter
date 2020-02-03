@@ -1,4 +1,5 @@
 <form id="filterForm" class="filterPanel">
+    <g:render template="/filter/load"/>
     <g:render template="/filter/project"/>
     <g:render template="/filter/issueType"/>
     <g:render template="/filter/priority"/>
@@ -9,6 +10,7 @@
     <g:render template="/filter/user"/>
     <g:render template="/filter/unassigned"/>
     <input type="button" onclick="reloadGrid()" value="FILTER" class="k-button k-primary"/>
+    <g:render template="/filter/save"/>
 </form>
 <script language="JavaScript" type="text/javascript">
     function reloadGrid() {

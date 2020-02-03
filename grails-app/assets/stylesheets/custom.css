@@ -387,18 +387,18 @@ h2.tableHeader {
     width: 300px;
 }
 
-.filterPanel .switch-label{
+.filterPanel .switch-label {
     display: inline-block;
     margin-top: 5px;
     margin-bottom: 15px;
 }
 
-.filterPanel .k-switch{
+.filterPanel .k-switch {
     float: right;
     margin-top: 10px;
 }
 
-.gantt_message_area.dhtmlx_message_area{
+.gantt_message_area.dhtmlx_message_area {
     display: none;
 }
 
@@ -878,7 +878,7 @@ th {
 }
 
 .expander {
-    padding-top: 20px;
+    padding-top: 90px;
 }
 
 .expander-button {
@@ -1277,6 +1277,10 @@ th {
     margin-top: 12px;
 }
 
+.k-window .field {
+    margin-left: 20px;
+}
+
 .selectize-input {
     white-space: normal;
 }
@@ -1293,6 +1297,17 @@ th {
     background-color: #f4f4f4;
     padding: 10px 20px;
     margin: 0 -15px -40px;
+}
+
+#filterMenu {
+    padding-bottom: 10px;
+    padding-left: 10px;
+}
+
+.filterMenuContainer {
+    margin: -20px -20px 20px;
+    height: 60px;
+    background: white;
 }
 
 .toolbar .k-button, .toolbar .k-button:hover, .toolbar .k-button:active {
@@ -1313,4 +1328,23 @@ th {
 
 .datepicker-dropdown {
     width: 250px;
+}
+
+.currentFilterLabel {
+    font-weight: normal;
+    font-size: smaller;
+    color: #607D8B;
+    display: block;
+    padding-left: 3px;
+    margin-bottom: -2px;
+    margin-top: -15px;
+}
+
+.currentFilter {
+    background: #0288D1;
+    color: white;
+    margin-right: 5px;
+    margin-left: -20px;
+    margin-top: 2px;
+    padding: 15px 20px;
 }

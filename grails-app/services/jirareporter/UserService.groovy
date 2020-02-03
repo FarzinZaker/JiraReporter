@@ -20,16 +20,21 @@ class UserService {
                 }
             }
         }
-//        def nameList = CrossOverLog.createCriteria().list {
-//            projections {
-//                distinct('name')
-//            }
-//        }
         JiraUser.createCriteria().list {
             'in'('name', users)
 //            'in'('displayName', nameList)
             or {
                 ilike('name', "%$username%")
+                ilike('displayName', "%$username%")
+            }
+        }
+    }
+
+    List<User> systemSearch(String username) {
+        User.createCriteria().list {
+            or {
+                ilike('username', "%$username%")
+                ilike('jiraUsername', "%$username%")
                 ilike('displayName', "%$username%")
             }
         }

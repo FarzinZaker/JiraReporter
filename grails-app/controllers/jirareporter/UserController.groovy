@@ -17,6 +17,16 @@ class UserController {
         } : []) as JSON)
     }
 
+    @Secured([Roles.ADMIN, Roles.MANAGER, Roles.JIRA_USER])
+    def systemSearch() {
+        render((params.id ? userService.systemSearch(params.id)?.collect {
+            [
+                    id  : it.id,
+                    name: it.displayName
+            ]
+        } : []) as JSON)
+    }
+
     @Secured([Roles.ADMIN])
     def list() {
         [role: params.id]
