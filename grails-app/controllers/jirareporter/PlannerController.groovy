@@ -288,8 +288,8 @@ class PlannerController {
             } else
                 originalEstimateSeconds = 3600
         }
-        def estimateMinutes = Math.ceil((originalEstimateSeconds ?: 1) / 60).toInteger()
-        def estimateHours = Math.ceil(estimateMinutes / 60)
+        def estimateMinutes = (originalEstimateSeconds ?: 1) / 60
+        def estimateHours = estimateMinutes / 60
 //            def estimateDays = Math.ceil(estimateHours / 8)
 
         def durationDays = 1
@@ -327,11 +327,11 @@ class PlannerController {
                 issueTypeIcon    : issue.issueType.icon,
                 owner            : issue.assignee ? [
                         resource_id: issue.assignee.id,
-                        value      : Math.round(estimateHours / durationDays).toInteger()
+                        value      : Math.round(estimateHours * 10 / durationDays).toInteger() / 10
                 ] : null,
                 owner_id         : issue.assignee?.id ?: 0,
                 components       : issue.components.collect { it.name }.join(','),
-                estimateHours    : estimateHours,
+                estimateHours    : Math.round(estimateHours * 10) / 10,
                 durationDays     : durationDays,
                 start_date       : issue.startDate ? formatter.format(issue.startDate) : null,
                 end_date         : issue.dueDate ? formatter.format(issue.dueDate) : null,

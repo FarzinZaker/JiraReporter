@@ -85,12 +85,14 @@ function validateDuration(duration) {
     }
 }
 
-function workingDaysBetweenDates(startDate, endDate){
+function workingDaysBetweenDates(sd, ed){
     /* Two working days and an sunday (not working day) */
     // var holidays = ['2016-05-03', '2016-05-05', '2016-05-07'];
     // var startDate = d0;
     // var endDate = d1;
 
+    var startDate = new Date(sd.getTime());
+    var endDate = new Date(ed.getTime());
 // Validate input
     if (endDate < startDate) {
         return 0;
@@ -99,7 +101,7 @@ function workingDaysBetweenDates(startDate, endDate){
 // Calculate days between dates
     var millisecondsPerDay = 86400 * 1000; // Day in milliseconds
     startDate.setHours(0, 0, 0, 1);  // Start just after midnight
-    endDate.setHours(0, 0, 0, 1);  // End just before midnight
+    endDate.setHours(0, 0, 0, 0);  // End just before midnight
     var diff = endDate - startDate;  // Milliseconds between datetime objects
     var days = Math.ceil(diff / millisecondsPerDay);
 
@@ -116,13 +118,13 @@ function workingDaysBetweenDates(startDate, endDate){
         days -= 2;
     }
     // Remove start day if span starts on Sunday but ends before Saturday
-    if (startDay == 0 && endDay != 6) {
-        days--;
-    }
+    // if (startDay == 1 && endDay != 7) {
+    //     days--;
+    // }
     // Remove end day if span ends on Saturday but starts after Sunday
-    if (endDay == 6 && startDay != 0) {
-        days--;
-    }
+    // if (endDay == 7 && startDay != 1) {
+    //     days--;
+    // }
     /* Here is the code */
     // holidays.forEach(day => {
     //     if ((day >= d0) && (day <= d1)) {

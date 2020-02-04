@@ -57,7 +57,7 @@
         // end_date.setDate(task.end_date.getDate() - 1);
         var diffDays = workingDaysBetweenDates(task.start_date, end_date);
         var estimateHours = getDurationSeconds(task.originalEstimate) / 3600;
-        var newValue = Math.round(estimateHours * 10 / diffDays) / 10;
+        var newValue = Math.round(estimateHours / diffDays);
         var oldOwnerValue = task.owner.value;
         if (oldOwnerValue !== newValue) {
             gantt.getTask(id).owner.value = newValue;

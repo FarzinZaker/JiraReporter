@@ -2,9 +2,6 @@
 
 <script>
 
-    var groupByPriority = false;
-    var zoomed = false;
-
     $(document).ready(function () {
         $("#toolbar").kendoToolBar({
             items: [
@@ -51,9 +48,8 @@
                 },
                 {type: "separator"},
                 {
-                    type: "button", text: "Group by Priority", togglable: true, icon: 'layout', toggle: function () {
-                        groupByPriority = !groupByPriority;
-                        if (groupByPriority)
+                    type: "button", text: "Group by Priority", togglable: true, icon: 'layout', toggle: function (e) {
+                        if (e.checked)
                             showGroups('priority');
                         else
                             showGroups();
@@ -71,11 +67,35 @@
                 },
                 {type: "separator"},
                 {
-                    type: "button", text: "Zoom to Fit", togglable: true, icon: "zoom", toggle: function () {
-                        zoomed = !zoomed;
-                        if (zoomed) {
+                    type: "button",
+                    text: "Zoom to Fit",
+                    togglable: true,
+                    icon: "zoom",
+                    id: "zoomToFit",
+                    toggle: function (e) {
+                        if (e.checked) {
+                            restoreConfig();
+                            $("#toolbar").data("kendoToolBar").toggle("#weeklyView", false);
                             saveConfig();
                             zoomToFit();
+                        } else {
+                            restoreConfig();
+                            gantt.render();
+                        }
+                    }
+                },
+                {
+                    type: "button",
+                    text: "Weekly View",
+                    togglable: true,
+                    icon: "calendar",
+                    id: "weeklyView",
+                    toggle: function (e) {
+                        if (e.checked) {
+                            restoreConfig();
+                            $("#toolbar").data("kendoToolBar").toggle("#zoomToFit", false);
+                            saveConfig();
+                            switchToWeeklyView();
                         } else {
                             restoreConfig();
                             gantt.render();

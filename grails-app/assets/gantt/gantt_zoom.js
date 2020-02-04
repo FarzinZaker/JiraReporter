@@ -20,12 +20,16 @@ var cachedSettings = {};
 function saveConfig() {
     var config = gantt.config;
     cachedSettings = {};
-    cachedSettings.scales = config.scales;
+    cachedSettings.scales = [
+        {unit: "month", step: 1, format: "%F, %Y"},
+        {unit: "day", step: 1, format: "%j, %D"}
+    ];
     cachedSettings.start_date = config.start_date;
     cachedSettings.end_date = config.end_date;
 }
 
 function restoreConfig() {
+    gantt.config.min_column_width = 70;
     applyConfig(cachedSettings);
 }
 
@@ -164,7 +168,25 @@ var scaleConfigs = [
     }
 ];
 
-function showToday(){
+function showToday() {
     showTodayMarker();
     gantt.showDate(new Date());
+}
+
+function switchToWeeklyView() {
+    gantt.config.scales = [
+        // {unit: "month", step: 1, format: "%F, %Y"},
+        // {unit: "day", step: 1, format: "%j, %D"}
+        {subscale_unit: "week", unit: "month", step: 1, date: "%F"},
+        {
+            unit: "week", step: 1, template: function (date) {
+                var dateToStr = gantt.date.date_to_str("%d %M");
+                var endDate = gantt.date.add(gantt.date.add(date, 1, "week"), -1, "day");
+                return dateToStr(date) + " - " + dateToStr(endDate);
+            }
+        }
+    ];
+    // console.log(gantt.config.min_column_width);
+    gantt.config.min_column_width = 140;
+    gantt.render();
 }

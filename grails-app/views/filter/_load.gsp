@@ -1,6 +1,7 @@
-<%@ page import="jirareporter.FilterUser; jirareporter.User; jirareporter.Filter" %>
-<g:set var="user" value="${User.findByUsername(sec.username()?.toString()) ?: sec.username()}"/>
+<%@ page import="jirareporter.JiraUser; jirareporter.FilterUser; jirareporter.User; jirareporter.Filter" %>
 
+<g:set var="user"
+       value="${User.findByUsernameOrDisplayName(sec.username()?.toString(), sec.username()?.toString())}"/>
 <div class="filterMenuContainer">
     <ul id="filterMenu" style="display: none;">
         <li>

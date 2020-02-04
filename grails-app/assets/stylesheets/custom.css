@@ -752,11 +752,15 @@ th {
 }
 
 .resource_marker.workday_ok div {
-    background: #51c185;
+    background: #43A047;
 }
 
 .resource_marker.workday_over div {
-    background: #ff8686;
+    background: #F4511E;
+}
+
+.resource_marker.workday_weekend div {
+    background: #1E88E5;
 }
 
 
