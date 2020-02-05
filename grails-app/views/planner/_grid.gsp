@@ -60,7 +60,9 @@
         var newValue = Math.round(estimateHours / diffDays);
         var oldOwnerValue = task.owner.value;
         if (oldOwnerValue !== newValue) {
-            gantt.getTask(id).owner.value = newValue;
+            var tsk = gantt.getTask(id);
+            tsk.owner.value = newValue;
+            tsk.durationDays = diffDays;
             gantt.updateTask(id);
         } else {
             task.updateTime = new Date();

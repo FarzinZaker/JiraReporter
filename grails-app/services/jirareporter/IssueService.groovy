@@ -133,6 +133,7 @@ class IssueService {
     }
 
     void delete(String key) {
+        return
         def issue = Issue.findByKey(key)
         if (!issue)
             return
