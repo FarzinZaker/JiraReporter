@@ -115,7 +115,7 @@ class FilterService {
             date = new Date(input).clearTime()
         else
             date = formatRelativeDate(input)?.clearTime()
-        println date
+//        println date
         date
     }
 
