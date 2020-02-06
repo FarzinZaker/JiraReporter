@@ -92,21 +92,26 @@ class FilterService {
     Date formatFromDate(params) {
         if (params.to == null)
             return null
-        formatDate(params.from)
+        def date = formatDate(params.from)
+        if (date) {
+            use(TimeCategory) {
+                date = date + 1.millisecond
+            }
+        }
+        date
     }
 
     Date formatToDate(params) {
         if (params.to == null)
             return null
         def date = formatDate(params.to)
-       if(date){
-           date = date.clearTime() + 1
-           use(TimeCategory){
-               date = date - 1.millisecond
-           }
-           return date
-       }
-        null
+        if (date) {
+            date = date.clearTime() + 1
+            use(TimeCategory) {
+                date = date - 1.millisecond
+            }
+        }
+        date
     }
 
     Date formatDate(String input) {

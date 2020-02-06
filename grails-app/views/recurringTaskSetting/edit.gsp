@@ -5,7 +5,7 @@
   Time: 3:12 PM
 --%>
 
-<%@ page import="jirareporter.Component; jirareporter.Project" contentType="text/html;charset=UTF-8" %>
+<%@ page import="jirareporter.Configuration; jirareporter.Component; jirareporter.Project" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
     <meta name="layout" content="main"/>
@@ -23,7 +23,8 @@
         </g:if>
         <g:form action="save">
             <input type="hidden" name="user" value="${user.id}"/>
-            <g:each in="${Project.list()}" var="project">
+            <g:each in="${Project.findAllByNameInList(Configuration.projects.collect { it.name })}"
+                    var="project">
                 <div class="check-box-row">
                     <div class="k-edit-label k-roles-label">
                         <label for="project_${project.id}">${project.name} (${project.key})</label>
