@@ -6,10 +6,17 @@ import groovy.time.TimeCategory
 @Transactional
 class FilterService {
 
+    def springSecurityService
+
     List<JiraUser> formatUsersList(params) {
-        JiraUser.findAllByDisplayNameInList((params.user?.split(',')?.collect {
+        def list = (params.user?.split(',')?.collect {
             it.split('\\(')?.first()?.replace(')', '')?.trim()
-        }?.findAll { it } ?: []) + ['-'])
+        }?.findAll { it } ?: []) + ['-']
+        def users = JiraUser.findAllByDisplayNameInList(list)
+        if (list.contains('Current User')) {
+            users << JiraUser.findByName(springSecurityService.currentUser.username)
+        }
+        users
     }
 
     List<Issue> formatIssueList(params) {
@@ -96,7 +103,7 @@ class FilterService {
         if (input.contains('/'))
             new Date(input).clearTime()
         else
-            formatRelativeDate(input).clearTime()
+            formatRelativeDate(input)?.clearTime()
     }
 
     Date formatRelativeDate(String input) {
