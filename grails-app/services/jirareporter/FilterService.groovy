@@ -3,6 +3,7 @@ package jirareporter
 import grails.gorm.transactions.Transactional
 import groovy.time.TimeCategory
 
+import java.sql.Time
 import java.text.SimpleDateFormat
 
 @Transactional
@@ -98,7 +99,14 @@ class FilterService {
         if (params.to == null)
             return null
         def date = formatDate(params.to)
-        date ? date + 1 : null
+       if(date){
+           date = date.clearTime() + 1
+           use(TimeCategory){
+               date = date - 1.millisecond
+           }
+           return date
+       }
+        null
     }
 
     Date formatDate(String input) {
