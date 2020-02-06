@@ -3,6 +3,8 @@ package jirareporter
 import grails.gorm.transactions.Transactional
 import groovy.time.TimeCategory
 
+import java.text.SimpleDateFormat
+
 @Transactional
 class FilterService {
 
@@ -100,16 +102,24 @@ class FilterService {
     }
 
     Date formatDate(String input) {
+        def date
         if (input.contains('/'))
-            new Date(input).clearTime()
+            date = new Date(input).clearTime()
         else
-            formatRelativeDate(input)?.clearTime()
+            date = formatRelativeDate(input)?.clearTime()
+        println date
+        date
     }
 
     Date formatRelativeDate(String input) {
         input = input.trim().toLowerCase()
         if (input == 'today')
             return new Date().clearTime()
+
+        formatRelativeWeekDay(input) ?: formatRelativeShiftDay(input)
+    }
+
+    Date formatRelativeShiftDay(String input) {
         def scale = 'days'
         if (input.endsWith('d')) {
             scale = 'weeks'
@@ -135,9 +145,58 @@ class FilterService {
             use(TimeCategory) {
                 date = date + (multiplier * amount)."${scale}"
             }
+            date
         }
         catch (ignore) {
             return null
         }
+    }
+
+    Date formatRelativeWeekDay(String input) {
+        def weekDay = null
+        ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'].each {
+            if (input.endsWith(it))
+                weekDay = it
+        }
+        if (!weekDay)
+            return null
+
+        input = input.substring(0, input.size() - 3)
+
+        def multiplier = 1
+        if (input.startsWith('-')) {
+            multiplier = -1
+            input = input.substring(1)
+        }
+        def amount = 1
+        if (input.size() > 0)
+            try {
+                amount = input.toInteger()
+            }
+            catch (ignore) {
+                return null
+            }
+
+        def counter = multiplier * amount
+
+        def formatter = new SimpleDateFormat('EEE')
+        def date = new Date().clearTime()
+
+        if (counter < 0)
+            if (weekDay == formatter.format(date).toLowerCase())
+                counter++
+            else
+                date = date - multiplier
+
+        if (weekDay == formatter.format(date).toLowerCase() && counter > 0)
+            date = date + 1
+
+        while (counter != 0) {
+            date = date + multiplier
+            while (weekDay != formatter.format(date).toLowerCase())
+                date = date + (multiplier)
+            counter -= multiplier
+        }
+        date
     }
 }
