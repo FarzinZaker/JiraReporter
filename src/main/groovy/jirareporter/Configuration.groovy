@@ -7,7 +7,7 @@ class Configuration {
     }
 
     static String getUsername() {
-        'jplanner'
+        ''
     }
 
     static String getPassword() {
@@ -15,7 +15,7 @@ class Configuration {
     }
 
     static String getCrossOverUsername() {
-        'farzin.zaker@aclate.com'
+        ''
     }
 
     static String getCrossOverPassowrd() {
@@ -29,7 +29,8 @@ class Configuration {
                 [name: 'Platinum-NorthPlains', key: 'PLNP'],
                 [name: 'Platinum-OneSpot', key: 'PLOS'],
                 [name: 'Platinum-Zumobi', key: 'PLZM'],
-                [name: 'Platinum-SMS', key: 'PLSMS']
+                [name: 'Platinum-SMS', key: 'PLSMS'],
+                [name: 'Platinum-Symphony', key: 'PLSYM']
         ]
     }
 
@@ -55,7 +56,13 @@ class Configuration {
                         'Backlog',
                         'Draft',
                         'Problem Registered',
-                        'Professional Services Review'
+                        'Professional Services Review',
+                        'Waiting For Fix',
+                        'Failed Fix',
+                        'Pending Eng Assistance',
+                        'Failed QB',
+                        'Defined',
+                        'In Triage'
                 ]],
                 [name: 'To Do', details: [
                         'Backlog',
@@ -63,7 +70,9 @@ class Configuration {
                         'Reopened',
                         'To Do',
                         'Selected For Work',
-                        'Pending Eng Assistance'
+                        'Pending Eng Assistance',
+                        'RCA Review',
+                        'Pending Eng Fix'
                 ]],
                 [name: 'In Progress', details: [
                         'In Progress',
@@ -72,21 +81,24 @@ class Configuration {
                         'RCA In Study',
                         'RCA Approval',
                         'Solution In Study',
-                        'Pending Eng Fix'
+                        'RCA In Progress'
                 ]],
                 [name: 'Blocked', details: [
                         'Needs Info',
                         'Paused',
                         'Further Info Needed',
-                        'Waiting For Client Response'
+                        'Waiting For Client Response',
+                        'Blocked'
                 ]],
                 [name: 'Verification', details: [
                         'In Verification',
                         'In Review',
                         'Closure Approval',
                         'Quality Assurance',
-                        'QE Review'
-
+                        'QE Review',
+                        'RCA Approval',
+                        'Request Exemption From RQB',
+                        'Exempted From RQB'
                 ]],
                 [name: 'Closed', details: [
                         'Resolved',
@@ -95,7 +107,11 @@ class Configuration {
                         'Rejected',
                         'Consulting Task',
                         'Acceptance Test',
-                        'Pending Customer Approval'
+                        'Pending Customer Approval',
+                        'Cancelled',
+                        'Released',
+                        'Release Pending',
+                        'Archived'
                 ]]
         ]
     }
