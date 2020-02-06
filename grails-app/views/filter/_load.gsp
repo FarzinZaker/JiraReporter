@@ -13,7 +13,7 @@
                         <ul>
                             <li>
                                 <a href="${createLink(controller: 'filter', action: 'load', params: [c: params.controller, a: params.action, id: filter.id])}"><span
-                                        class="k-icon k-i-button"></span> Load</a>
+                                        class="k-icon k-i-download"></span> Load</a>
                             </li>
                             <li>
                                 <a href="javascript:shareForm(${filter.id})"><span
@@ -47,8 +47,17 @@
             <ul>
                 <g:each in="${FilterUser.findAllByUser(user).collect { it.filter }}" var="filter">
                     <li>
-                        <a href="${createLink(controller: 'filter', action: 'load', params: [c: params.controller, a: params.action, id: filter.id])}"><span
-                                class="k-icon k-i-button"></span> ${filter.name}</a>
+                        <a href="${createLink(controller: 'filter', action: 'load', params: [c: params.controller, a: params.action, id: filter.id])}">${filter.name}</a>
+                        <ul>
+                            <li>
+                                <a href="${createLink(controller: 'filter', action: 'load', params: [c: params.controller, a: params.action, id: filter.id])}"><span
+                                        class="k-icon k-i-download"></span> Load</a>
+                            </li>
+                            <li>
+                                <a href="javascript:copyForm(${filter.id})"><span
+                                        class="k-icon k-i-copy"></span> Copy</a>
+                            </li>
+                        </ul>
                     </li>
                 </g:each>
             </ul>
