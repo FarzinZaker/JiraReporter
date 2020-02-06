@@ -1,6 +1,7 @@
 package jirareporter
 
 import grails.gorm.transactions.Transactional
+import groovy.time.TimeCategory
 
 @Transactional
 class FilterService {
@@ -74,15 +75,62 @@ class FilterService {
             []
     }
 
+    Boolean formatUnassigned(params) {
+        params.unassigned ? true : false
+    }
+
     Date formatFromDate(params) {
-        params.from ? new Date(params.from).clearTime() : null
+        if (params.to == null)
+            return null
+        formatDate(params.from)
     }
 
     Date formatToDate(params) {
-        params.to ? (new Date(params.to) + 1).clearTime() : null
+        if (params.to == null)
+            return null
+        def date = formatDate(params.to)
+        date ? date + 1 : null
     }
 
-    Boolean formatUnassigned(params) {
-        params.unassigned ? true : false
+    Date formatDate(String input) {
+        if (input.contains('/'))
+            new Date(input).clearTime()
+        else
+            formatRelativeDate(input).clearTime()
+    }
+
+    Date formatRelativeDate(String input) {
+        input = input.trim().toLowerCase()
+        if (input == 'today')
+            return new Date().clearTime()
+        def scale = 'days'
+        if (input.endsWith('d')) {
+            scale = 'weeks'
+            input = input.substring(0, input.size() - 1).trim()
+        } else if (input.endsWith('w')) {
+            scale = 'weeks'
+            input = input.substring(0, input.size() - 1).trim()
+        } else if (input.endsWith('m')) {
+            scale = 'months'
+            input = input.substring(0, input.size() - 1).trim()
+        } else if (input.endsWith('y')) {
+            scale = 'years'
+            input = input.substring(0, input.size() - 1).trim()
+        }
+        def multiplier = 1
+        if (input.startsWith('-')) {
+            multiplier = -1
+            input = input.substring(1)
+        }
+        try {
+            def amount = input.toInteger()
+            def date = new Date().clearTime()
+            use(TimeCategory) {
+                date = date + (multiplier * amount)."${scale}"
+            }
+        }
+        catch (ignore) {
+            return null
+        }
     }
 }

@@ -148,8 +148,8 @@ var resourceConfig = {
 
 function getTasksLoad(tasks, resourceId, start_date, end_date) {
     var totalLoad = 0;
-    console.log(tasks);
-    console.log('--------------------');
+    // console.log(tasks);
+    // console.log('--------------------');
     tasks.forEach(function (task) {
         if(task.owner_id === resourceId && task.estimateHours && task.durationDays) {
             var sd = start_date;
@@ -158,31 +158,31 @@ function getTasksLoad(tasks, resourceId, start_date, end_date) {
             var ed = end_date;
             if (task.end_date.getTime() < end_date.getTime())
                 ed = task.end_date;
-            var taskDuration = workingDaysBetweenDates(task.start_date, task.end_date);
-            var periodDuration = workingDaysBetweenDates(start_date, end_date);
+            // var taskDuration = workingDaysBetweenDates(task.start_date, task.end_date);
+            // var periodDuration = workingDaysBetweenDates(start_date, end_date);
             var duration = workingDaysBetweenDates(sd, ed);
             // var assignments = gantt.getResourceAssignments(resourceId, task.id);
 
-            console.log(task.key);
-            console.log(task.start_date);
-            console.log(task.end_date);
-            console.log(start_date);
-            console.log(end_date);
-            console.log(sd);
-            console.log(ed);
-            console.log(task.end_date.getTime());
-            console.log(end_date.getTime());
-            console.log(task.estimateHours);
-            console.log(task.durationDays);
-            console.log(task.estimateHours / task.durationDays);
-            console.log(duration);
-            console.log(task.estimateHours / task.durationDays * duration);
-            console.log('--------------------');
+            // console.log(task.key);
+            // console.log(task.start_date);
+            // console.log(task.end_date);
+            // console.log(start_date);
+            // console.log(end_date);
+            // console.log(sd);
+            // console.log(ed);
+            // console.log(task.end_date.getTime());
+            // console.log(end_date.getTime());
+            // console.log(task.estimateHours);
+            // console.log(task.durationDays);
+            // console.log(task.estimateHours / task.durationDays);
+            // console.log(duration);
+            // console.log(task.estimateHours / task.durationDays * duration);
+            // console.log('--------------------');
             totalLoad += task.estimateHours / task.durationDays * duration;//assignments[0].value * duration;
         }
     });
-    console.log(totalLoad);
-    console.log('--------------------');
+    // console.log(totalLoad);
+    // console.log('--------------------');
 
     return Math.round(totalLoad * 10) / 10;
 }

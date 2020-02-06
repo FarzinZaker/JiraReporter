@@ -1352,3 +1352,31 @@ th {
     margin-top: 2px;
     padding: 15px 20px;
 }
+
+.field .k-widget.k-datepicker {
+    background: transparent;
+    padding: 0;
+    margin-top: 5px;
+    width: 100%;
+}
+
+.k-state-default {
+    box-shadow: none !important;
+}
+
+.field .k-widget.k-datepicker .k-picker-wrap {
+    background: transparent;
+    border-width: 0;
+    border-bottom: 1px solid #607D8B;
+}
+
+.field .k-widget.k-datepicker .k-picker-wrap .k-input {
+    background: transparent;
+    border-width: 0;
+}
+
+
+.field .k-widget.k-datepicker .k-picker-wrap .k-select {
+    border-width: 0;
+    background: transparent;
+}

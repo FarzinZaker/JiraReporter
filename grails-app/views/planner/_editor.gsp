@@ -310,7 +310,7 @@
                 });
             }
         });
-        $('.datepicker').datepicker();
+        // $('.datepicker').datepicker();
     }
 
     $(document).ready(function () {

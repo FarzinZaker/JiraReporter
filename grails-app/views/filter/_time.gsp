@@ -9,6 +9,7 @@
 </div>
 <script type="text/javascript">
     $(function () {
-        $('.datepicker').datepicker();
+        $('.datepicker').kendoDatePicker({
+        });
     });
 </script>

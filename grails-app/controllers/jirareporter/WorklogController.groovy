@@ -26,9 +26,10 @@ class WorklogController {
 
         Date from = filterService.formatFromDate(params)
         Date to = filterService.formatToDate(params)
-        use(TimeCategory) {
-            to = to - 1.second
-        }
+        if (to)
+            use(TimeCategory) {
+                to = to - 1.second
+            }
 
         def teams = filterService.formatTeams(params)
         def crossOverLogs = crossOverService.getWorkingHours(from, to, teams)

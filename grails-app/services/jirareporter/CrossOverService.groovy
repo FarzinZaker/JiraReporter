@@ -13,8 +13,12 @@ class CrossOverService {
 
     Map getWorkingHours(Date from, Date to, List<Team> teams) {
         def logs = CrossOverLog.createCriteria().list {
-            gte('date', from)
-            lte('date', to)
+            if (from) {
+                gte('date', from)
+            }
+            if (to) {
+                lte('date', to)
+            }
             if (teams?.size()) {
                 'in'('team', teams)
             }
