@@ -13,7 +13,7 @@ class IssueLinkUploadJob {
 
     def execute() {
 
-        if(!Environment.isDevelopmentMode())
+        if(Environment.isDevelopmentMode())
             return
 
         //remove unnecessary links

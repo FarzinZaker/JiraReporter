@@ -13,7 +13,7 @@ class IssueUploadJob {
 
     def execute() {
 
-        if (!Environment.isDevelopmentMode())
+        if (Environment.isDevelopmentMode())
             return
 
         def issueUploadItems = IssueUploadItem.createCriteria().list {

@@ -14,7 +14,7 @@ class WorklogsSyncJob {
 
     def execute() {
 
-        if (!Environment.isDevelopmentMode())
+        if (Environment.isDevelopmentMode())
             return
 
         Date timer = new Date()

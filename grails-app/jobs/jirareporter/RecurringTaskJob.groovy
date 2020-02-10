@@ -13,7 +13,7 @@ class RecurringTaskJob {
 
     def execute() {
 
-        if (!Environment.isDevelopmentMode())
+        if (Environment.isDevelopmentMode())
             return
 
         RecurringTaskSetting.findAllByEnabled(true).each { setting ->

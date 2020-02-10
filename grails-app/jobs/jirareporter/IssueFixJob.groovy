@@ -15,7 +15,7 @@ class IssueFixJob {
 
     def execute() {
 
-        if (!Environment.isDevelopmentMode())
+        if (Environment.isDevelopmentMode())
             return
 
 //        def jobConfig = SyncJobConfig.findByName('FIXED_ISSUES')
