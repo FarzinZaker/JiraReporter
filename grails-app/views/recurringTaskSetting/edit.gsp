@@ -61,8 +61,8 @@
                                 options: [
                                     <g:each in="${ Component.findAllByProject(project)?.sort{it.fullName}}" var="component">
                                     {
-                                        value: '${component.name}',
-                                        text: '${component.name}'
+                                        value: '<format:html value="${component.name}"/>',
+                                        text: '<format:html value="${component.name}"/>'
                                     },
                                     </g:each>
                                 ]

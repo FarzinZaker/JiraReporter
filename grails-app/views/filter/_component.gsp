@@ -14,8 +14,8 @@
             options: [
                 <g:each in="${components?.findAll{it}?.sort{it.fullName}}" var="component">
                 {
-                    value: '${component.name}',
-                    text: '${component.fullName}'
+                    value: '<format:html value="${component.name}"/>',
+                    text: '<format:html value="${component.fullName}"/>'
                 },
                 </g:each>
             ]
