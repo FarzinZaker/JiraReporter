@@ -28,7 +28,7 @@ class JiraIssueMapper {
             updated                 : [field: 'updated', type: Date, format: "yyyy-MM-dd'T'HH:mm:ss.000+0000"],
             created                 : [field: 'created', type: Date, format: "yyyy-MM-dd'T'HH:mm:ss.000+0000"],
             summary                 : [field: 'summary', type: String],
-            description             : [field: 'description', type: String],
+            description             : [field: 'description', type: String, rendered: true],
             priority                : [field: 'priority', type: JSONObject, parser: 'priorityService'],
             aggregateProgressValue  : [field: 'aggregateprogress.progress', type: Double],
             aggregateProgressTotal  : [field: 'aggregateprogress.total', type: Double],
@@ -38,7 +38,7 @@ class JiraIssueMapper {
 
     static def getFieldValue(org.codehaus.jettison.json.JSONObject data, String field) {
         def mapping = fieldsMap[field]
-        def rawValue = JSONUtil.safeRead(data, "fields.${mapping.field}")
+        def rawValue = JSONUtil.safeRead(data, mapping.rendered ? "fields.${mapping.renderedFields}" : "fields.${mapping.field}")
         if (!rawValue)
             return null
 

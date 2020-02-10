@@ -21,7 +21,7 @@ class IssueDownloadService {
         def startAt = 0
         def maxResults = 100
         while (true) {
-            def result = jiraClient.getURL("${Configuration.serverURL}/rest/api/latest/search?jql=${URLEncoder.encode(worklogQyery, 'UTF-8')}&startAt=$startAt&maxResults=$maxResults")
+            def result = jiraClient.getURL("${Configuration.serverURL}/rest/api/latest/search?jql=${URLEncoder.encode(worklogQyery, 'UTF-8')}&startAt=$startAt&maxResults=$maxResults&expand=renderedFields")
 
             if (result.total == 0 || !result.issues?.length())
                 return
@@ -57,7 +57,7 @@ class IssueDownloadService {
 
         def result = null
         try {
-            result = jiraClient.getURL("${Configuration.serverURL}/rest/api/latest/search?jql=" + URLEncoder.encode(worklogQyery, 'UTF-8'))
+            result = jiraClient.getURL("${Configuration.serverURL}/rest/api/latest/search?jql=" + URLEncoder.encode(worklogQyery, 'UTF-8') + "&expand=renderedFields")
         } catch (Exception ex) {
             if (ex.message.contains("An issue with key '${issueKey}' does not exist for field 'key'")) {
                 issueService.delete(issueKey)
@@ -111,7 +111,7 @@ class IssueDownloadService {
 
         def result = null
         try {
-            result = jiraClient.getURL("${Configuration.serverURL}/rest/api/latest/search?jql=" + URLEncoder.encode(worklogQyery, 'UTF-8') + '&maxResults=1000')
+            result = jiraClient.getURL("${Configuration.serverURL}/rest/api/latest/search?jql=" + URLEncoder.encode(worklogQyery, 'UTF-8') + '&maxResults=1000&expand=renderedFields')
         } catch (Exception ex) {
             issueKeys.each { issueKey ->
                 if (ex.message.contains("An issue with key '${issueKey}' does not exist for field 'key'")) {

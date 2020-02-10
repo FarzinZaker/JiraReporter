@@ -22,7 +22,7 @@ class WorklogDownloadService {
         def startAt = 0
         def maxResults = 100
         while (true) {
-            def result = jiraClient.getURL("${Configuration.serverURL}/rest/api/latest/search?jql=${URLEncoder.encode(worklogQyery, 'UTF-8')}&startAt=$startAt&maxResults=$maxResults")
+            def result = jiraClient.getURL("${Configuration.serverURL}/rest/api/latest/search?jql=${URLEncoder.encode(worklogQyery, 'UTF-8')}&startAt=$startAt&maxResults=$maxResults&expand=renderedFields")
 
             if (result.total == 0 || !result.issues?.length())
                 return
