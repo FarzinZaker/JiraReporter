@@ -62,5 +62,26 @@ class IssueSyncJob {
             println ex.message
             throw ex
         }
+
+        jobConfig = SyncJobConfig.findByName('OLD_ISSUES')
+        if (!jobConfig)
+            jobConfig = new SyncJobConfig(name: 'OLD_ISSUES').save(flush: true)
+
+        endDate = jobConfig.startDate ?: new Date()
+        if (endDate < new Date() - 365)
+            endDate = new Date()
+        startDate = endDate - 1
+
+        try {
+            issueDownloadService.queueIssues(startDate, endDate, true)
+
+            jobConfig = SyncJobConfig.findByName('OLD_ISSUES')
+            jobConfig.startDate = startDate
+            jobConfig.endDate = endDate
+            jobConfig.save(flush: true)
+        } catch (Exception ex) {
+            println ex.message
+            throw ex
+        }
     }
 }

@@ -107,6 +107,11 @@ class IssueReportService {
                     'in'('id', clientList.collect { it.id })
                 }
             }
+            if (labelList.size()) {
+                labels {
+                    'in'('id', labelList.collect { it.id })
+                }
+            }
         }.unique { it.key } as List<Issue>
     }
 

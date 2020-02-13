@@ -8,6 +8,7 @@
     <g:render template="/filter/status"/>
     <g:render template="/filter/component"/>
     <g:render template="/filter/client"/>
+    <g:render template="/filter/label"/>
     <g:render template="/filter/team"/>
     <g:render template="/filter/user"/>
     <g:render template="/filter/unassigned"/>

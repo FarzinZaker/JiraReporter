@@ -50,7 +50,7 @@ class IssueDownloadService {
         }
     }
 
-    void queueIssues(Date from, Date to) {
+    void queueIssues(Date from, Date to, Boolean forceQueue = false) {
 
         use(TimeCategory) {
             from = from - 12.hours
@@ -77,7 +77,7 @@ class IssueDownloadService {
 
                     def updated = JiraIssueMapper.getFieldValue(issue, 'updated')
                     def savedIssue = Issue.findByKey(issue.key)
-                    if (!savedIssue || (updated + 1) > savedIssue.lastSync)
+                    if (forceQueue || !savedIssue || (updated + 1) > savedIssue.lastSync)
                         downloadItem = new IssueDownloadItem(issueKey: issue.key, source: 'Sync Service').save(flush: true)
                 }
                 if (downloadItem && !downloadItem.save(flush: true))

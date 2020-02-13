@@ -76,6 +76,11 @@ class ReportService {
                             'in'('id', clientList.collect { it.id })
                         }
                     }
+                    if (labelList.size()) {
+                        labels {
+                            'in'('id', labelList.collect { it.id })
+                        }
+                    }
                 }
             }
         } as List<Worklog>
