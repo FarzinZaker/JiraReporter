@@ -137,7 +137,7 @@ class IssueDownloadService {
             if (cacheService.has(task.value.url))
                 json = cacheService.retrieve(task.value.url)
             else {
-                json = jiraClient.getURL(task.value.url)
+                json = jiraClient.getURL(task.value.url + '?expand=renderedFields')
                 cacheService.store(task.value.url, json)
             }
             def issue = issueService.parse(json)
