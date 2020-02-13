@@ -17,7 +17,7 @@ class IssueSyncJob {
         if (Environment.isDevelopmentMode())
             return
 
-        //Recent
+        //Updated
         def endDate = null
         def jobConfig = SyncJobConfig.findByName('UPDATED_ISSUES')
         if (!jobConfig) {
@@ -27,6 +27,7 @@ class IssueSyncJob {
             jobConfig = new SyncJobConfig(name: 'UPDATED_ISSUES', startDate: endDate, endDate: endDate).save(flush: true)
         }
         endDate = jobConfig.endDate
+
         def newEndDate = new Date()
 
         try {
@@ -35,6 +36,27 @@ class IssueSyncJob {
             jobConfig = SyncJobConfig.findByName('UPDATED_ISSUES')
             jobConfig.startDate = newEndDate
             jobConfig.endDate = newEndDate
+            jobConfig.save(flush: true)
+        } catch (Exception ex) {
+            println ex.message
+            throw ex
+        }
+
+        jobConfig = SyncJobConfig.findByName('RECENT_ISSUES')
+        if (!jobConfig)
+            jobConfig = new SyncJobConfig(name: 'RECENT_ISSUES').save(flush: true)
+
+        endDate = jobConfig.startDate ?: new Date()
+        if (endDate < new Date() - 90)
+            endDate = new Date()
+        def startDate = endDate - 1
+
+        try {
+            issueDownloadService.queueIssues(startDate, endDate)
+
+            jobConfig = SyncJobConfig.findByName('RECENT_ISSUES')
+            jobConfig.startDate = startDate
+            jobConfig.endDate = endDate
             jobConfig.save(flush: true)
         } catch (Exception ex) {
             println ex.message

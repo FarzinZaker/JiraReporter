@@ -18,7 +18,14 @@ class IssueDownloadJob {
             return
 
 //        Date timer = new Date()
-        def issueDownloadItems = IssueDownloadItem.findAllByIdGreaterThan(0, [max: 1000])
+        def issueDownloadItems = IssueDownloadItem.findAllBySourceInList(['MANUAL', 'User'], [max: 100])
+        issueDownloadItems.each { issueDownloadItem ->
+            issueDownloadService.download(issueDownloadItem.issueKey)
+            issueDownloadItem.delete()
+//            IssueDownloadItem.executeUpdate("delete IssueDownloadItem where issueKey = :issueKey", [issueKey: issueDownloadItem.issueKey])
+        }
+
+        issueDownloadItems = IssueDownloadItem.findAllByIdGreaterThan(0, [max: 100])
         issueDownloadItems.each { issueDownloadItem ->
             issueDownloadService.download(issueDownloadItem.issueKey)
             issueDownloadItem.delete()

@@ -1,6 +1,7 @@
 package jirareporter
 
 import grails.gorm.transactions.Transactional
+import groovy.time.TimeCategory
 
 @Transactional
 class IssueDownloadService {
@@ -12,6 +13,9 @@ class IssueDownloadService {
 
     void queueIssues(Date from) {
 
+        use(TimeCategory) {
+            from = from - 12.hours
+        }
         def jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(Configuration.username, Configuration.password))
 
         String worklogQyery = "project in (${defaultProjectsList}) AND (labels not in (Legacy) OR labels is EMPTY)"
@@ -26,16 +30,60 @@ class IssueDownloadService {
             if (result.total == 0 || !result.issues?.length())
                 return
 
-            def downloadItem
-            result.issues?.myArrayList?.each { issue ->
+            IssueDownloadItem.withNewTransaction {
+                def downloadItem
+                result.issues?.myArrayList?.each { issue ->
 
-                def updated = JiraIssueMapper.getFieldValue(issue, 'updated')
-                def savedIssue = Issue.findByKey(issue.key)
-                if (!savedIssue || updated > savedIssue.lastSync)
-                    downloadItem = new IssueDownloadItem(issueKey: issue.key, source: 'Sync Service').save()
+                    def updated = JiraIssueMapper.getFieldValue(issue, 'updated')
+                    def savedIssue = Issue.findByKey(issue.key)
+                    if (!savedIssue || (updated + 1) > savedIssue.lastSync)
+                        downloadItem = new IssueDownloadItem(issueKey: issue.key, source: 'Sync Service').save(flush: true)
+                }
+                if (downloadItem && !downloadItem.save(flush: true))
+                    throw new Exception('Unable to save Download Item')
             }
-            if (downloadItem && !downloadItem.save(flush: true))
-                throw new Exception('Unable to save Download Item')
+
+            if (result.issues?.length() < maxResults)
+                return
+
+            startAt += maxResults
+        }
+    }
+
+    void queueIssues(Date from, Date to) {
+
+        use(TimeCategory) {
+            from = from - 12.hours
+            to = to + 12.hours
+        }
+
+        def jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(Configuration.username, Configuration.password))
+
+        String worklogQyery = "project in (${defaultProjectsList}) AND (labels not in (Legacy) OR labels is EMPTY)"
+        worklogQyery = "${worklogQyery} AND updated >= '${from.format('yyyy/MM/dd HH:mm')}' AND  updated <= '${to.format('yyyy/MM/dd HH:mm')}' order by updated"
+
+
+        def startAt = 0
+        def maxResults = 100
+        while (true) {
+            def result = jiraClient.getURL("${Configuration.serverURL}/rest/api/latest/search?jql=${URLEncoder.encode(worklogQyery, 'UTF-8')}&startAt=$startAt&maxResults=$maxResults&expand=renderedFields")
+
+            if (result.total == 0 || !result.issues?.length())
+                return
+
+            IssueDownloadItem.withNewTransaction {
+                def downloadItem
+                result.issues?.myArrayList?.each { issue ->
+
+                    def updated = JiraIssueMapper.getFieldValue(issue, 'updated')
+                    def savedIssue = Issue.findByKey(issue.key)
+                    if (!savedIssue || (updated + 1) > savedIssue.lastSync)
+                        downloadItem = new IssueDownloadItem(issueKey: issue.key, source: 'Sync Service').save(flush: true)
+                }
+                if (downloadItem && !downloadItem.save(flush: true))
+                    throw new Exception('Unable to save Download Item')
+
+            }
 
             if (result.issues?.length() < maxResults)
                 return
