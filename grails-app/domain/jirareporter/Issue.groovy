@@ -36,7 +36,7 @@ class Issue {
 
     transient Map assignees = [:]
 
-    static hasMany = [components: Component, clients: Client]
+    static hasMany = [components: Component, clients: Client, labels: Label]
 
     static mapping = {
         key column: 'jira_key'

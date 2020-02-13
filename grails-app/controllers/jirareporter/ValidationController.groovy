@@ -18,7 +18,8 @@ class ValidationController {
 
         def components = componentService.getAll(Configuration.projects.collect { it.key?.toString() })
         def clients = Client.list()
-        [components: components, clients: clients]
+        def labels = Label.list()
+        [components: components, clients: clients, labels: labels]
     }
 
     def estimateJson() {
@@ -37,6 +38,7 @@ class ValidationController {
                 filterService.formatPriorities(params),
                 filterService.formatComponents(params),
                 filterService.formatClients(params),
+                filterService.formatLabels(params),
                 filterService.formatUsersList(params),
                 teams?.size() ? (JiraUser.findAllByTeamInList(teams) ?: [null]) : [null],
                 teams?.size > 0,

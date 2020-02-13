@@ -68,6 +68,12 @@ class FilterService {
         } ?: []) + ['-'])
     }
 
+    List<Label> formatLabels(params) {
+        Label.findAllByNameInList((params.labels?.split(',')?.collect { it.toString()?.trim() }?.findAll {
+            it
+        } ?: []) + ['-'])
+    }
+
     List<Status> formatStatus(params) {
         def list = []
         params.status?.split(',')?.collect { it.toString()?.trim() }?.findAll { it }?.each { st ->

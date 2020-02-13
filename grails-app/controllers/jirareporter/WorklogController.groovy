@@ -18,6 +18,7 @@ class WorklogController {
 
         def components = componentService.getAll(Configuration.projects.collect { it.key?.toString() })
         def clients = Client.list()
+        def labels = Label.list()
 
         if (!params.from)
             return redirect(action: 'report', params: params + [from: (new Date() - 1).format('MM/dd/yyyy')])
@@ -42,6 +43,7 @@ class WorklogController {
                 filterService.formatPriorities(params),
                 filterService.formatComponents(params),
                 filterService.formatClients(params),
+                filterService.formatLabels(params),
                 filterService.formatUsersList(params),
                 filterService.formatTeamMembers(crossOverLogs.keySet() as Set<String>),
                 teams?.size > 0,
@@ -65,6 +67,7 @@ class WorklogController {
         [
                 components      : components,
                 clients         : clients,
+                labels          : labels,
                 worklogs        : worklogs,
 
                 userSummary     : userSummary,

@@ -13,6 +13,7 @@ class IssueService {
     def componentService
     def projectService
     def clientService
+    def labelService
 
     List<Issue> search(String phrase) {
         Issue.createCriteria().list {
@@ -64,6 +65,12 @@ class IssueService {
         JSONUtil.safeRead(obj, "fields.customfield_26105.myArrayList")?.each {
             def client = clientService.parse(it)
             issue.addToClients(client)
+
+        }
+        issue.labels?.clear()
+        JSONUtil.safeRead(obj, "fields.labels.myArrayList")?.each {
+            def label = labelService.parse(it)
+            issue.addToLabels(label)
 
         }
 
