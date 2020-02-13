@@ -5,7 +5,7 @@ import groovy.time.TimeCategory
 
 class IssueSyncJob {
     static triggers = {
-        simple repeatInterval: 1 * 60 * 1000l // execute job once in 5 seconds
+        simple repeatInterval: 5 * 60 * 1000l // execute job once in 5 seconds
     }
 
     static concurrent = false
@@ -73,7 +73,7 @@ class IssueSyncJob {
         startDate = endDate - 1
 
         try {
-            issueDownloadService.queueIssues(startDate, endDate, true)
+            issueDownloadService.queueIssues(startDate, endDate)
 
             jobConfig = SyncJobConfig.findByName('OLD_ISSUES')
             jobConfig.startDate = startDate
