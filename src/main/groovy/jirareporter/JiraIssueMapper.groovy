@@ -38,7 +38,7 @@ class JiraIssueMapper {
 
     static def getFieldValue(org.codehaus.jettison.json.JSONObject data, String field) {
         def mapping = fieldsMap[field]
-        def rawValue = JSONUtil.safeRead(data, mapping.rendered ? "fields.${mapping.renderedFields}" : "fields.${mapping.field}")
+        def rawValue = JSONUtil.safeRead(data, mapping.rendered ? "renderedFields.${mapping.field}" : "fields.${mapping.field}")
         if (!rawValue)
             return null
 
