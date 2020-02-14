@@ -14,7 +14,7 @@ class FilterService {
     List<JiraUser> formatUsersList(params) {
         def list = (params.user?.split(',')?.collect {
             it.split('\\(')?.first()?.replace(')', '')?.trim()
-        }?.findAll { it } ?: []) + ['-']
+        }?.findAll { it } ?: []) + [0]
         def users = JiraUser.findAllByDisplayNameInList(list)
         if (list.contains('Current User')) {
             users << JiraUser.findByName(springSecurityService.currentUser.username)
@@ -25,11 +25,11 @@ class FilterService {
     List<Issue> formatIssueList(params) {
         Issue.findAllByKeyInList((params.issue?.split(',')?.collect {
             it.split(':')?.first()?.trim()
-        }?.findAll { it } ?: []) + ['-'])
+        }?.findAll { it } ?: []) + [0])
     }
 
     List<JiraUser> formatTeamMembers(Set<String> users) {
-        JiraUser.findAllByDisplayNameInList((users?.toList() ?: []) + ['-'])
+        JiraUser.findAllByDisplayNameInList((users?.toList() ?: []) + [0])
     }
 
     List<String> formatWorklogTypes(params) {
@@ -41,37 +41,37 @@ class FilterService {
     List<Project> formatProjects(params) {
         Project.findAllByKeyInList((params.project?.split(',')?.collect { it.toString()?.trim() }?.findAll {
             it
-        } ?: []) + ['-'])
+        } ?: []) + [0])
     }
 
     List<IssueType> formatIssueTypes(params) {
         IssueType.findAllByNameInList((params.issueType?.split(',')?.collect { it.toString()?.trim() }?.findAll {
             it
-        } ?: []) + ['-'])
+        } ?: []) + [0])
     }
 
     List<Priority> formatPriorities(params) {
         Priority.findAllByNameInList((params.priority?.split(',')?.collect { it.toString()?.trim() }?.findAll {
             it
-        } ?: []) + ['-'])
+        } ?: []) + [0])
     }
 
     List<Component> formatComponents(params) {
         Component.findAllByNameInList((params.component?.split(',')?.collect { it.toString()?.trim() }?.findAll {
             it
-        } ?: []) + ['-'])
+        } ?: []) + [0])
     }
 
     List<Client> formatClients(params) {
         Client.findAllByNameInList((params.client?.split(',')?.collect { it.toString()?.trim() }?.findAll {
             it
-        } ?: []) + ['-'])
+        } ?: []) + [0])
     }
 
     List<Label> formatLabels(params) {
         Label.findAllByNameInList((params.labels?.split(',')?.collect { it.toString()?.trim() }?.findAll {
             it
-        } ?: []) + ['-'])
+        } ?: []) + [0])
     }
 
     List<Status> formatStatus(params) {
@@ -79,7 +79,7 @@ class FilterService {
         params.status?.split(',')?.collect { it.toString()?.trim() }?.findAll { it }?.each { st ->
             list.addAll(Configuration.statusList.find { it.name == st }?.details)
         }.findAll { it }
-        Status.findAllByNameInList(list + ['-'])
+        Status.findAllByNameInList(list + [0])
     }
 
     List<Team> formatTeams(params) {
