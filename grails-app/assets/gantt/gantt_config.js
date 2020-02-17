@@ -25,7 +25,7 @@ var linksFormatter = gantt.ext.formatters.linkFormatter({durationFormatter: form
 gantt.templates.grid_row_class = function (start_date, end_date, item) {
     // console.log(item);
 
-    if (end_date < new Date()) {
+    if (item.type != 'project' && !item.completed && end_date < new Date()) {
         // console.log(end_date);
         // $('[task_id=' + item.id + ']').addClass('red');
         return "red";
@@ -37,7 +37,7 @@ gantt.templates.grid_row_class = function (start_date, end_date, item) {
 
 gantt.templates.task_row_class = function (start_date, end_date, item) {
 
-    if (end_date < new Date()) {
+    if (item.type != 'project' && !item.completed && end_date < new Date()) {
         // console.log(end_date);
         // $('[task_id=' + item.id + ']').addClass('red');
         return "red";

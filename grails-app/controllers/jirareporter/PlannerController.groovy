@@ -98,7 +98,7 @@ class PlannerController {
                         id    : link.id,
                         source: link.firstIssue?.id,
                         target: link.secondIssue?.id,
-                        type  : '0'
+                        type  : '0',
                 ]
             }
         }
@@ -358,6 +358,7 @@ class PlannerController {
                 originalEstimate : issue.originalEstimate,
                 remainingEstimate: issue.remainingEstimate,
                 timeSpent        : issue.timeSpent,
+                completed        : completed,
                 overdue          : !completed && issue.dueDate && issue.dueDate < new Date()
         ]
     }
