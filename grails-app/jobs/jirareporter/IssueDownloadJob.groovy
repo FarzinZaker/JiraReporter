@@ -10,28 +10,32 @@ class IssueDownloadJob {
     static concurrent = false
 
     def issueDownloadService
-
+    def jobExecutionService
 
     def execute() {
 
         if (Environment.isDevelopmentMode())
             return
 
-//        Date timer = new Date()
-        def issueDownloadItems = IssueDownloadItem.findAllBySourceInList(['MANUAL', 'User'], [max: 100])
-        issueDownloadItems.each { issueDownloadItem ->
-            issueDownloadService.download(issueDownloadItem.issueKey)
-            issueDownloadItem.delete()
-//            IssueDownloadItem.executeUpdate("delete IssueDownloadItem where issueKey = :issueKey", [issueKey: issueDownloadItem.issueKey])
-        }
 
-        issueDownloadItems = IssueDownloadItem.findAllByIdGreaterThan(0, [max: 100])
-        issueDownloadItems.each { issueDownloadItem ->
-            issueDownloadService.download(issueDownloadItem.issueKey)
-            issueDownloadItem.delete()
-//            IssueDownloadItem.executeUpdate("delete IssueDownloadItem where issueKey = :issueKey", [issueKey: issueDownloadItem.issueKey])
-        }
+        jobExecutionService.execute('Download Manually Queued Issues',
+                { SyncJobConfig jobConfig ->
+                    def issueDownloadItems = IssueDownloadItem.findAllBySourceInList(['MANUAL', 'User'], [max: 100])
+                    issueDownloadItems.each { issueDownloadItem ->
+                        issueDownloadService.download(issueDownloadItem.issueKey)
+                        issueDownloadItem.delete()
+                    }
+                })
 
-//        println('QUEUE:\t' + (new Date().time - timer.time))
+        jobExecutionService.execute('Download All Queued Issues',
+                { SyncJobConfig jobConfig ->
+                    def issueDownloadItems = IssueDownloadItem.findAllByIdGreaterThan(0, [max: 100])
+                    issueDownloadItems.each { issueDownloadItem ->
+                        issueDownloadService.download(issueDownloadItem.issueKey)
+                        issueDownloadItem.delete()
+                    }
+                })
+
+
     }
 }

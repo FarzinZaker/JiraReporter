@@ -10,6 +10,7 @@ class CrossOverSyncJob {
 
     static concurrent = false
 
+    def jobExecutionService
     def crossOverService
 
 
@@ -19,37 +20,37 @@ class CrossOverSyncJob {
             return
 
         //Recent
-        def jobConfig = SyncJobConfig.findByName('RECENT_XO_LOGS')
-        if (!jobConfig)
-            jobConfig = new SyncJobConfig(name: 'RECENT_XO_LOGS').save(flush: true)
-
-        def endDate = jobConfig.startDate ?: (new Date() + 1)
-        if (endDate < new Date() - 7)
-            endDate = new Date() + 1
-        def startDate = endDate - 7
-
-        crossOverService.persist(startDate, endDate, Team.list(), true)
-
-        jobConfig = SyncJobConfig.findByName('RECENT_XO_LOGS')
-        jobConfig.startDate = startDate
-        jobConfig.endDate = endDate
-        jobConfig.save(flush: true)
+        def startDate
+        def endDate
+        jobExecutionService.execute('Download Recent CrossOver Logs',
+                { SyncJobConfig jobConfig ->
+                    crossOverService.persist(startDate, endDate, Team.list(), true)
+                },
+                { SyncJobConfig jobConfig ->
+                    endDate = jobConfig.startDate ?: (new Date() + 1)
+                    if (endDate < new Date() - 7)
+                        endDate = new Date() + 1
+                    startDate = endDate - 7
+                },
+                { SyncJobConfig jobConfig ->
+                    jobConfig.startDate = startDate
+                    jobConfig.endDate = endDate
+                })
 
         //Old
-        jobConfig = SyncJobConfig.findByName('OLD_XO_LOGS')
-        if (!jobConfig)
-            jobConfig = new SyncJobConfig(name: 'OLD_XO_LOGS').save(flush: true)
-
-        endDate = jobConfig.startDate ?: (new Date() - 7)
-        if (endDate < new Date() - 335)
-            endDate = new Date() - 7
-        startDate = endDate - 7
-
-        crossOverService.persist(startDate, endDate, Team.list())
-
-        jobConfig = SyncJobConfig.findByName('OLD_XO_LOGS')
-        jobConfig.startDate = startDate
-        jobConfig.endDate = endDate
-        jobConfig.save(flush: true)
+        jobExecutionService.execute('Download Old CrossOver Logs',
+                { SyncJobConfig jobConfig ->
+                    crossOverService.persist(startDate, endDate, Team.list(), true)
+                },
+                { SyncJobConfig jobConfig ->
+                    endDate = jobConfig.startDate ?: (new Date() + 1)
+                    if (endDate < new Date() - 365)
+                        endDate = new Date() - 7
+                    startDate = endDate - 7
+                },
+                { SyncJobConfig jobConfig ->
+                    jobConfig.startDate = startDate
+                    jobConfig.endDate = endDate
+                })
     }
 }

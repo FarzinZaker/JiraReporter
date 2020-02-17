@@ -10,18 +10,22 @@ class RecurringTaskJob {
     static concurrent = false
 
     def recurringTaskService
+    def jobExecutionService
 
     def execute() {
 
         if (Environment.isDevelopmentMode())
             return
 
-        RecurringTaskSetting.findAllByEnabled(true).each { setting ->
-            try {
-                recurringTaskService.execute(setting)
-            } catch (ex) {
-                println ex.message
-            }
-        }
+        jobExecutionService.execute('Create Recurring Issues',
+                { SyncJobConfig jobConfig ->
+                    RecurringTaskSetting.findAllByEnabled(true).each { setting ->
+                        try {
+                            recurringTaskService.execute(setting)
+                        } catch (ex) {
+                            println ex.message
+                        }
+                    }
+                })
     }
 }

@@ -10,6 +10,7 @@ class IssueLinkUploadJob {
     static concurrent = false
 
     def issueLinkUploadService
+    def jobExecutionService
 
     def execute() {
 
@@ -17,21 +18,33 @@ class IssueLinkUploadJob {
             return
 
         //remove unnecessary links
-        IssueLink.findAllByAddedAndDeleted(true, true).each { it.delete() }
+        jobExecutionService.execute('Remove Unnecessary Links',
+                { SyncJobConfig jobConfig ->
+                    IssueLink.findAllByAddedAndDeleted(true, true).each { it.delete() }
+                })
 
         //delete removed links
-        IssueLink.findAllByAddedAndDeletedAndKeyNotEqual(false, true, '-').each { link ->
-            issueLinkUploadService.removeLink(link)
-        }
+        jobExecutionService.execute('Clean Deleted Links',
+                { SyncJobConfig jobConfig ->
+                    IssueLink.findAllByAddedAndDeletedAndKeyNotEqual(false, true, '-').each { link ->
+                        issueLinkUploadService.removeLink(link)
+                    }
+                })
 
         //create new Links
-        IssueLink.findAllByAddedAndDeleted(true, false).each { link ->
-            issueLinkUploadService.addLink(link)
-        }
+        jobExecutionService.execute('Upload Newly Created Links',
+                { SyncJobConfig jobConfig ->
+                    IssueLink.findAllByAddedAndDeleted(true, false).each { link ->
+                        issueLinkUploadService.addLink(link)
+                    }
+                })
 
         //update added link
-        IssueLink.findAllByAddedAndDeletedAndKey(false, true, '-').each { link ->
-            new IssueDownloadItem(issueKey: link.firstIssue.key, source: 'Fill Empty Link Keys').save()
-        }
+        jobExecutionService.execute('Download Issues With Removed Link',
+                { SyncJobConfig jobConfig ->
+                    IssueLink.findAllByAddedAndDeletedAndKey(false, true, '-').each { link ->
+                        new IssueDownloadItem(issueKey: link.firstIssue.key, source: 'Fill Empty Link Keys').save()
+                    }
+                })
     }
 }

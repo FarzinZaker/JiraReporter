@@ -2,8 +2,6 @@
 
 <g:render template="toolbar"/>
 
-<g:render template="syncStatus"/>
-
 <div id="gantt_here" style='width:100%; height:80vh'></div>
 
 <script language="JavaScript">

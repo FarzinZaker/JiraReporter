@@ -10,25 +10,23 @@ class IssueUploadJob {
     static concurrent = false
 
     def issueUploadService
+    def jobExecutionService
 
     def execute() {
 
         if (Environment.isDevelopmentMode())
             return
 
-        def issueUploadItems = IssueUploadItem.createCriteria().list {
-            lt('retryCount', 20)
-            order('time')
-            maxResults(100)
-        }
-//        def threads = []
-        issueUploadItems.each { IssueUploadItem issueUploadItem ->
-//            threads << Thread.start {
-//                Issue.withNewTransaction {
-            issueUploadService.update(issueUploadItem.issueKey, issueUploadItem.time, issueUploadItem.creator)
-//                }
-//            }
-        }
-//        threads.each { it.join() }
+        jobExecutionService.execute('Upload Modified Issues',
+                { SyncJobConfig jobConfig ->
+                    def issueUploadItems = IssueUploadItem.createCriteria().list {
+                        lt('retryCount', 20)
+                        order('time')
+                        maxResults(100)
+                    }
+                    issueUploadItems.each { IssueUploadItem issueUploadItem ->
+                        issueUploadService.update(issueUploadItem.issueKey, issueUploadItem.time, issueUploadItem.creator)
+                    }
+                })
     }
 }

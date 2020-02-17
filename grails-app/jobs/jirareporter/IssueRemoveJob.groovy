@@ -11,42 +11,38 @@ class IssueRemoveJob {
     static concurrent = false
 
     def issueDownloadService
+    def jobExecutionService
 
     def execute() {
 
         if (Environment.isDevelopmentMode())
             return
 
-        def endDate = null
-        def jobConfig = SyncJobConfig.findByName('DELETED_ISSUES')
-        if (!jobConfig) {
-            use(TimeCategory) {
-                endDate = new Date() - 1.day
-            }
-            jobConfig = new SyncJobConfig(name: 'DELETED_ISSUES', lastRecord: 0).save(flush: true)
-        }
+        def endDate
+        def lastRecord = 0
+        jobExecutionService.execute('Clean Deleted Issues',
+                { SyncJobConfig jobConfig ->
+                    def issues = Issue.createCriteria().list {
+                        gt('id', jobConfig.lastRecord)
+                        order('id')
+                        maxResults(100)
+                    }
 
-
-        try {
-            def issues = Issue.createCriteria().list {
-                gt('id', jobConfig.lastRecord)
-                order('id')
-                maxResults(100)
-            }
-
-            def lastRecord = 0
-            if (issues?.size()) {
-                lastRecord = issues.collect { it.id }.max() as Long
-                issueDownloadService.removeDeleted(issues.collect { it.key })
-            }
-
-            jobConfig = SyncJobConfig.findByName('DELETED_ISSUES')
-            jobConfig.lastRecord = lastRecord
-            jobConfig.save(flush: true)
-        } catch (Exception ex) {
-            println ex.message
-            throw ex
-        }
+                    if (issues?.size()) {
+                        lastRecord = issues.collect { it.id }.max() as Long
+                        issueDownloadService.removeDeleted(issues.collect { it.key })
+                    }
+                },
+                { SyncJobConfig jobConfig ->
+                    use(TimeCategory) {
+                        endDate = new Date() - 1.day
+                    }
+                    jobConfig.lastRecord = 0
+                    jobConfig.save(flush: true)
+                },
+                { SyncJobConfig jobConfig ->
+                    jobConfig.lastRecord = lastRecord
+                })
     }
 
 }

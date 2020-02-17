@@ -1093,9 +1093,19 @@ th {
 
 .sync-status {
     float: right;
-    position: absolute;
     top: 10px;
     right: 20px;
+    background: #ECEFF1;
+    margin: 10px;
+    padding: 8px 8px 8px 18px;
+    display: block;
+    transition: all 0.5s ease;
+    cursor: pointer;
+}
+
+.sync-status:hover{
+    background: #0097A7;
+    color:white;
 }
 
 .sync-status span {
