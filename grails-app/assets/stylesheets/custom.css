@@ -1380,3 +1380,25 @@ th {
     border-width: 0;
     background: transparent;
 }
+
+.priority-icon-container{
+    text-align: center;
+    display: block !important;
+    min-width: 31px;
+}
+
+.update-button {
+    text-align: center;
+    display: block !important;
+    min-width: 31px;
+}
+
+.update-button span {
+    cursor: pointer;
+    color: #5E35B1 !important;
+    opacity: 0.5;
+}
+
+.gantt_row:hover .update-button span {
+    opacity: 1;
+}

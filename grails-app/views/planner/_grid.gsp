@@ -46,7 +46,10 @@
     });
 
     gantt.attachEvent("onAfterTaskUpdate", function (id, task) {
+        updateIssue(id, task);
+    });
 
+    function updateIssue(id, task){
         var startDate = start_date = new Date(Date.UTC(task.start_date.getFullYear(), task.start_date.getMonth(), task.start_date.getDate(), 0, 0, 0));
         var endDate = new Date(Date.UTC(task.end_date.getFullYear(), task.end_date.getMonth(), task.end_date.getDate(), 0, 0, 0));
 
@@ -78,7 +81,36 @@
                 }
             });
         }
+    }
+
+    gantt.attachEvent("onTaskClick", function(id, e){
+        console.log(id);
+        console.log($(e.target).attr('data-action'));
+        var button = e.target.closest("[data-action]");
+        if(button){
+            var action = button.getAttribute("data-action");
+            switch (action) {
+                case "forceUpdate":
+                    var task = gantt.getTask(id);
+                    console.log(task);
+                    kendo.confirm("Are you sure about updating <b>" + task.key + "</b>?").then(function () {
+                        updateIssue(id, task);
+                    }, function () {
+                    });
+                    $('.k-confirm .k-window-title.k-dialog-title').text('Confirmation');
+                    break;
+            }
+            return false;
+
+        }
+        return true;
     });
+
+    function forceUpdateIssue(sender) {
+        console.log('clicked');
+        var key = $(sender).attr('data-task');
+        console.log(key);
+    }
 
 
     gantt.attachEvent("onAfterLinkAdd", function (id, link) {
@@ -358,7 +390,7 @@
         <g:set var="column" value="${GanttColumn.findByUserAndName(user, 'priority')}"/>
         {
             name: "priority",
-            width: 32,
+            width: 43,
             label: "P",
             resize: true,
             hide: ${!column?.visible},
@@ -368,7 +400,7 @@
                     return "";
                 }
                 // return task.priority;
-                return '<img class="priority-icon" src="' + priorityIcons['p' + task.priority] + '"/>';
+                return '<div class="priority-icon-container"><img class="priority-icon" src="' + priorityIcons['p' + task.priority] + '"/></div>';
             }
         },
         <g:set var="column" value="${GanttColumn.findByUserAndName(user, 'predecessors')}"/>
@@ -382,6 +414,15 @@
                     labels.push(linksFormatter.format(link));
                 }
                 return labels.join(", ")
+            }
+        },
+        <g:set var="column" value="${GanttColumn.findByUserAndName(user, 'update')}"/>
+        {
+            name: "text", width: 43, tree: false, label: " ", resize: true, template: function (task) {
+                if (!task.taskType || task.taskType === 'project' || task.taskType === 'client')
+                    return ' ';
+                else
+                    return '<div class="update-button"><span class="k-icon k-i-upload" data-task="' + task.key + '" data-action="forceUpdate"></span></div>';
             }
         },
         <g:set var="column" value="${GanttColumn.findByUserAndName(user, 'add')}"/>
