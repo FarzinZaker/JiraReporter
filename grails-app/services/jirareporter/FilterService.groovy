@@ -91,6 +91,10 @@ class FilterService {
             []
     }
 
+    Boolean formatNoRecurring(params) {
+        params.noRecurring ? true : false
+    }
+
     Boolean formatUnassigned(params) {
         params.unassigned ? true : false
     }

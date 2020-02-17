@@ -11,6 +11,7 @@
     <g:render template="/filter/team"/>
     <g:render template="/filter/user"/>
     <g:render template="/filter/billable"/>
+    <g:render template="/filter/noRecurring"/>
     <g:submitButton name="submit" value="FILTER" class="k-button k-primary"/>
     <g:render template="/filter/save"/>
 </form>

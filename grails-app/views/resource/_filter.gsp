@@ -10,6 +10,7 @@
     <g:render template="/filter/label"/>
     <g:render template="/filter/team"/>
     <g:render template="/filter/user"/>
+    <g:render template="/filter/noRecurring"/>
     <g:render template="/filter/unassigned"/>
     <input type="button" onclick="reloadGrid()" value="FILTER" class="k-button k-primary"/>
     <g:render template="/filter/save"/>

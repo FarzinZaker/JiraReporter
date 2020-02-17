@@ -43,6 +43,7 @@ class ResourceController {
                 teams?.size() ? (JiraUser.findAllByTeamInList(teams) ?: [null]) : [null],
                 teams?.size > 0,
                 filterService.formatStatus(params),
+                filterService.formatNoRecurring(params),
                 filterService.formatUnassigned(params))
 
         def data = issues.collect {

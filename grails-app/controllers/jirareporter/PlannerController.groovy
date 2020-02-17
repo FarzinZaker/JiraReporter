@@ -24,7 +24,7 @@ class PlannerController {
 
     def gantt() {
         if (params.findAll { it.value }.size() < 3) {
-            redirect(uri: "/planner/gantt?status=${['To Do', 'In Progress'].join(',')}")
+            redirect(uri: "/planner/gantt?status=${['Backlog', 'To Do', 'In Progress', 'Blocked'].join(',')}")
             return
         }
 
@@ -54,7 +54,7 @@ class PlannerController {
     def issues() {
 
         if (params.findAll { it.value && !it.key?.toString()?.toLowerCase()?.startsWith('dhxr') }.size() < 3) {
-            redirect(uri: "/planner/issues?status=${['To Do', 'In Progress'].join(',')}")
+            redirect(uri: "/planner/issues?status=${['Backlog', 'To Do', 'In Progress', 'Blocked'].join(',')}")
             return
         }
 
@@ -76,6 +76,7 @@ class PlannerController {
                 teams?.size() ? (JiraUser.findAllByTeamInList(teams) ?: [null]) : [null],
                 teams?.size() > 0,
                 filterService.formatStatus(params),
+                filterService.formatNoRecurring(params),
                 filterService.formatUnassigned(params))
 
         def projects = []
@@ -175,6 +176,11 @@ class PlannerController {
     }
 
     def syncStatus() {
+        if (request.getHeader('X-Requested-With') != 'XMLHttpRequest') {
+            redirect(action: 'gantt')
+            return
+        }
+
         render([
                 upload  : IssueUploadItem.createCriteria().list {
                     lt('retryCount', 20)

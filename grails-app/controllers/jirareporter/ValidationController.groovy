@@ -43,6 +43,7 @@ class ValidationController {
                 teams?.size() ? (JiraUser.findAllByTeamInList(teams) ?: [null]) : [null],
                 teams?.size > 0,
                 filterService.formatStatus(params),
+                filterService.formatNoRecurring(params),
                 filterService.formatUnassigned(params)).findAll {
             !it.originalEstimate || it.originalEstimate?.trim() == ''
         }
