@@ -54,7 +54,7 @@ class IssueSyncJob {
         //Old
         startDate = null
         endDate = null
-        jobExecutionService.execute('Download Recent Issues',
+        jobExecutionService.execute('Download Old Issues',
                 { SyncJobConfig jobConfig ->
                     issueDownloadService.queueIssues(startDate, endDate)
                 },
