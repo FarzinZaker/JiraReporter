@@ -23,14 +23,28 @@ var linksFormatter = gantt.ext.formatters.linkFormatter({durationFormatter: form
 // });
 
 gantt.templates.grid_row_class = function (start_date, end_date, item) {
-    // console.log(item.overdue);
-    if (item.overdue) return "red";
-    // else return "ok";
+    // console.log(item);
+
+    if (end_date < new Date()) {
+        // console.log(end_date);
+        // $('[task_id=' + item.id + ']').addClass('red');
+        return "red";
+    } else {
+        // $('[task_id=' + item.id + ']').removeClass('red');
+        return "ok";
+    }
 };
 
 gantt.templates.task_row_class = function (start_date, end_date, item) {
-    if (item.overdue) return "red";
-    // else return "ok";
+
+    if (end_date < new Date()) {
+        // console.log(end_date);
+        // $('[task_id=' + item.id + ']').addClass('red');
+        return "red";
+    } else {
+        // $('[task_id=' + item.id + ']').removeClass('red');
+        return "ok";
+    }
 };
 
 gantt.templates.task_class = function (start, end, task) {
@@ -151,7 +165,7 @@ function getTasksLoad(tasks, resourceId, start_date, end_date) {
     // console.log(tasks);
     // console.log('--------------------');
     tasks.forEach(function (task) {
-        if(task.owner_id === resourceId && task.estimateHours && task.durationDays) {
+        if (task.owner_id === resourceId && task.estimateHours && task.durationDays) {
             var sd = start_date;
             if (task.start_date.getTime() > sd.getTime())
                 sd = task.start_date;
