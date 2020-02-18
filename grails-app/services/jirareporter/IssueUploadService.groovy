@@ -112,8 +112,7 @@ class IssueUploadService {
             def saved = false
             while (!saved) {
                 try {
-                    if (!new IssueDownloadItem(issueKey: issue.key, source: 'Issue Updated').save(flush: true))
-                        throw new Exception('Unable to queue issue for download')
+                    issueDownloadService.enqueue(issue.key, 'Issue Updated')
                     saved = true
                 } catch (Exception ignore) {
                     println "retrying to queue issue for download"

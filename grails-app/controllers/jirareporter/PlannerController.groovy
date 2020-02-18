@@ -15,6 +15,7 @@ class PlannerController {
     def filterService
     def issueReportService
     def issueUploadService
+    def issueDownloadService
     def springSecurityService
     def userService
 
@@ -237,8 +238,7 @@ class PlannerController {
         def saved = false
         while (!saved) {
             try {
-                if (!new IssueDownloadItem(issueKey: params.id, source: 'MANUAL').save(flush: true))
-                    throw new Exception("Unable to add new key to the download queue")
+                issueDownloadService.enqueue(params.id, 'MANUAL')
                 saved = true
             } catch (ex) {
                 println ex.message

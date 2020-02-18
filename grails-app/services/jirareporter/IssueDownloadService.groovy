@@ -11,6 +11,17 @@ class IssueDownloadService {
 
     final String defaultProjectsList = Configuration.projects.collect { it.key }.join(',')
 
+    IssueDownloadItem enqueue(String key, String source) {
+        def issueDownloadItem = IssueDownloadItem.findByIssueKeyAndSource(key, source)
+        if (!issueDownloadItem)
+            try {
+                issueDownloadItem = new IssueDownloadItem(issueKey: key, source: 'Sync Service').save(flush: true)
+            } catch (exception) {
+                println exception.message
+            }
+        issueDownloadItem
+    }
+
     void queueIssues(Date from) {
 
         use(TimeCategory) {
@@ -37,7 +48,7 @@ class IssueDownloadService {
                     def updated = JiraIssueMapper.getFieldValue(issue, 'updated')
                     def savedIssue = Issue.findByKey(issue.key)
                     if (!savedIssue || (updated + 1) > savedIssue.lastSync)
-                        downloadItem = new IssueDownloadItem(issueKey: issue.key, source: 'Sync Service').save(flush: true)
+                        enqueue(issue.key, 'Sync Service')
                 }
                 if (downloadItem && !downloadItem.save(flush: true))
                     throw new Exception('Unable to save Download Item')
@@ -78,7 +89,7 @@ class IssueDownloadService {
                     def updated = JiraIssueMapper.getFieldValue(issue, 'updated')
                     def savedIssue = Issue.findByKey(issue.key)
                     if (forceQueue || !savedIssue || (updated + 1) > savedIssue.lastSync)
-                        downloadItem = new IssueDownloadItem(issueKey: issue.key, source: 'Sync Service').save(flush: true)
+                        enqueue(issue.key, 'Sync Service')
                 }
                 if (downloadItem && !downloadItem.save(flush: true))
                     throw new Exception('Unable to save Download Item')
@@ -187,8 +198,7 @@ class IssueDownloadService {
                 def saved = false
                 while (!saved) {
                     try {
-                        if (!new IssueDownloadItem(issueKey: issue.key, source: 'Issue Moved').save(flush: true))
-                            throw new Exception('Unable to queue issue for download')
+                        enqueue(issue.key, 'Issue Moved')
                         saved = true
                     } catch (Exception ignore) {
                         println "retrying to queue issue for download"

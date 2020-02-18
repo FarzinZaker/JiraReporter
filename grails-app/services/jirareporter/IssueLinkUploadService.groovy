@@ -6,6 +6,7 @@ import grails.gorm.transactions.Transactional
 class IssueLinkUploadService {
 
     def issueLinkTypeService
+    def issueDownloadService
 
     def addLink(IssueLink link) {
 
@@ -24,8 +25,8 @@ class IssueLinkUploadService {
 
         def jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(Configuration.username, Configuration.password))
         jiraClient.post("${Configuration.serverURL}/rest/api/latest/issueLink", data)
-        new IssueDownloadItem(issueKey: link.firstIssue.key, source: 'Add Link').save()
-        new IssueDownloadItem(issueKey: link.secondIssue.key, source: 'Add Link').save()
+        issueDownloadService.enqueue(link.firstIssue.key, 'Add Link')
+        issueDownloadService.enqueue(link.secondIssue.key, 'Add Link')
         link.added = false
         link.save(flush: true)
     }
@@ -38,8 +39,8 @@ class IssueLinkUploadService {
             if (!ex.message.contains("No issue link with id '${link.key}' exists"))
                 throw ex
         }
-        new IssueDownloadItem(issueKey: link.firstIssue.key, source: 'Remove Link').save()
-        new IssueDownloadItem(issueKey: link.secondIssue.key, source: 'Remove Link').save()
+        issueDownloadService.enqueue(link.firstIssue.key, 'Remove Link')
+        issueDownloadService.enqueue(link.secondIssue.key, 'Remove Link')
         link.delete(flush: true)
     }
 }

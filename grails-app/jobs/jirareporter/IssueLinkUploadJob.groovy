@@ -11,10 +11,11 @@ class IssueLinkUploadJob {
 
     def issueLinkUploadService
     def jobExecutionService
+    def issueDownloadService
 
     def execute() {
 
-        if(Environment.isDevelopmentMode())
+        if (Environment.isDevelopmentMode())
             return
 
         //remove unnecessary links
@@ -43,7 +44,7 @@ class IssueLinkUploadJob {
         jobExecutionService.execute('Download Issues With Removed Link',
                 { SyncJobConfig jobConfig ->
                     IssueLink.findAllByAddedAndDeletedAndKey(false, true, '-').each { link ->
-                        new IssueDownloadItem(issueKey: link.firstIssue.key, source: 'Fill Empty Link Keys').save()
+                        issueDownloadService.enqueue(link.firstIssue.key, 'Fill Empty Link Keys')
                     }
                 })
     }

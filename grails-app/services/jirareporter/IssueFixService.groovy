@@ -7,6 +7,7 @@ import groovy.time.TimeCategory
 class IssueFixService {
 
     def issueUploadService
+    def issueDownloadService
 
     def fix(Issue issue) {
 
@@ -41,7 +42,7 @@ class IssueFixService {
                 issue.dueDate = minDueDate
 
         } else {
-            downloadItem = new IssueDownloadItem(issueKey: issue.key, source: 'Fix Issues')
+            downloadItem = issueDownloadService.enqueue(issue.key, 'Fix Issues')
         }
 
         if (issue.isDirty()) {
