@@ -25,7 +25,7 @@
                 visible: false,
                 resizable: true,
                 width: 1200,
-                height: 645,
+                height: 650,
                 close: function () {
                     statusWindowIsOpen = false;
                 }

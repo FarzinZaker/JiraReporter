@@ -65,9 +65,6 @@
     <script language="JavaScript" type="text/javascript">
         $(document).ready(function () {
             $('#Jobs').DataTable({
-                scrollY: false,
-                scrollX: true,
-                scrollCollapse: true,
                 paging: false,
                 // fixedHeader: true,
                 // fixedColumns: {
@@ -75,8 +72,8 @@
                 // },
                 dom: 'Bfrtip',
                 buttons: [],
-                colReorder: true,
-                rowReorder: true,
+                // colReorder: true,
+                // rowReorder: true,
                 // dataSrc: '',
                 data: [
                     <g:each in="${jobs}" var="job">
