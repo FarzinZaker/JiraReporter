@@ -19,9 +19,6 @@
     <asset:javascript src="datatables.min.js"/>
 
     <style>
-    table {
-        width: 100%
-    }
 
     .dataTables_filter, .dt-buttons {
         display: none;
@@ -33,47 +30,49 @@
 <g:set var="jobs" value="${SyncJobConfig.list().sort { it.name }}"/>
 
 <g:if test="${jobs?.size()}">
-    <table class="pivot" id="Client">
-        <thead>
-        <tr>
-            <td class="string">
-                Job
-            </td>
-            <td class="date">
-                Last Execution
-            </td>
-            <td class="number">
-                Duration
-            </td>
-            <td class="string">
-                Error Message
-            </td>
-            <td class="date">
-                Start Date
-            </td>
-            <td class="date">
-                End Date
-            </td>
-            <td class="number">
-                Last Record
-            </td>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+    <div>
+        <table class="pivot" id="Jobs" style="width: 100%">
+            <thead>
+            <tr>
+                <td class="string">
+                    Job
+                </td>
+                <td class="date">
+                    Last Execution
+                </td>
+                <td class="number">
+                    Duration
+                </td>
+                <td class="string">
+                    Error Message
+                </td>
+                <td class="date">
+                    Start Date
+                </td>
+                <td class="date">
+                    End Date
+                </td>
+                <td class="number">
+                    Last Record
+                </td>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
 
     <script language="JavaScript" type="text/javascript">
         $(document).ready(function () {
-            $('#Client').DataTable({
+            $('#Jobs').DataTable({
                 scrollY: false,
                 scrollX: true,
                 scrollCollapse: true,
                 paging: false,
-                fixedHeader: true,
-                fixedColumns: {
-                    leftColumns: 1
-                },
+                // fixedHeader: true,
+                // fixedColumns: {
+                //     leftColumns: 1
+                // },
                 dom: 'Bfrtip',
                 buttons: [],
                 colReorder: true,

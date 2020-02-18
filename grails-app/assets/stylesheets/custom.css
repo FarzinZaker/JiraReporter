@@ -320,6 +320,18 @@ h2.tableHeader {
 
 }
 
+#Jobs_wrapper thead tr td,
+#Jobs_wrapper thead tr td *,
+#Jobs_wrapper thead tr td *:hover,
+#Jobs_wrapper .dataTables_scrollHead,
+#Jobs_wrapper .dataTables_scrollHead * {
+    background-color: #673AB7;
+}
+
+#Jobs_wrapper .dataTables_info {
+    background: #D1C4E9;
+}
+
 #Client_wrapper thead tr td,
 #Client_wrapper thead tr td *,
 #Client_wrapper thead tr td *:hover,

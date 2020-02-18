@@ -61,6 +61,7 @@
                 ${g.layoutTitle()?.toString()?.toUpperCase()}
             </span>
         </span>
+        <g:render template="/layouts/syncStatus"/>
         <g:render template="/layouts/menu"/>
     </div>
 </div>
