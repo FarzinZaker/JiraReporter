@@ -14,11 +14,7 @@ class IssueDownloadService {
     IssueDownloadItem enqueue(String key, String source) {
         def issueDownloadItem = IssueDownloadItem.findByIssueKeyAndSource(key, source)
         if (!issueDownloadItem)
-            try {
-                issueDownloadItem = new IssueDownloadItem(issueKey: key, source: 'Sync Service').save(flush: true)
-            } catch (exception) {
-                println exception.message
-            }
+            issueDownloadItem = new IssueDownloadItem(issueKey: key, source: source).save(flush: true)
         issueDownloadItem
     }
 
