@@ -2,6 +2,13 @@ package jirareporter
 
 import grails.gorm.transactions.Transactional
 
+import java.util.concurrent.ExecutionException
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import java.util.concurrent.Future
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
+
 @Transactional
 class JobExecutionService {
 
@@ -19,7 +26,7 @@ class JobExecutionService {
         try {
             def startTime = new Date()
 
-            body(jobConfig)
+            timeBoundExecute(body, jobConfig)
 
             milliseconds = (new Date().getTime() - startTime.getTime())
         } catch (ex) {
@@ -35,5 +42,36 @@ class JobExecutionService {
             finalize(jobConfig)
         jobConfig.save(flush: true)
 
+    }
+
+    def timeBoundExecute(Closure body, SyncJobConfig jobConfig){
+
+        ExecutorService executor = Executors.newFixedThreadPool(4)
+        Future<?> future = executor.submit(new Runnable() {
+            @Override
+            public void run() {
+               body(jobConfig)
+            }
+        })
+
+        executor.shutdown()
+
+        try {
+            future.get(10, TimeUnit.MINUTES)
+        } catch (InterruptedException e) {
+            System.out.println("[JOB] Job was interrupted")
+            throw e
+        } catch (ExecutionException e) {
+            System.out.println("[JOB] Caught exception: " + e.getCause())
+            throw e
+        } catch (TimeoutException e) {
+            future.cancel(true)
+            System.out.println("[JOB] Timeout")
+            throw e
+        }
+
+        if(!executor.awaitTermination(2, TimeUnit.SECONDS)){
+            executor.shutdownNow()
+        }
     }
 }
