@@ -1,6 +1,7 @@
 package jirareporter
 
 import grails.gorm.transactions.Transactional
+import grails.util.Environment
 
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.ExecutorService
@@ -73,5 +74,9 @@ class JobExecutionService {
         if(!executor.awaitTermination(2, TimeUnit.SECONDS)){
             executor.shutdownNow()
         }
+    }
+
+    Boolean jobsEnabled(){
+        Environment.isDevelopmentMode()
     }
 }

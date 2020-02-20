@@ -15,7 +15,7 @@ class IssueSyncJob {
 
     def execute() {
 
-        if (Environment.isDevelopmentMode())
+        if (!jobExecutionService.jobsEnabled())
             return
 
         //Updated

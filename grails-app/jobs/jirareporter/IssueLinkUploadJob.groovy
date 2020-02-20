@@ -15,7 +15,7 @@ class IssueLinkUploadJob {
 
     def execute() {
 
-        if (Environment.isDevelopmentMode())
+        if (!jobExecutionService.jobsEnabled())
             return
 
         //remove unnecessary links

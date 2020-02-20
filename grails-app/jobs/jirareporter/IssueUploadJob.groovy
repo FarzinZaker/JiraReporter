@@ -14,7 +14,7 @@ class IssueUploadJob {
 
     def execute() {
 
-        if (Environment.isDevelopmentMode())
+        if (!jobExecutionService.jobsEnabled())
             return
 
         jobExecutionService.execute('Upload Modified Issues',

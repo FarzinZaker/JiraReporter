@@ -15,7 +15,7 @@ class IssueRemoveJob {
 
     def execute() {
 
-        if (Environment.isDevelopmentMode())
+        if (!jobExecutionService.jobsEnabled())
             return
 
         def endDate

@@ -15,7 +15,7 @@ class IssueFixJob {
 
     def execute() {
 
-        if (Environment.isDevelopmentMode())
+        if (!jobExecutionService.jobsEnabled())
             return
 
         jobExecutionService.execute('Fill Issues Missing Information',

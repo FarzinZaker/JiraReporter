@@ -15,7 +15,7 @@ class WorklogsSyncJob {
 
     def execute() {
 
-        if (Environment.isDevelopmentMode())
+        if (!jobExecutionService.jobsEnabled())
             return
 
         //Today

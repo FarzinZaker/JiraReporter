@@ -14,7 +14,7 @@ class RecurringTaskJob {
 
     def execute() {
 
-        if (Environment.isDevelopmentMode())
+        if (!jobExecutionService.jobsEnabled())
             return
 
         jobExecutionService.execute('Create Recurring Issues',
