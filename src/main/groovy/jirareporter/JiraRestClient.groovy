@@ -9,9 +9,14 @@ import com.sun.jersey.api.client.*
 import com.sun.jersey.client.apache.ApacheHttpClient
 import com.sun.jersey.client.apache.ApacheHttpClientHandler
 import com.sun.jersey.client.apache.config.DefaultApacheHttpClientConfig
+import com.sun.jersey.multipart.FormDataMultiPart
+import com.sun.jersey.multipart.file.FileDataBodyPart
 import grails.converters.JSON
 import org.apache.commons.httpclient.HttpClient
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager
+import org.apache.http.entity.mime.HttpMultipartMode
+import org.apache.http.entity.mime.MultipartEntity
+import org.apache.http.entity.mime.content.FileBody
 import org.codehaus.jettison.json.JSONArray
 import org.codehaus.jettison.json.JSONException
 import org.codehaus.jettison.json.JSONObject
@@ -218,6 +223,26 @@ class JiraRestClient {
             }
         })
     }
+
+//    JSONObject postFileWithResult(String issueUri, File file) {
+//        final URI roleUri = UriBuilder
+//                .fromUri(new URI(issueUri))
+//                .build()
+//
+//        invoke(new Callable<JSONObject>() {
+//            @Override
+//            public JSONObject call() throws Exception {
+//
+//                FormDataMultiPart entity = new FormDataMultiPart();
+//                FileBody fileBody = new FileBody(file, "application/octet-stream");
+//                entity.field("file", fileBody, MediaType.APPLICATION_OCTET_STREAM_TYPE);
+//                final WebResource.Builder webResource = client.resource(roleUri)
+////                        .type(MediaType.APPLICATION_JSON_TYPE)
+//                        .entity(entity)
+//                webResource.post(JSONObject.class)
+//            }
+//        })
+//    }
 
     def delete(String issueUri) {
         final URI roleUri = UriBuilder

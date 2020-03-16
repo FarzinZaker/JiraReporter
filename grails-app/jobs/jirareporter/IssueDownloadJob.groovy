@@ -19,21 +19,38 @@ class IssueDownloadJob {
 
 
         jobExecutionService.execute('Download Manually Queued Issues',
-                { SyncJobConfig jobConfig ->
-                    def issueDownloadItems = IssueDownloadItem.findAllBySourceInList(['MANUAL', 'User'], [max: 100])
-                    issueDownloadItems.each { issueDownloadItem ->
-                        issueDownloadService.download(issueDownloadItem.issueKey)
-                        issueDownloadItem.delete()
+                { SyncJobConfig jobConfig, Date startDate, Date endDate, Long lastRecord ->
+                    IssueDownloadItem.withTransaction {
+                        def issueDownloadItems = IssueDownloadItem.findAllBySourceInList(['MANUAL', 'User'], [max: 100])
+                        issueDownloadItems.each { issueDownloadItem ->
+                            issueDownloadService.download(issueDownloadItem.issueKey)
+                            issueDownloadItem.delete()
+                        }
                     }
+                    [
+                            startDate: startDate,
+                            endDate: endDate,
+                            lastRecord: lastRecord
+                    ]
                 })
 
         jobExecutionService.execute('Download All Queued Issues',
-                { SyncJobConfig jobConfig ->
-                    def issueDownloadItems = IssueDownloadItem.findAllByIdGreaterThan(0, [max: 100])
-                    issueDownloadItems.each { issueDownloadItem ->
-                        issueDownloadService.download(issueDownloadItem.issueKey)
-                        issueDownloadItem.delete()
+                { SyncJobConfig jobConfig, Date startDate, Date endDate, Long lastRecord ->
+                    def issueDownloadItems
+                    IssueDownloadItem.withTransaction {
+                        issueDownloadItems = IssueDownloadItem.findAllByIdGreaterThan(0, [max: 10])
                     }
+                    issueDownloadItems?.each { issueDownloadItem ->
+                        IssueDownloadItem.withNewTransaction { transaction ->
+                            issueDownloadService.download(issueDownloadItem.issueKey)
+                            issueDownloadItem.delete()
+                        }
+                    }
+                    [
+                            startDate: startDate,
+                            endDate: endDate,
+                            lastRecord: lastRecord
+                    ]
                 })
 
 

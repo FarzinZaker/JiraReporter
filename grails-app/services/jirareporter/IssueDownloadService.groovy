@@ -25,7 +25,7 @@ class IssueDownloadService {
         }
         def jiraClient = new JiraRestClient(new URI(Configuration.serverURL), JiraRestClient.getClient(Configuration.username, Configuration.password))
 
-        String worklogQyery = "project in (${defaultProjectsList}) AND (labels not in (Legacy) OR labels is EMPTY)"
+        String worklogQyery = "project in (${defaultProjectsList})"
         worklogQyery = "${worklogQyery} AND updated >= '${from.format('yyyy/MM/dd HH:mm')}' order by updated"
 
 

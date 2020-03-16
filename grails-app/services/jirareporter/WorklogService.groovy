@@ -10,7 +10,7 @@ class WorklogService {
 
     def userService
 
-    List<Map> parseList(JSONArray list, Issue issue) {
+    List<Worklog> parseList(JSONArray list, Issue issue) {
         def worklogs = []
         for (def i = 0; i < list.length(); i++) {
             def obj = list.getJSONObject(i)
@@ -19,7 +19,7 @@ class WorklogService {
         worklogs
     }
 
-    Worklog parse(JSONObject obj, Issue issue) {
+    Worklog parse(JSONObject obj, Issue issue, Boolean save = true) {
         if (obj == JSONObject.NULL)
             return null
 
@@ -52,9 +52,10 @@ class WorklogService {
         worklog.timeSpent = obj.timeSpent
         worklog.timeSpentSeconds = obj.timeSpentSeconds
 
-        if (worklog.isDirty() || !worklog.id)
-            if (!worklog.save(flush: true))
-                throw new Exception("Error saving worklog")
+        if (save)
+            if (worklog.isDirty() || !worklog.id)
+                if (!worklog.save(flush: true))
+                    throw new Exception("Error saving worklog")
 
         worklog
     }

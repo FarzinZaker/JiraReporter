@@ -19,35 +19,67 @@ class WorklogsSyncJob {
             return
 
         //Today
-        def endDate = new Date() + 1
-        def startDate = endDate - 2
         jobExecutionService.execute('Download Today\'s Worklogs',
-                { SyncJobConfig jobConfig ->
+                { SyncJobConfig jobConfig, Date startDate, Date endDate, Long lastRecord ->
                     worklogDownloadService.getWorklogs(startDate, endDate)
+                    [
+                            startDate: startDate,
+                            endDate: endDate,
+                            lastRecord: lastRecord
+                    ]
+                },
+                { SyncJobConfig jobConfig, Date startDate, Date endDate, Long lastRecord ->
+                    endDate = new Date() + 1
+                    startDate = endDate - 2
+                    [
+                            startDate: startDate,
+                            endDate: endDate,
+                            lastRecord: lastRecord
+                    ]
                 })
 
         //Recent
         jobExecutionService.execute('Download Recent Worklogs',
-                { SyncJobConfig jobConfig ->
+                { SyncJobConfig jobConfig, Date startDate, Date endDate, Long lastRecord ->
                     worklogDownloadService.getWorklogs(startDate, endDate)
+                    [
+                            startDate: startDate,
+                            endDate: endDate,
+                            lastRecord: lastRecord
+                    ]
                 },
-                { SyncJobConfig jobConfig ->
+                { SyncJobConfig jobConfig, Date startDate, Date endDate, Long lastRecord ->
                     endDate = jobConfig.startDate ?: (new Date() + 1)
                     if (endDate < new Date() - 30)
                         endDate = new Date() + 1
                     startDate = endDate - 1
+                    [
+                            startDate: startDate,
+                            endDate: endDate,
+                            lastRecord: lastRecord
+                    ]
                 })
 
         //Old
         jobExecutionService.execute('Download Old Worklogs',
-                { SyncJobConfig jobConfig ->
+                { SyncJobConfig jobConfig, Date startDate, Date endDate, Long lastRecord ->
                     worklogDownloadService.getWorklogs(startDate, endDate)
+                    [
+                            startDate: startDate,
+                            endDate: endDate,
+                            lastRecord: lastRecord
+                    ]
                 },
-                { SyncJobConfig jobConfig ->
+                { SyncJobConfig jobConfig, Date startDate, Date endDate, Long lastRecord ->
                     endDate = jobConfig.startDate ?: (new Date() - 30)
                     if (endDate < new Date() - 335)
                         endDate = new Date() - 30
                     startDate = endDate - 1
+                    [
+                            startDate: startDate,
+                            endDate: endDate,
+                            lastRecord: lastRecord
+                    ]
                 })
 
     }

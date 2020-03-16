@@ -67,6 +67,7 @@ class Issue {
         created nullable: true
         lastFix nullable: true
         lastSync nullable: true
+        reporter nullable: true
     }
 
     @Override

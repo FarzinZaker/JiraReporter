@@ -39,8 +39,8 @@ class IssueReportService {
                 }
             }
 
-            if (![Roles.MANAGER, Roles.ADMIN].any {
-                springSecurityService.authentication.authorities.contains(it)
+            if (![Roles.ADMIN].any {
+                springSecurityService.authentication.authorities.collect { it.role }.contains(it)
             } && jiraUsers?.size()) {
                 if (unassignedIssues) {
                     or {

@@ -20,37 +20,69 @@ class CrossOverSyncJob {
             return
 
         //Recent
-        def startDate
-        def endDate
         jobExecutionService.execute('Download Recent CrossOver Logs',
-                { SyncJobConfig jobConfig ->
-                    crossOverService.persist(startDate, endDate, Team.list(), true)
+                { SyncJobConfig jobConfig, Date startDate, Date endDate, Long lastRecord ->
+                    CrossOverLog.withTransaction {
+                        crossOverService.persist(startDate, endDate, Team.list(), true)
+                    }
+                    [
+                            startDate: startDate,
+                            endDate: endDate,
+                            lastRecord: lastRecord
+                    ]
                 },
-                { SyncJobConfig jobConfig ->
+                { SyncJobConfig jobConfig, Date startDate, Date endDate, Long lastRecord ->
                     endDate = jobConfig.startDate ?: (new Date() + 1)
                     if (endDate < new Date() - 7)
                         endDate = new Date() + 1
                     startDate = endDate - 7
+                    [
+                            startDate: startDate,
+                            endDate: endDate,
+                            lastRecord: lastRecord
+                    ]
                 },
-                { SyncJobConfig jobConfig ->
+                { SyncJobConfig jobConfig, Date startDate, Date endDate, Long lastRecord ->
                     jobConfig.startDate = startDate
                     jobConfig.endDate = endDate
+                    [
+                            startDate: startDate,
+                            endDate: endDate,
+                            lastRecord: lastRecord
+                    ]
                 })
 
         //Old
         jobExecutionService.execute('Download Old CrossOver Logs',
-                { SyncJobConfig jobConfig ->
-                    crossOverService.persist(startDate, endDate, Team.list(), true)
+                { SyncJobConfig jobConfig, Date startDate, Date endDate, Long lastRecord ->
+                    CrossOverLog.withTransaction {
+                        crossOverService.persist(startDate, endDate, Team.list(), true)
+                    }
+                    [
+                            startDate: startDate,
+                            endDate: endDate,
+                            lastRecord: lastRecord
+                    ]
                 },
-                { SyncJobConfig jobConfig ->
+                { SyncJobConfig jobConfig, Date startDate, Date endDate, Long lastRecord ->
                     endDate = jobConfig.startDate ?: (new Date() + 1)
                     if (endDate < new Date() - 365)
                         endDate = new Date() - 7
                     startDate = endDate - 7
+                    [
+                            startDate: startDate,
+                            endDate: endDate,
+                            lastRecord: lastRecord
+                    ]
                 },
-                { SyncJobConfig jobConfig ->
+                { SyncJobConfig jobConfig, Date startDate, Date endDate, Long lastRecord ->
                     jobConfig.startDate = startDate
                     jobConfig.endDate = endDate
+                    [
+                            startDate: startDate,
+                            endDate: endDate,
+                            lastRecord: lastRecord
+                    ]
                 })
     }
 }

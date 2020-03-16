@@ -13,7 +13,7 @@
             create: false,
             options: [
                 <g:each in="${Configuration.projects}" var="${project}">
-                {text: '<format:html value="${project.name}"/>', value: '<format:html value="${project.name}"/>'},
+                {text: '<format:html value="${project.name}"/>', value: '<format:html value="${project.key}"/>'},
                 </g:each>
             ]
         });

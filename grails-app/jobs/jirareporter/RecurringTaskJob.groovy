@@ -18,14 +18,21 @@ class RecurringTaskJob {
             return
 
         jobExecutionService.execute('Create Recurring Issues',
-                { SyncJobConfig jobConfig ->
-                    RecurringTaskSetting.findAllByEnabled(true).each { setting ->
-                        try {
-                            recurringTaskService.execute(setting)
-                        } catch (ex) {
-                            println ex.message
+                { SyncJobConfig jobConfig, Date startDate, Date endDate, Long lastRecord ->
+                    RecurringTaskSetting.withTransaction {
+                        RecurringTaskSetting.findAllByEnabled(true).each { setting ->
+                            try {
+                                recurringTaskService.execute(setting)
+                            } catch (ex) {
+                                println ex.message
+                            }
                         }
                     }
+                    [
+                            startDate: startDate,
+                            endDate: endDate,
+                            lastRecord: lastRecord
+                    ]
                 })
     }
 }

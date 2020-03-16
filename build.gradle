@@ -77,6 +77,10 @@ dependencies {
     compile 'org.grails.plugins:spring-security-core:3.3.1'
 
     compile 'org.ocpsoft.prettytime:prettytime:4.0.3.Final'
+
+    compile group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.3.1'
+    compile group: 'com.mashape.unirest', name: 'unirest-java', version: '1.4.9'
+
 }
 
 bootRun {

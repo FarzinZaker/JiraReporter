@@ -19,41 +19,48 @@ class IssueFixJob {
             return
 
         jobExecutionService.execute('Fill Issues Missing Information',
-                { SyncJobConfig jobConfig ->
-                    def minSyncDate = new Date()
-                    use(TimeCategory) {
-                        minSyncDate = minSyncDate - 2.hours
-                    }
-                    def downloadQueue = IssueDownloadItem.list().collect { it.issueKey } ?: ['-']
-                    def users = JiraUser.findAllByTeamInList(Team.list()) ?: [null]
-                    try {
-                        def list = Issue.createCriteria().list {
-                            'in'('assignee', users)
-                            gte('lastSync', minSyncDate)
-                            isNull('lastFix')
-                            not {
-                                'in'('key', downloadQueue)
-                            }
-                            or {
-                                isNull('originalEstimate')
-                                eq('originalEstimate', '')
-                                lt('originalEstimateSeconds', 1l)
-                                isNull('remainingEstimate')
-                                eq('remainingEstimate', '')
-                                isNull('startDate')
-                                isNull('dueDate')
-                                ltProperty('dueDate', 'startDate')
-                                eqProperty('dueDate', 'startDate')
-                            }
-                            maxResults(20)
+                { SyncJobConfig jobConfig, Date startDate, Date endDate, Long lastRecord ->
+                    IssueDownloadItem.withTransaction {
+                        def minSyncDate = new Date()
+                        use(TimeCategory) {
+                            minSyncDate = minSyncDate - 2.hours
                         }
-                        list?.each { Issue issue ->
-                            issueFixService.fix(issue)
+                        def downloadQueue = IssueDownloadItem.list().collect { it.issueKey } ?: ['-']
+                        def users = JiraUser.findAllByTeamInList(Team.list()) ?: [null]
+                        try {
+                            def list = Issue.createCriteria().list {
+                                'in'('assignee', users)
+                                gte('lastSync', minSyncDate)
+                                isNull('lastFix')
+                                not {
+                                    'in'('key', downloadQueue)
+                                }
+                                or {
+                                    isNull('originalEstimate')
+                                    eq('originalEstimate', '')
+                                    lt('originalEstimateSeconds', 1l)
+                                    isNull('remainingEstimate')
+                                    eq('remainingEstimate', '')
+                                    isNull('startDate')
+                                    isNull('dueDate')
+                                    ltProperty('dueDate', 'startDate')
+                                    eqProperty('dueDate', 'startDate')
+                                }
+                                maxResults(20)
+                            }
+                            list?.each { Issue issue ->
+                                issueFixService.fix(issue)
+                            }
+                        } catch (ex) {
+                            println ex
+                            throw ex
                         }
-                    } catch (ex) {
-                        println ex
-                        throw ex
                     }
+                    [
+                            startDate: startDate,
+                            endDate: endDate,
+                            lastRecord: lastRecord
+                    ]
                 })
     }
 }
