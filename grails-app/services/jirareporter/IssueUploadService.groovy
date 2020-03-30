@@ -207,7 +207,7 @@ class IssueUploadService {
         if (!issue.assignee)
             finalData.put('assignee', [name: ''])
 
-        finalData.put('components', componentService.updateData(components))
+        finalData.put('components', componentService.updateData(components.findAll { it.project?.id == issue?.project?.id }))
         finalData.put('customfield_26105', clientService.updateData(client))
         if (labels?.size())
             finalData.put('labels', labels)

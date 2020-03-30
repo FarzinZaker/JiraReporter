@@ -27,6 +27,8 @@ class Issue {
     Double aggregateProgressPercent
     Date startDate
     Date dueDate
+    Date deletedDate
+    Integer deletedCount = 0
 
     Date lastSync
 
@@ -68,6 +70,8 @@ class Issue {
         lastFix nullable: true
         lastSync nullable: true
         reporter nullable: true
+        deletedDate nullable: true
+        deletedCount nullable: true
     }
 
     @Override

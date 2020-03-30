@@ -3,6 +3,7 @@ package jirareporter
 import grails.gorm.transactions.Transactional
 import grails.util.Holders
 import grails.web.context.ServletContextHolder
+import groovy.time.TimeCategory
 import org.codehaus.jettison.json.JSONArray
 import org.codehaus.jettison.json.JSONObject
 import org.grails.web.util.GrailsApplicationAttributes
@@ -48,6 +49,9 @@ class IssueService {
         JiraIssueMapper.fieldsMap.keySet().each { field ->
             issue."${field}" = JiraIssueMapper.getFieldValue(obj, field)
         }
+
+        issue.deletedCount = 0
+        issue.deletedDate = null
 
         issue.lastSync = new Date()
         if (!issue.save())
@@ -140,10 +144,25 @@ class IssueService {
     }
 
     void delete(String key) {
-        return
         def issue = Issue.findByKey(key)
         if (!issue)
             return
+
+        def limitDate = new Date()
+        use(TimeCategory) {
+            limitDate = limitDate - 30.minutes
+        }
+        if (issue.deletedCount == null)
+            issue.deletedCount = 0
+        if (!issue.deletedDate)
+            issue.deletedDate = limitDate
+        if (issue.deletedDate && issue.deletedDate <= limitDate)
+            issue.deletedCount++
+        if (issue.deletedCount < 3) {
+            issue.save(flush: true)
+            return
+        }
+
         Worklog.executeUpdate("delete Worklog where task = :issue", [issue: issue])
         IssueUploadItem.executeUpdate("delete IssueUploadItem where issueKey = :issueKey and retryCount = 20", [issueKey: key])
         IssueUploadItem.executeUpdate("delete IssueLink where firstIssue = :issue or secondIssue = :issue", [issue: issue])

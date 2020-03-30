@@ -18,6 +18,14 @@ class IssueRemoveJob {
         if (!jobExecutionService.jobsEnabled())
             return
 
+        def limitDate = new Date()
+        use(TimeCategory) {
+            limitDate = limitDate - 30.minutes
+        }
+        Issue.findAllByDeletedDateIsNotNullAndDeletedDateLessThanEqualsAndDeletedCountGreaterThan(limitDate, 0).each {
+            issueDownloadService.download(it.key)
+        }
+
         jobExecutionService.execute('Clean Deleted Issues',
                 { SyncJobConfig jobConfig, Date startDate, Date endDate, Long lastRecord ->
                     def issues = Issue.createCriteria().list {
@@ -31,8 +39,8 @@ class IssueRemoveJob {
                         issueDownloadService.removeDeleted(issues.collect { it.key })
                     }
                     [
-                            startDate: startDate,
-                            endDate: endDate,
+                            startDate : startDate,
+                            endDate   : endDate,
                             lastRecord: lastRecord
                     ]
                 },
@@ -43,16 +51,16 @@ class IssueRemoveJob {
                     jobConfig.lastRecord = 0
                     jobConfig.save(flush: true)
                     [
-                            startDate: startDate,
-                            endDate: endDate,
+                            startDate : startDate,
+                            endDate   : endDate,
                             lastRecord: lastRecord
                     ]
                 },
                 { SyncJobConfig jobConfig, Date startDate, Date endDate, Long lastRecord ->
                     jobConfig.lastRecord = lastRecord
                     [
-                            startDate: startDate,
-                            endDate: endDate,
+                            startDate : startDate,
+                            endDate   : endDate,
                             lastRecord: lastRecord
                     ]
                 })
