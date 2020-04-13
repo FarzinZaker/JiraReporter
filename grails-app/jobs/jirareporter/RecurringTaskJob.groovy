@@ -19,20 +19,32 @@ class RecurringTaskJob {
 
         jobExecutionService.execute('Create Recurring Issues',
                 { SyncJobConfig jobConfig, Date startDate, Date endDate, Long lastRecord ->
+                    if (!lastRecord)
+                        lastRecord = 0
                     RecurringTaskSetting.withTransaction {
-                        RecurringTaskSetting.findAllByEnabled(true).each { setting ->
+                        def setting = RecurringTaskSetting.createCriteria().list {
+                            gt('id', lastRecord)
+                            order('id', 'asc')
+                            maxResults(1)
+                        }?.find() as RecurringTaskSetting
+                        if (setting)
                             try {
                                 recurringTaskService.execute(setting)
+                                lastRecord = setting.id
                             } catch (ex) {
                                 println ex.message
                             }
-                        }
+                        else
+                            lastRecord = 0
                     }
                     [
-                            startDate: startDate,
-                            endDate: endDate,
+                            startDate : startDate,
+                            endDate   : endDate,
                             lastRecord: lastRecord
                     ]
-                })
+                }
+
+        )
     }
+
 }

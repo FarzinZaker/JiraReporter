@@ -149,7 +149,8 @@ class IssueDownloadService {
             }
             def issue = issueService.parse(json)
 
-            issueService.parseLinks(JSONUtil.safeRead(json, 'fields.issuelinks'), issue)
+            if (issue.id)
+                issueService.parseLinks(JSONUtil.safeRead(json, 'fields.issuelinks'), issue)
         }
     }
 

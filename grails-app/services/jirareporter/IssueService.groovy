@@ -54,8 +54,8 @@ class IssueService {
         issue.deletedDate = null
 
         issue.lastSync = new Date()
-        if (!issue.save())
-            throw new Exception("Error saving issue")
+        if (!issue.validate() || !issue.save())
+            println "Error saving issue"
 
         def parentKey = JSONUtil.safeRead(obj, "fields.parent.myHashMap.key")
         issue.parent = parentKey ? Issue.findByKey(parentKey) : null
@@ -75,11 +75,10 @@ class IssueService {
         JSONUtil.safeRead(obj, "fields.labels.myArrayList")?.each {
             def label = labelService.parse(it)
             issue.addToLabels(label)
-
         }
 
-        if (!issue.save(flush: true))
-            throw new Exception("Error saving issue")
+        if (!issue.validate() || !issue.save(flush: true))
+            println "Error saving issue"
 
 //        IssueDownloadItem.findAllByIssueKey(issue.key).each {
 //            it.delete()
@@ -156,8 +155,10 @@ class IssueService {
             issue.deletedCount = 0
         if (!issue.deletedDate)
             issue.deletedDate = limitDate
-        if (issue.deletedDate && issue.deletedDate <= limitDate)
+        if (issue.deletedDate && issue.deletedDate <= limitDate) {
             issue.deletedCount++
+            issue.deletedDate = new Date()
+        }
         if (issue.deletedCount < 3) {
             issue.save(flush: true)
             return

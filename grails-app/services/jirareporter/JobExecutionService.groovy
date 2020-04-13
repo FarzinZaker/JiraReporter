@@ -21,7 +21,7 @@ class JobExecutionService {
 
         Date startDate = new Date()
         Date endDate = new Date()
-        Long lastRecord = 0
+        Long lastRecord = jobConfig.lastRecord ?: 0
 
         if (init) {
             def result = init(jobConfig, startDate, endDate, lastRecord)

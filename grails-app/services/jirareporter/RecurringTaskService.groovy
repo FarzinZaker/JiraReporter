@@ -163,7 +163,8 @@ class RecurringTaskService {
 
         issue.issueType = IssueType.findByName('Sub-task')
         def key = issueUploadService.create(issue, Client.findByName('Internal'), setting.components, ['Recurring-Task'], parentKey)
-        new RecurringTask(setting: setting, key: key, year: year, month: monthNumber, week: week).save(flush: true)
+        def rt = new RecurringTask(setting: setting, key: key, year: year, month: monthNumber, week: week)
+        rt.save(flush: true)
 
         key
     }
