@@ -7,7 +7,7 @@
 
 <script>
     function updateQueueStatus() {
-        $.getJSON("${createLink(action: 'syncStatus')}", function (data) {
+        $.getJSON("${createLink(controller: 'planner', action: 'syncStatus')}", function (data) {
             $('#upload-queue').html(data.upload);
             $('#download-queue').html(data.download);
         });

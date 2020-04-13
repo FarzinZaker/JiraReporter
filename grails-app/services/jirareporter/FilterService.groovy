@@ -91,6 +91,24 @@ class FilterService {
             []
     }
 
+    List<Company> formatCompanies(params) {
+        if (params.company && params.company?.trim() != '')
+            Company.findAllByIdInList((params.company?.split(',')?.collect { it.toString()?.toLong() }?.findAll {
+                it
+            } ?: []) + [null])
+        else
+            []
+    }
+
+    List<Product> formatProducts(params) {
+        if (params.product && params.product?.trim() != '')
+            Product.findAllByIdInList((params.product?.split(',')?.collect { it.toString()?.toLong() }?.findAll {
+                it
+            } ?: []) + [null])
+        else
+            []
+    }
+
     Boolean formatNoRecurring(params) {
         params.noRecurring ? true : false
     }
@@ -100,7 +118,7 @@ class FilterService {
     }
 
     Date formatFromDate(params) {
-        if (params.to == null)
+        if (params.from == null)
             return null
         def date = formatDate(params.from)
         if (date) {
@@ -119,6 +137,18 @@ class FilterService {
             date = date.clearTime() + 1
             use(TimeCategory) {
                 date = date - 1.millisecond
+            }
+        }
+        date
+    }
+
+    Date formatActiveSince(params) {
+        if (params.activeSince == null)
+            return null
+        def date = formatDate(params.activeSince)
+        if (date) {
+            use(TimeCategory) {
+                date = date + 1.millisecond
             }
         }
         date

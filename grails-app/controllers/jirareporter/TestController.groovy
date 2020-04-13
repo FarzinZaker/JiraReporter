@@ -6,12 +6,14 @@ import grails.plugin.springsecurity.annotation.Secured
 @Secured([Roles.ADMIN])
 class TestController {
 
-    def recurringTaskService
+    def gitHubService
 
     def index() {
 
-        def setting = RecurringTaskSetting.findByEnabled(true)
-        recurringTaskService.execute(setting)
+        def startId = 0
+        100.times {
+            startId = gitHubService.categorizeRepositories(startId, 1000)
+        }
         render 'DONE'
     }
 }

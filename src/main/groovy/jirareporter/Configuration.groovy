@@ -2,6 +2,14 @@ package jirareporter
 
 class Configuration {
 
+    static String getGitHubAccessToken() {
+        '84693860454e8d39ef92c1709d5f3e4ab297c4f8'
+    }
+
+    static String getGitHubOrganization(){
+        'trilogy-group'
+    }
+
     static String getServerURL() {
         'https://jira.devfactory.com'
     }
