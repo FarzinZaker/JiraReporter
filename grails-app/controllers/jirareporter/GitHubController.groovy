@@ -3,7 +3,7 @@ package jirareporter
 import grails.converters.JSON
 import grails.plugin.springsecurity.annotation.Secured
 
-@Secured([Roles.ADMIN])
+@Secured([Roles.ADMIN, Roles.MANAGER, Roles.JIRA_USER])
 class GitHubController {
 
     def filterService
