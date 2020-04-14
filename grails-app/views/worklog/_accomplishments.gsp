@@ -1,4 +1,5 @@
 <g:if test="${accomplishments?.size()}">
+    <g:render template="accomplishmentsToolbar"/>
     <g:each in="${accomplishments}" var="task">
 
         <div class="task ${task.issueType.name.replace(' ', '_').replace('-', '')}">

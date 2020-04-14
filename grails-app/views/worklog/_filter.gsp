@@ -1,4 +1,4 @@
-<form id="filterForm" action="${createLink(controller: 'worklog', action: 'report')}" class="filterPanel">
+<form id="filterForm" action="${createLink(controller: 'worklog', action: 'report')}" class="filterPanel" method="post">
     <g:render template="/filter/load"/>
     <g:render template="/filter/time"/>
     <g:render template="/filter/project"/>

@@ -13,6 +13,7 @@ class WorklogController {
     def accomplishmentsService
     def crossOverService
     def filterService
+    def exportService
 
     def report() {
 
