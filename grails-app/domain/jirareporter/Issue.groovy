@@ -55,6 +55,7 @@ class Issue {
         remainingEstimate nullable: true
         remainingEstimateSeconds nullable: true
         timeSpent nullable: true
+        priority nullable: true
         timeSpentSeconds nullable: true
         progressValue nullable: true
         progressTotal nullable: true

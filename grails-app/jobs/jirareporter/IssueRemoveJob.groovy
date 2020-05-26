@@ -48,8 +48,7 @@ class IssueRemoveJob {
                     use(TimeCategory) {
                         endDate = new Date() - 1.day
                     }
-                    jobConfig.lastRecord = 0
-                    jobConfig.save(flush: true)
+                    lastRecord = 0
                     [
                             startDate : startDate,
                             endDate   : endDate,

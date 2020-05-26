@@ -12,7 +12,7 @@ class ReportService {
     def cacheService
     def springSecurityService
 
-    List<Worklog> getWorklogs(Date from, Date to, List<Project> projects = [], List<IssueType> issueTypes = [], List<Priority> priorities = [], List<Component> componentList = [], List<Client> clientList = [], List<Label> labelList = [], List<JiraUser> users = [], List<JiraUser> teamMembers = [], Boolean filterTeamMembers, List<String> worklogTypes = [], List<Status> statusList = []) {
+    List<Worklog> getWorklogs(Date from, Date to, List<Project> projects = [], List<IssueType> issueTypes = [], List<Priority> priorities = [], List<Component> componentList = [], List<Client> clientList = [], List<Label> labelList = [], List<JiraUser> users = [], List<JiraUser> teamMembers = [], Boolean filterTeamMembers, List<String> worklogTypes = [], List<Status> statusList = [], Boolean noRecurring = false) {
 
         def user = User.findByUsername(springSecurityService.principal.username)
         def jiraUsers = [JiraUser.findByName(user.username)]
@@ -83,7 +83,7 @@ class ReportService {
                     }
                 }
             }
-        } as List<Worklog>
+        }.findAll { !noRecurring || !it.task?.labels?.any { it.name == 'Recurring-Task' } } as List<Worklog>
     }
 
     List<Worklog> filterComponents(List<Worklog> list, List<String> components) {

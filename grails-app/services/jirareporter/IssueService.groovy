@@ -159,7 +159,7 @@ class IssueService {
             issue.deletedCount++
             issue.deletedDate = new Date()
         }
-        if (issue.deletedCount < 3) {
+        if (issue.deletedCount < 10) {
             issue.save(flush: true)
             return
         }

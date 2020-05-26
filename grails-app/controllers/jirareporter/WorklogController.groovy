@@ -49,7 +49,9 @@ class WorklogController {
                 filterService.formatTeamMembers(crossOverLogs.keySet() as Set<String>),
                 teams?.size > 0,
                 filterService.formatWorklogTypes(params),
-                filterService.formatStatus(params))
+                filterService.formatStatus(params),
+                filterService.formatNoRecurring(params)
+        )
 
         def clientDetails = refinementService.getClientDetails(worklogs)
         def componentDetails = refinementService.getComponentDetails(worklogs)
