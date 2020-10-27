@@ -4,7 +4,7 @@ import grails.util.Environment
 
 class RecurringTaskJob {
     static triggers = {
-        simple repeatInterval: 1 * 60 * 1000l // execute job once in 5 seconds
+        simple repeatInterval: 1 * 20 * 1000l // execute job once in 5 seconds
     }
 
     static concurrent = false
@@ -24,12 +24,14 @@ class RecurringTaskJob {
                     RecurringTaskSetting.withTransaction {
                         def setting = RecurringTaskSetting.createCriteria().list {
                             gt('id', lastRecord)
+                            eq('enabled', true)
                             order('id', 'asc')
                             maxResults(1)
                         }?.find() as RecurringTaskSetting
                         if (setting)
                             try {
-                                recurringTaskService.execute(setting)
+                                if (setting.components?.size())
+                                    recurringTaskService.execute(setting)
                                 lastRecord = setting.id
                             } catch (ex) {
                                 println ex.message

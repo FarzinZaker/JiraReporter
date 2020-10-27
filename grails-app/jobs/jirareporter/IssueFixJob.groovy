@@ -29,6 +29,7 @@ class IssueFixJob {
                         def users = JiraUser.findAllByTeamInList(Team.list()) ?: [null]
                         try {
                             def list = Issue.createCriteria().list {
+                                eq('deleted', false)
                                 'in'('assignee', users)
                                 gte('lastSync', minSyncDate)
                                 isNull('lastFix')

@@ -310,7 +310,7 @@ class PlannerController {
                 }
             }
 
-        def isParent = Issue.findByParentAndIdInList(issue, idList) ?: IssueLink.findByDeletedAndSecondIssueAndTypeAndFirstIssueInList(false, issue, 'is child of', issues) ?: IssueLink.findByDeletedAndFirstIssueAndTypeAndSecondIssueInList(false, issue, 'is parent of', issues)
+        def isParent = Issue.findByDeletedAndParentAndIdInList(false, issue, idList) ?: IssueLink.findByDeletedAndSecondIssueAndTypeAndFirstIssueInList(false, issue, 'is child of', issues) ?: IssueLink.findByDeletedAndFirstIssueAndTypeAndSecondIssueInList(false, issue, 'is parent of', issues)
 
         def parent = issue.parent?.id ?: IssueLink.findByDeletedAndFirstIssueAndType(false, issue, 'is child of')?.secondIssue?.id ?: IssueLink.findByDeletedAndSecondIssueAndType(false, issue, 'is parent of')?.firstIssue?.id
 

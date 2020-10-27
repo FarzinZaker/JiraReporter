@@ -97,6 +97,6 @@ class JobExecutionService {
     }
 
     Boolean jobsEnabled() {
-        Environment.isDevelopmentMode()
+        !Environment.isDevelopmentMode()
     }
 }

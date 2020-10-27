@@ -29,6 +29,7 @@ class Issue {
     Date dueDate
     Date deletedDate
     Integer deletedCount = 0
+    Boolean deleted = false
 
     Date lastSync
 
@@ -73,6 +74,7 @@ class Issue {
         reporter nullable: true
         deletedDate nullable: true
         deletedCount nullable: true
+        deleted nullable: true
     }
 
     @Override

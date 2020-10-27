@@ -38,12 +38,17 @@ class IssueDownloadJob {
                 { SyncJobConfig jobConfig, Date startDate, Date endDate, Long lastRecord ->
                     def issueDownloadItems
                     IssueDownloadItem.withTransaction {
-                        issueDownloadItems = IssueDownloadItem.findAllByIdGreaterThan(0, [max: 10])
+                        issueDownloadItems = IssueDownloadItem.createCriteria().list{
+                            projections {
+                                property('issueKey')
+                                maxResults(10)
+                            }
+                        }
                     }
-                    issueDownloadItems?.each { issueDownloadItem ->
+                    issueDownloadItems?.each { key ->
                         IssueDownloadItem.withNewTransaction { transaction ->
-                            issueDownloadService.download(issueDownloadItem.issueKey)
-                            issueDownloadItem.delete()
+                            issueDownloadService.download(key)
+                            IssueDownloadItem.findByIssueKey(key).delete()
                         }
                     }
                     [

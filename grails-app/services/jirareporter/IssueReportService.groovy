@@ -24,6 +24,7 @@ class IssueReportService {
 //            isNotNull('originalEstimate')
 //            isNotNull('startDate')
 //            isNotNull('dueDate')
+            eq('deleted', false)
 
             if (from) {
                 or {

@@ -18,6 +18,7 @@ class IssueService {
 
     List<Issue> search(String phrase) {
         Issue.createCriteria().list {
+            eq('deleted', false)
             or {
                 ilike('key', "%$phrase%")
                 ilike('summary', "%$phrase%")
@@ -167,9 +168,10 @@ class IssueService {
         Worklog.executeUpdate("delete Worklog where task = :issue", [issue: issue])
         IssueUploadItem.executeUpdate("delete IssueUploadItem where issueKey = :issueKey and retryCount = 20", [issueKey: key])
         IssueUploadItem.executeUpdate("delete IssueLink where firstIssue = :issue or secondIssue = :issue", [issue: issue])
-        Issue.findAllByParent(issue).each {
+        Issue.findAllByDeletedAndParent(false,issue).each {
             delete(it.key)
         }
-        issue.delete()
+        issue.deleted = true
+        issue.save()
     }
 }

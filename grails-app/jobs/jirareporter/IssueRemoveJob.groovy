@@ -22,13 +22,23 @@ class IssueRemoveJob {
         use(TimeCategory) {
             limitDate = limitDate - 30.minutes
         }
-        Issue.findAllByDeletedDateIsNotNullAndDeletedDateLessThanEqualsAndDeletedCountGreaterThan(limitDate, 0).each {
-            issueDownloadService.download(it.key)
+        def lst = Issue.createCriteria().list{
+            eq('deleted', false)
+            isNotNull('deletedDate')
+            lte('deletedDate', limitDate)
+            gt('deletedCount', 0)
+            projections{
+                property('key')
+            }
+        }
+        lst.each {
+            issueDownloadService.enqueue(it, "Remove Job")
         }
 
         jobExecutionService.execute('Clean Deleted Issues',
                 { SyncJobConfig jobConfig, Date startDate, Date endDate, Long lastRecord ->
                     def issues = Issue.createCriteria().list {
+                        eq('deleted', false)
                         gt('id', jobConfig.lastRecord)
                         order('id')
                         maxResults(100)
