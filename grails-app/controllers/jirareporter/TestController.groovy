@@ -6,14 +6,15 @@ import grails.plugin.springsecurity.annotation.Secured
 @Secured([Roles.ADMIN])
 class TestController {
 
-    def gitHubService
+    def slackService
+    def reminderService
 
     def index() {
 
-        def startId = 0
-        100.times {
-            startId = gitHubService.categorizeRepositories(startId, 1000)
-        }
+        reminderService.sendReminders()
+
+//        def user = JiraUser.findByName('fzaker')
+//        slackService.post(user.slackId, "This is a new test message")
         render 'DONE'
     }
 }

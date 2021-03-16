@@ -41,4 +41,20 @@ class User implements Serializable {
     String toString() {
         displayName
     }
+
+    transient String getSlackId(){
+        JiraUser.withNewSession {
+            JiraUser.findByName(username)?.slackId
+        }
+    }
+
+    transient void setSlackId(String id){
+        JiraUser.withNewTransaction {
+            def jiraUser = JiraUser.findByName(username)
+            if (jiraUser) {
+                jiraUser.slackId = id
+                jiraUser.save()
+            }
+        }
+    }
 }

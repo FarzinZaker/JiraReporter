@@ -84,13 +84,19 @@ dependencies {
 //    compile group: 'org.apache.poi', name: 'poi', version: '4.1.2'
     compile group: 'org.apache.poi', name: 'poi-ooxml', version: '4.1.2'
 
+//    compile("com.slack.api:bolt:1.6.2")
+//    compile("com.slack.api:bolt-servlet:1.6.2")
+//    compile("com.slack.api:bolt-jetty:1.6.2")
+
+    compile("com.slack.api:slack-api-client:1.6.2")
+
 }
 
 bootRun {
-    jvmArgs = ['-Dspring.output.ansi.enabled=always', '-Xms1g', '-Xmx4g', '-XX:+UseG1GC', '-XX:MaxPermSize=4g']
+    jvmArgs(['-Dspring.output.ansi.enabled=always', '-Xms1g', '-Xmx4g', '-XX:+UseG1GC', '-XX:MaxPermSize=4g'])
     addResources = true
-    String springProfilesActive = 'spring.profiles.active'
-    systemProperty springProfilesActive, System.getProperty(springProfilesActive)
+//    String springProfilesActive = 'spring.profiles.active'
+    systemProperty 'spring.profiles.active', System.getProperty('spring.profiles.active')
 }
 
 tasks.withType(Test) {

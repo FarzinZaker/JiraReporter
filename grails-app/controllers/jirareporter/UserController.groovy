@@ -52,7 +52,8 @@ class UserController {
                     enabled        : it.enabled,
                     accountExpired : it.accountExpired,
                     accountLocked  : it.accountLocked,
-                    passwordExpired: it.passwordExpired
+                    passwordExpired: it.passwordExpired,
+                    slackId        : it.slackId
             ]
         }
 
@@ -77,6 +78,8 @@ class UserController {
             item.accountExpired = model.containsKey('accountExpired') && model.accountExpired
             item.accountLocked = model.containsKey('accountLocked') && model.accountLocked
             item.passwordExpired = model.containsKey('passwordExpired') && model.passwordExpired
+
+            item.slackId = model.slackId
 
 //            println params
 

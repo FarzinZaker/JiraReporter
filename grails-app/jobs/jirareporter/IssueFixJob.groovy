@@ -14,8 +14,8 @@ class IssueFixJob {
     def jobExecutionService
 
     def execute() {
-
-        if (!jobExecutionService.jobsEnabled())
+// Disabled this job
+//        if (!jobExecutionService.jobsEnabled())
             return
 
         jobExecutionService.execute('Fill Issues Missing Information',

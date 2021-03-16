@@ -67,6 +67,9 @@
                 </g:each>
             </ul>
         </li>
+        <li>
+            <a href="${createLink(controller: 'reminder', action: 'list')}">Reminders</a>
+        </li>
     </sec:ifAnyGranted>
     <li>
         ${User.findByUsername(sec.username()?.toString()) ?: sec.username()}
