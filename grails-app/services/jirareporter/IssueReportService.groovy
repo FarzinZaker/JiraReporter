@@ -121,8 +121,8 @@ class IssueReportService {
             return []
         issues + findChildIssues(
                 (Issue.findAllByParentInList(issues) +
-                        IssueLink.findAllByDeletedAndSecondIssueInListAndType(false, issues, 'is child of').firstIssue +
-                        IssueLink.findAllByDeletedAndFirstIssueInListAndType(false, issues, 'is parent of').secondIssue)
+                        IssueLink.findAllByDeletedAndSecondIssueInListAndTypeInList(false, issues, ['is child of', 'Feature Epic Link']).firstIssue +
+                        IssueLink.findAllByDeletedAndFirstIssueInListAndTypeInList(false, issues, ['is parent of', 'Epic is Linked to']).secondIssue)
                         .unique { it.id })
 
     }

@@ -310,9 +310,9 @@ class PlannerController {
                 }
             }
 
-        def isParent = Issue.findByDeletedAndParentAndIdInList(false, issue, idList) ?: IssueLink.findByDeletedAndSecondIssueAndTypeAndFirstIssueInList(false, issue, 'is child of', issues) ?: IssueLink.findByDeletedAndFirstIssueAndTypeAndSecondIssueInList(false, issue, 'is parent of', issues)
+        def isParent = Issue.findByDeletedAndParentAndIdInList(false, issue, idList) ?: IssueLink.findByDeletedAndSecondIssueAndTypeInListAndFirstIssueInList(false, issue, ['is child of', 'Feature Epic Link'], issues) ?: IssueLink.findByDeletedAndFirstIssueAndTypeInListAndSecondIssueInList(false, issue, ['is parent of', 'Epic is Linked to'], issues)
 
-        def parent = issue.parent?.id ?: IssueLink.findByDeletedAndFirstIssueAndType(false, issue, 'is child of')?.secondIssue?.id ?: IssueLink.findByDeletedAndSecondIssueAndType(false, issue, 'is parent of')?.firstIssue?.id
+        def parent = issue.parent?.id ?: issue?.epic?.id ?: IssueLink.findByDeletedAndFirstIssueAndTypeInList(false, issue, ['is child of', 'Feature Epic Link'])?.secondIssue?.id ?: IssueLink.findByDeletedAndSecondIssueAndTypeInList(false, issue, ['is parent of', 'Epic is Linked to'])?.firstIssue?.id
 
         if (issues?.size() && !issues.any { it.id == parent })
             parent = null

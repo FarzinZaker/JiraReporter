@@ -36,6 +36,7 @@ class Issue {
     Date lastFix
 
     Issue parent
+    Issue epic
 
     transient Map assignees = [:]
 
@@ -75,6 +76,7 @@ class Issue {
         deletedDate nullable: true
         deletedCount nullable: true
         deleted nullable: true
+        epic nullable: true
     }
 
     @Override

@@ -61,6 +61,9 @@ class IssueService {
         def parentKey = JSONUtil.safeRead(obj, "fields.parent.myHashMap.key")
         issue.parent = parentKey ? Issue.findByKey(parentKey) : null
 
+        def epicKey = JSONUtil.safeRead(obj, "fields.customfield_10002")
+        issue.epic = epicKey ? Issue.findByKey(epicKey) : null
+
         issue.components?.clear()
         JSONUtil.safeRead(obj, "fields.components.myArrayList")?.each {
             def component = componentService.parse(it, issue.project)
