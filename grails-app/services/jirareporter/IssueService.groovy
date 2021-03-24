@@ -15,6 +15,7 @@ class IssueService {
     def projectService
     def clientService
     def labelService
+    def issueProductService
 
     List<Issue> search(String phrase) {
         Issue.createCriteria().list {
@@ -64,6 +65,10 @@ class IssueService {
         def epicKey = JSONUtil.safeRead(obj, "fields.customfield_10002")
         issue.epic = epicKey ? Issue.findByKey(epicKey) : null
 
+        def psProduct = JSONUtil.safeRead(obj, 'fields.customfield_17202.value')
+        if(psProduct)
+            issue.product = issueProductService.parse(psProduct)
+
         issue.components?.clear()
         JSONUtil.safeRead(obj, "fields.components.myArrayList")?.each {
             def component = componentService.parse(it, issue.project)
@@ -75,6 +80,12 @@ class IssueService {
             issue.addToClients(client)
 
         }
+        def psClient = JSONUtil.safeRead(obj, "fields.customfield_51205")
+        if(psClient){
+            def client = clientService.parse(psClient)
+            issue.addToClients(client)
+        }
+
         issue.labels?.clear()
         JSONUtil.safeRead(obj, "fields.labels.myArrayList")?.each {
             def label = labelService.parse(it)

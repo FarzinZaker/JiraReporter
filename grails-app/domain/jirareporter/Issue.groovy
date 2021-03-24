@@ -30,6 +30,7 @@ class Issue {
     Date deletedDate
     Integer deletedCount = 0
     Boolean deleted = false
+    IssueProduct product
 
     Date lastSync
 
@@ -77,6 +78,7 @@ class Issue {
         deletedCount nullable: true
         deleted nullable: true
         epic nullable: true
+        product nullable: true
     }
 
     @Override
