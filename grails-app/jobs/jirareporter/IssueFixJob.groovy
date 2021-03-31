@@ -26,7 +26,7 @@ class IssueFixJob {
                             minSyncDate = minSyncDate - 2.hours
                         }
                         def downloadQueue = IssueDownloadItem.list().collect { it.issueKey } ?: ['-']
-                        def users = JiraUser.findAllByTeamInList(Team.list()) ?: [null]
+                        def users = JiraUser.findAllByTeamInList(Team.findAllByDeleted(false)) ?: [null]
                         try {
                             def list = Issue.createCriteria().list {
                                 eq('deleted', false)

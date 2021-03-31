@@ -132,7 +132,7 @@ class UserController {
 
     @Secured([Roles.ADMIN])
     def saveTeams() {
-        def teams = Team.list().findAll { params."team_${it.id}" }
+        def teams = Team.findAllByDeleted(false).findAll { params."team_${it.id}" }
         def user = User.get(params.id)
         def teamManagers = TeamManager.findAllByManager(user)
         teamManagers.findAll { !teams.collect { it.id }.contains(it.team.id) }.each { it.delete(flush: true) }

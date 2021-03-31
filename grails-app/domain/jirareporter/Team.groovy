@@ -6,9 +6,11 @@ class Team implements Serializable {
     String xoName
     Integer xoKey
     Integer xoManagerId
+    Boolean deleted = false
 
     static constraints = {
         xoManagerId nullable: true
+        deleted nullable: true
     }
     static mapping = {
         version false

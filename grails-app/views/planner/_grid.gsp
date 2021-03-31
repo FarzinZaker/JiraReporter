@@ -165,7 +165,7 @@
 
 
     var resources = [
-        <g:each in="${Team.list()}" var="team" status="i">
+        <g:each in="${Team.findAllByDeleted(false)}" var="team" status="i">
         {id: ${10000000 + i}, text: "${team.name}", parent: null},
         <g:each in="${JiraUser.findAllByTeam(team)}" var="user">
         {

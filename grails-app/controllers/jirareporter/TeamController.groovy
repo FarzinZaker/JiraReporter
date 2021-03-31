@@ -16,7 +16,7 @@ class TeamController {
         def parameters = [offset: params.skip, max: params.pageSize, sort: params["sort[0][field]"] ?: "name", order: params["sort[0][dir]"] ?: "asc"]
 
         def list
-        list = Team.list(parameters)
+        list = Team.findAllByDeleted(false, parameters)
         value.total = Team.count()
 
         value.data = list.collect {
@@ -57,7 +57,8 @@ class TeamController {
         models.each { model ->
             def item = Team.get(model.id)
             TeamManager.findAllByTeam(item).each { it.delete() }
-            item.delete(flush: true)
+            item.deleted = true
+            item.save(flush: true)
         }
         render([] as JSON)
     }

@@ -1,7 +1,7 @@
 <%@ page import="jirareporter.Team" %>
 <div class="k-edit-form-container manual-dialog">
     <form id="teams_${params.id}">
-        <g:each in="${Team.list()}" var="team">
+        <g:each in="${Team.findAllByDeleted(false)}" var="team">
             <div class="k-edit-label k-teams-label">
                 <label for="team_${team.id}">${team.name}</label>
             </div>

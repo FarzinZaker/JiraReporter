@@ -23,7 +23,7 @@ class CrossOverSyncJob {
         jobExecutionService.execute('Download Recent CrossOver Logs',
                 { SyncJobConfig jobConfig, Date startDate, Date endDate, Long lastRecord ->
                     CrossOverLog.withTransaction {
-                        crossOverService.persist(startDate, endDate, Team.list(), true)
+                        crossOverService.persist(startDate, endDate, Team.findAllByDeleted(false), true)
                     }
                     [
                             startDate: startDate,
@@ -56,7 +56,7 @@ class CrossOverSyncJob {
         jobExecutionService.execute('Download Old CrossOver Logs',
                 { SyncJobConfig jobConfig, Date startDate, Date endDate, Long lastRecord ->
                     CrossOverLog.withTransaction {
-                        crossOverService.persist(startDate, endDate, Team.list(), true)
+                        crossOverService.persist(startDate, endDate, Team.findAllByDeleted(false), true)
                     }
                     [
                             startDate: startDate,
