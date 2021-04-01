@@ -53,7 +53,8 @@ class UserController {
                     accountExpired : it.accountExpired,
                     accountLocked  : it.accountLocked,
                     passwordExpired: it.passwordExpired,
-                    slackId        : it.slackId
+                    slackId        : it.slackId,
+                    team           : it.team?.name ?: ''
             ]
         }
 

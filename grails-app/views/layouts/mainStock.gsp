@@ -56,7 +56,7 @@
 <div class="row">
     <div class="header">
         <span class="logo">
-            <asset:image src="aclate.png"/>
+            <asset:image src="ignite.png"/>
             <span>
                 ${g.layoutTitle()?.toString()?.toUpperCase()}
             </span>

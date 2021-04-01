@@ -48,6 +48,12 @@ class User implements Serializable {
         }
     }
 
+    transient Team getTeam(){
+        JiraUser.withNewSession {
+            JiraUser.findByName(username)?.team
+        }
+    }
+
     transient void setSlackId(String id){
         JiraUser.withNewTransaction {
             def jiraUser = JiraUser.findByName(username)
