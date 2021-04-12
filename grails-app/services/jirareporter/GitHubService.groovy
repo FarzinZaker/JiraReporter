@@ -24,9 +24,12 @@ class GitHubService {
                         url: repositoryData.url,
                 )
             }
-            repository.created = dateFormat.parse(repositoryData.created_at)
-            repository.updated = dateFormat.parse(repositoryData.updated_at)
-            repository.pushed = dateFormat.parse(repositoryData.pushed_at)
+            if (repositoryData.created_at)
+                repository.created = dateFormat.parse(repositoryData.created_at)
+            if (repositoryData.updated_at)
+                repository.updated = dateFormat.parse(repositoryData.updated_at)
+            if (repositoryData.pushed_at)
+                repository.pushed = dateFormat.parse(repositoryData.pushed_at)
             repository.save()
             categorizeRepository(repository)
             downloadRepositoryLanguages(repository)

@@ -10,6 +10,6 @@ class Product {
 
     @Override
     String toString() {
-        "${company.name}: ${name}"
+        "${company?.name}: ${name}"
     }
 }
