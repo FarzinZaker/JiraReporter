@@ -179,18 +179,18 @@
         },
         </g:each>
         </g:each>
-        {id: ${20000000}, text: "Other Teams", parent: null},
-        <g:each in="${JiraUser.findAllByTeamIsNull()}" var="user">
-        {
-            id: ${user.id},
-            text: "${user.displayName}",
-            parent: ${20000000},
-            avatar: '${user.avatar}',
-            key: ${user.id},
-            label: "${user.displayName}",
-            name: "${user.displayName}"
-        },
-        </g:each>
+        %{--{id: ${20000000}, text: "Other Teams", parent: null},--}%
+        %{--<g:each in="${JiraUser.findAllByTeamIsNullAnd()}" var="user">--}%
+        %{--{--}%
+        %{--    id: ${user.id},--}%
+        %{--    text: "${user.displayName}",--}%
+        %{--    parent: ${20000000},--}%
+        %{--    avatar: '${user.avatar}',--}%
+        %{--    key: ${user.id},--}%
+        %{--    label: "${user.displayName}",--}%
+        %{--    name: "${user.displayName}"--}%
+        %{--},--}%
+        %{--</g:each>--}%
     ];
 
     function filterResources() {
