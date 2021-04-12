@@ -29,12 +29,13 @@
     <asset:javascript src="js/standalone/selectize.min.js"/>
 
     <asset:stylesheet src="code/css/highcharts.css"/>
-    <script src="https://code.highcharts.com/stock/highstock.js"></script>
-    <asset:javascript src="code/highcharts-more.js"/>
+%{--    <script src="https://code.highcharts.com/stock/highstock.js"></script>--}%
+    <asset:javascript src="code/highcharts.js"/>
     <asset:javascript src="code/modules/heatmap.js"/>
     <asset:javascript src="code/modules/exporting.js"/>
-    <asset:javascript src="code/modules/offline-exporting.js"/>
     <asset:javascript src="code/modules/export-data.js"/>
+%{--    <asset:javascript src="code/modules/offline-exporting.js"/>--}%
+%{--    <asset:javascript src="code/modules/export-data.js"/>--}%
 
     %{--    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>--}%
     %{--    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>--}%
@@ -47,6 +48,12 @@
 
 %{--    <asset:javascript src="react.development.js"/>--}%
 %{--    <asset:javascript src="react-dom.development.js"/>--}%
+
+%{--    <script src="https://code.highcharts.com/highcharts.js"></script>--}%
+%{--    <script src="https://code.highcharts.com/modules/heatmap.js"></script>--}%
+%{--    <script src="https://code.highcharts.com/modules/exporting.js"></script>--}%
+%{--    <script src="https://code.highcharts.com/modules/export-data.js"></script>--}%
+%{--    <script src="https://code.highcharts.com/modules/accessibility.js"></script>--}%
 
     <g:layoutHead/>
 </head>

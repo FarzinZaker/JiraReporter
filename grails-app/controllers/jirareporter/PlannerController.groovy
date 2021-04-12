@@ -25,7 +25,7 @@ class PlannerController {
 
     def gantt() {
         if (params.findAll { it.value }.size() < 3) {
-            redirect(uri: "/planner/gantt?status=${['Backlog', 'To Do', 'In Progress', 'Blocked'].join(',')}")
+            redirect(uri: "/planner/gantt?status=${['To Do', 'In Progress'].join(',')}")
             return
         }
 
@@ -55,7 +55,7 @@ class PlannerController {
     def issues() {
 
         if (params.findAll { it.value && !it.key?.toString()?.toLowerCase()?.startsWith('dhxr') }.size() < 3) {
-            redirect(uri: "/planner/issues?status=${['Backlog', 'To Do', 'In Progress', 'Blocked'].join(',')}")
+            redirect(uri: "/planner/issues?status=${['To Do', 'In Progress'].join(',')}")
             return
         }
 
@@ -287,7 +287,7 @@ class PlannerController {
     private Map getIssueRequiredFields(Issue issue, List<Issue> issues = [], def idList = [0l]) {
 
         def formatter = new SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss.SSS'Z'")
-        def completed = Configuration.statusList.find { it.name == 'Verification' }.details.contains(issue.status.name) || Configuration.statusList.find { it.name == 'Closed' }.details.contains(issue.status.name)
+        def completed = Configuration.statusList.find { it.name == 'Quality Assurance' }.details.contains(issue.status.name) || Configuration.statusList.find { it.name == 'Closed' }.details.contains(issue.status.name)
 
         def originalEstimateSeconds = issue.originalEstimateSeconds
         if (!originalEstimateSeconds) {
