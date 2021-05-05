@@ -67,6 +67,7 @@ class PlannerController {
                 filterService.formatFromDate(params),
                 filterService.formatToDate(params),
                 filterService.formatIssueList(params),
+                filterService.formatIssueProducts(params),
                 filterService.formatProjects(params),
                 filterService.formatIssueTypes(params),
                 filterService.formatPriorities(params),

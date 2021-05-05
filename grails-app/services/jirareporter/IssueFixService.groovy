@@ -48,6 +48,7 @@ class IssueFixService {
         if (issue.isDirty()) {
             def comment = comments.size() ? "Fixed the following issues: \\\\${comments.join('\\\\')}" : null
             issueUploadService.enqueue(issue, 'Fix Issues', new Date(), false, comment)
+            println("Fixed: ${issue.key}")
         }
 
         issue.lastFix = new Date()

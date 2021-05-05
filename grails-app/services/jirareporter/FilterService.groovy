@@ -109,6 +109,15 @@ class FilterService {
             []
     }
 
+    List<IssueProduct> formatIssueProducts(params) {
+        if (params.issueProduct && params.issueProduct?.trim() != '')
+            IssueProduct.findAllByIdInList((params.issueProduct?.split(',')?.collect { it.toString()?.toLong() }?.findAll {
+                it
+            } ?: []) + [null])
+        else
+            []
+    }
+
     Boolean formatNoRecurring(params) {
         params.noRecurring ? true : false
     }

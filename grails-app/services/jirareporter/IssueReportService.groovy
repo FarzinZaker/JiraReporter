@@ -7,7 +7,7 @@ class IssueReportService {
 
     def springSecurityService
 
-    List<Issue> getIssues(Date from, Date to, List<Issue> issues = [], List<Project> projects = [], List<IssueType> issueTypes = [], List<IssueType> priorities = [], List<Component> componentList = [], List<Client> clientList = [], List<Label> labelList = [], List<JiraUser> users = [], List<JiraUser> teamMembers = [], Boolean filterTeamMembers, List<Status> statusList = [], Boolean noRecurring = false, Boolean unassignedIssues = false) {
+    List<Issue> getIssues(Date from, Date to, List<Issue> issues = [], List<IssueProduct> products = [], List<Project> projects = [], List<IssueType> issueTypes = [], List<IssueType> priorities = [], List<Component> componentList = [], List<Client> clientList = [], List<Label> labelList = [], List<JiraUser> users = [], List<JiraUser> teamMembers = [], Boolean filterTeamMembers, List<Status> statusList = [], Boolean noRecurring = false, Boolean unassignedIssues = false) {
 
         def user = User.findByUsername(springSecurityService.principal.username)
         def jiraUsers = [JiraUser.findByName(user.username)]
@@ -62,6 +62,10 @@ class IssueReportService {
 
             if (projects.size()) {
                 'in'('project', projects)
+            }
+
+            if (products.size()) {
+                'in'('product', products)
             }
 
             if (users.size()) {

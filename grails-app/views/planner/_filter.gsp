@@ -2,6 +2,7 @@
     <g:render template="/filter/load"/>
     <g:render template="/filter/time"/>
     <g:render template="/filter/issue"/>
+    <g:render template="/filter/issueProduct"/>
     <g:render template="/filter/project"/>
     <g:render template="/filter/issueType"/>
     <g:render template="/filter/priority"/>

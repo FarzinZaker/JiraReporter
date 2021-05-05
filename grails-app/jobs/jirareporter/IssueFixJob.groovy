@@ -31,7 +31,7 @@ class IssueFixJob {
                             def list = Issue.createCriteria().list {
                                 eq('deleted', false)
                                 'in'('assignee', users)
-                                gte('lastSync', minSyncDate)
+//                                gte('lastSync', minSyncDate)
                                 isNull('lastFix')
                                 not {
                                     'in'('key', downloadQueue)
