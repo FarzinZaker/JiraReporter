@@ -80,9 +80,12 @@ class IssueUploadService {
             } else {
                 def path = JiraIssueMapper.fieldsMap[fieldName]['field'].split('\\.')
                 for (def i = path.size() - 1; i >= 0; i--) {
-                    if (i == path.size() - 1)
-                        data.put(path[i], issueUploadItem.value)
-                    else {
+                    if (i == path.size() - 1) {
+                        if (JiraIssueMapper.fieldsMap[fieldName]['type'] == Double)
+                            data.put(path[i], Double.parseDouble(issueUploadItem.value))
+                        else
+                            data.put(path[i], issueUploadItem.value)
+                    } else {
                         def newData = [:]
                         newData.put(path[i], data)
                         data = newData
