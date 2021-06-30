@@ -13,7 +13,7 @@
             searchField: 'text',
             create: false,
             options: [
-                <g:each in="${IssueProduct.list()}" var="product">
+                <g:each in="${IssueProduct.list()?.sort{it.name}}" var="product">
                 {value: ${product.id}, text: '${product.name}'},
                 </g:each>
             ]

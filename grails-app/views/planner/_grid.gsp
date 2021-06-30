@@ -194,7 +194,7 @@
     ];
 
     function filterResources() {
-        return resources;
+        // return resources;
         var idList = [];
         gantt.eachTask(function (task) {
             if (task.owner && !idList.includes(task.owner.resource_id))

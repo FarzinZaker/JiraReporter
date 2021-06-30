@@ -106,14 +106,16 @@ tooltips.tooltipFor({
             "<hr/>" +
             ids.map(function (id, index) {
                 var task = gantt.getTask(id);
+                if(!task.owner.value)
+                    return '';
                 var assignenment = gantt.getResourceAssignments(resourceId, task.id);
                 var amount = "";
                 var taskIndex = (index + 1);
                 if (assignenment[0]) {
                     amount = " <b>(" + assignenment[0].value + "h)</b> ";
                 }
-                return '<span>' + task.key + "</span> " + amount + ': ' + task.text;
-            }).join("<br>")
+                return '<span>' + task.key + "</span> " + amount + ': ' + task.text + '<br/>';
+            }).join("")
         ].join("<br>").replace('<br><br>', '<br>');
 
         return html;

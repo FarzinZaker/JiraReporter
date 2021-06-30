@@ -165,7 +165,7 @@ function getTasksLoad(tasks, resourceId, start_date, end_date) {
     // console.log(tasks);
     // console.log('--------------------');
     tasks.forEach(function (task) {
-        if (task.owner_id === resourceId && task.estimateHours && task.durationDays) {
+        if (task.owner_id === resourceId && task.estimateHours && task.durationDays && task.owner.value) {
             var sd = start_date;
             if (task.start_date.getTime() > sd.getTime())
                 sd = task.start_date;

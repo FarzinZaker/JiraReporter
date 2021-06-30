@@ -140,7 +140,7 @@ class PlannerController {
                 issue.estimateHours = estimateHours
 
                 if (issue.owner)
-                    issue.owner.value = Math.round(estimateHours / durationDays).toInteger()
+                    issue.owner.value = 0//Math.round(estimateHours / durationDays).toInteger()
             }
         }
 
