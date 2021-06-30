@@ -81,12 +81,51 @@ var endDateEditor = {
     type: "date", map_to: "end_date"
 };
 var durationEditor = {type: "originalEstimateEditor", map_to: "auto"};
+var storyPointsEditor = {type: "storyPointsEditor", map_to: "auto"};
 var predecessorsEditor = {type: "predecessor", map_to: "auto", formatter: linksFormatter};
 var priorityEditor = {type: "select", map_to: "priority", options: gantt.serverList("priority")};
 var assigneeEditor = {
     type: "select", map_to: "owner_id", options: managedUsers
 };
 
+gantt.config.editor_types.storyPointsEditor = {
+    show: function (id, column, config, placeholder) {
+        placeholder.innerHTML = "<div><input type='text' name='" + column.name + "'></div>";
+    },
+    hide: function () {
+        // called when input is hidden
+        // destroy any complex editors or detach event listeners from here
+    },
+
+    set_value: function (value, id, column, node) {
+        node.querySelector('input[name="' + column.name + '"]').value = value.storyPoints ? value.storyPoints : 0;
+    },
+
+    get_value: function (id, column, node) {
+        return node.querySelector('input[name="' + column.name + '"]').value;
+    },
+
+    is_changed: function (value, id, column, node) {
+        return node.querySelector('input[name="' + column.name + '"]').value !== value.storyPoints
+    },
+
+    is_valid: function (value, id, column, node) {
+        var validChars = '0123456789.';
+        for(var i = 0; i < value.length; i++) {
+            if(validChars.indexOf(value.charAt(i)) === -1)
+                return false;
+        }
+        return true;
+    },
+
+    save: function (id, column, node) {
+        var task = gantt.getTask(id);
+        task.storyPoints = parseFloat(node.querySelector('input[name="' + column.name + '"]').value);
+        gantt.updateTask(id);
+    },
+    focus: function (node) {
+    }
+};
 
 gantt.config.editor_types.originalEstimateEditor = {
     show: function (id, column, config, placeholder) {

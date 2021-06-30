@@ -32,7 +32,8 @@ class JiraIssueMapper {
             priority                : [field: 'priority', type: JSONObject, parser: 'priorityService'],
             aggregateProgressValue  : [field: 'aggregateprogress.progress', type: Double],
             aggregateProgressTotal  : [field: 'aggregateprogress.total', type: Double],
-            aggregateProgressPercent: [field: 'aggregateprogress.percent', type: Double]
+            aggregateProgressPercent: [field: 'aggregateprogress.percent', type: Double],
+            storyPoints             : [field: 'customfield_10006', type: Double]
 
     ]
 

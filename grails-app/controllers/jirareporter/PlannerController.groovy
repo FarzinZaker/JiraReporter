@@ -229,6 +229,7 @@ class PlannerController {
         issue.originalEstimate = issueData.originalEstimate
         issue.priority = Priority.get(issueData.priority)
         issue.assignee = JiraUser.get(issueData.owner_id)
+        issue.storyPoints = issueData.storyPoints
 
         issueUploadService.enqueue(issue, 'User', time, false)
 
@@ -360,7 +361,8 @@ class PlannerController {
                 remainingEstimate: issue.remainingEstimate,
                 timeSpent        : issue.timeSpent,
                 completed        : completed,
-                overdue          : !completed && issue.dueDate && issue.dueDate < new Date()
+                overdue          : !completed && issue.dueDate && issue.dueDate < new Date(),
+                storyPoints      : issue?.storyPoints
         ]
     }
 

@@ -9,6 +9,7 @@ class TestController {
     def slackService
     def reminderService
     def gitHubService
+    def issueDownloadService
 
     def index() {
 
@@ -17,6 +18,8 @@ class TestController {
 
 //        def user = JiraUser.findByName('fzaker')
 //        slackService.post(user.slackId, "This is a new test message")
+
+        issueDownloadService.download('IPCST-61019')
         render 'DONE'
     }
 }

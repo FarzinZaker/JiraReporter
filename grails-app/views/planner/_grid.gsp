@@ -402,6 +402,21 @@
                 return '<div class="priority-icon-container"><img class="priority-icon" src="' + priorityIcons['p' + task.priority] + '"/></div>';
             }
         },
+        <g:set var="column" value="${GanttColumn.findByUserAndName(user, 'storyPoints')}"/>
+        {
+            name: "storyPoints",
+            width: 50,
+            label: "BVU",
+            resize: true,
+            hide: ${!column?.visible},
+            editor: storyPointsEditor,
+            template: function (task) {
+                if (!task.taskType || task.taskType === 'project' || task.taskType === 'client') {
+                    return "";
+                }
+                return task.storyPoints;
+            }
+        },
         <g:set var="column" value="${GanttColumn.findByUserAndName(user, 'predecessors')}"/>
         {
             name: "predecessors", label: "Pred.", width: 100, align: "center", hide: ${!column?.visible},

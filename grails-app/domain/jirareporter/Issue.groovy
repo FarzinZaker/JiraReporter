@@ -25,6 +25,7 @@ class Issue {
     Double aggregateProgressValue
     Double aggregateProgressTotal
     Double aggregateProgressPercent
+    Double storyPoints
     Date startDate
     Date dueDate
     Date deletedDate
@@ -66,6 +67,7 @@ class Issue {
         aggregateProgressValue nullable: true
         aggregateProgressTotal nullable: true
         aggregateProgressPercent nullable: true
+        storyPoints nullable: true
         parent nullable: true
         startDate nullable: true
         dueDate nullable: true
